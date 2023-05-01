@@ -1,0 +1,107 @@
+---
+title: "Classification Software Setup"
+author: 
+  - "Dr. Gilbert"
+format: html
+---
+
+## Welcome
+
+Welcome to MAT434, Statistical Learning and Classification. We'll be using R/RStudio, just like we did in MAT300 but we'll also be adding the use of GitHub for Collaborative Version Control this semester.
+
+Parts of this document are summarized from the [Happy Git with R](https://happygitwithr.com/) book. As that book mentions, all of this work is well worth it in the end -- just stick with it and reach out for help when you need it.
+
+Setup instructions for Windows and macOS follow.
+
+## Software
+
+While many of you already have R and RStudio installed, this document will cover installing that software as well as setting up a free GitHub account, installing `git`, and configuring RStudio to manage *projects* connected to GitHub repositories.
+
+### Technical Computing with R
+
+The primary language we'll use to interact with data in our course is called R. It is a computing language which was developed *for* data analysis.
+
+**Windows:**
+
+-   Install R
+    -   Navigate to [CRAN, the Comprehensive R Archive Network](https://cran.r-project.org/){target="_blank"}.
+    -   Click on the *Download R for Windows* link.
+    -   Click the link to *install R for the first time*.
+    -   Click the link in the grey rectangle to download the most recent version of R. As of current writing, this is *R-4.2.0 for Windows*.
+    -   Once the download has completed, open the setup file and complete the installation by accepting all of the default settings.
+
+**macOS:**
+
+-   Install R
+    -   Navigate to [CRAN, the Comprehensive R Archive Network](https://cran.r-project.org/){target="_blank"}.
+    -   Click on the *Download R for macOS* link.
+    -   Look for the *Latest release* heading and download/install the most recent version of R. At the time of writing this is *R-4.2.0.pkg*.
+
+**Linux:**
+
+-   Install R
+    -   Navigate to [CRAN, the Comprehensive R Archive Network](https://cran.r-project.org/){target="_blank"}.
+    -   Click on the link for your Linux Distribution next to *Download R for Linux*.
+    -   Open a terminal and follow the instructions provided on the page.
+    
+### Install RStudio
+
+We'll use RStudio as an IDE (integrated development environment) for working in R. We'll also see that we can use RStudio to manage projects and GitHub repositories. In order to install RStudio, navigate to [Posit.co](https://posit.co/download/rstudio-desktop/) and click the button under `Install RStudio` (you can skip installing R since you've done that already). Once the download is completed, you can just follow the prompts through the installer -- accepting all the default settings is fine.
+
+### Collaborative Version Control with git/GitHub
+
+Have you ever found yourself working on a project and keeping files like `myProject_version1.doc`, `myProject_version2.doc`, `myProject_final_version.doc`, `myProject_RealFinal_version.doc`, etc? If so, you've been using a rudimentary version control system. This method is okay when you're working on a project by yourself, but it gets very messy once you start collaborating with other team members on a group project. 
+
+In working with groups, you either end up e-mailing lots of files back and forth (very messy), or switching to a collaborative platform such as Google Docs. It is easier to collaborate on Google Docs, but it is also pretty dangerous to do so -- someone can accidentally remove an important section of a report, or you may want to revert back to a previous version of the report after receiving some feedback. Unless you've explicitly saved the relevant earlier version of the file, you may not be able to return to it.
+
+Collaborative version control with `git` is a more advanced and more reliable strategy for version control than the Google Docs method. We'll be hosting our projects on gitHub, and we'll mostly use RStudio for pushing changes to our group gitHub repositories. 
+
+**Register a GitHub Account:** Complete the steps below to register a GitHub account.
+
++ Navigate to [GitHub.com](https://github.com/)
++ Add your preferred e-mail address and hit the green *Sign Up for GitHub* button.  
++ Follow the prompts to obtain an account.  
+  + [Here's some advice](https://happygitwithr.com/github-acct.html) from *Happy Git with R* on choosing a GitHub username.
+
+
+**Install git (Windows):** Complete the following steps to install `git` on your local machine.  
+
++ Navigate to [gitforwindows.org](https://gitforwindows.org/)
++ Click the blue *Download* button.
++ Follow the prompts, accepting all of the default settings. Be sure that “Git from the command line and also from 3rd-party software” is selected when asked about *Adjusting your PATH environment*.
+
+**Install git (MacOS):** Complete the following steps to install `git` on your local machine.
+
++ Open RStudio on your computer.
++ Click on the Terminal tab in the bottom left window to switch from the Console to the Terminal.
++ Into the Terminal, enter the command `xcode-select --install` and hit enter.
++ Agree to installing Command Line Developer Tools and the Xcode license agreement.
++ After the install is complete, type `git --version` into the Terminal and hit enter. If the install was successful, it will display your version of git.
+
+**Linking git, GitHub, and RStudio:** Complete the following steps to allow `git`, `GitHub` and `RStudio` to work together.  
+
++ Open up RStudio
++ In the console, type and run `install.packages("usethis")`
++ Once the installation has completed, run `library(usethis)` and then `use_git_config(user.name = "INPUT_YOUR_USER_NAME_HERE", user.email = "INPUT_YOUR_EMAIL_ADDRESS_HERE")` -- be sure to use the username and e-mail associated with your GitHub account.
++ Run `create_github_token()` from the console.  
+  + This opens up a GitHub webpage -- fill in the form. Change the token expiration to *No Expiration*.
+  + Click *Generate Token*.
+  + Use the clipboard button to copy the PAT token -- you may want to save this in a simple text file somewhere on your computer.
++ In the console, run `install.packages("gitcreds")`
++ Once the install has finished, run `gitcreds::gitcreds_set()`  
+  + Paste the PAT token from GitHub into the console, next to the prompt, and hit `Enter/Return`.
+
+**Check that Everything Worked!** We're finally ready to check that everything has worked. Complete the following steps.  
+
++ Open RStudio
++ Click `File -> New Project`
++ Do you see an option to create from `Version Control`? If so, excellent! Don't click on it just yet though.
++ Click on the `New Directory` button and then click `New Project`.  
+  + On this next page do you see a checkbox to *Create a git Repository*? If so, we're all set!
+  + Don't follow through with creating the new project. Instead, just close out of this process.
+  
+## Summary
+
+That was a lot of work, and a lot of software to install! Good news though, the only software you'll *notice* interfacing with on a regular basis is RStudio. All of the other items we've installed will be controlled there.
+
+Next time, you'll create your first GitHub repository, clone it to your local machine (create a copy of it on your computer), attach an R project within that repository, create a quarto document, conduct an analysis, build your report, and push updates out to your main repository on GitHub.

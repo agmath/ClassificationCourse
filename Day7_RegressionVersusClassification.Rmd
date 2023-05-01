@@ -1,0 +1,107 @@
+---
+title: "Regression Versus Classification"
+author: 
+  - "Dr. Gilbert"
+format: html
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(tidymodels)
+```
+
+**Objectives:** In this notebook, our goals are to differentiate between *regression* and *classification*. In particular, we'll recognize the following:
+
++ Regression models are built to predict or explain a *numerical response*.
++ Classification models are build to predict or explain a *categorical response*.
++ Regression models seek to fit the training data as closely as possible -- your mental image might be as a "line of best fit".
++ Classification models seek to separate classes -- your mental image might be that classifiers seek to "draw fences".
+
+## Toy Data for Classification
+
+As we saw in MAT300, it is sometimes useful to have some "fake" data to play with in order to understand classification models.
+
+```{r}
+num_a <- 10
+num_b <- 15
+num_c <- 12
+
+x_a <- rnorm(num_a, 20, 5)
+y_a <- rnorm(num_a, 20, 3)
+x_b <- rnorm(num_b, 40, 3)
+y_b <- rnorm(num_b, 40, 3)
+x_c <- rnorm(num_c, 60, 3)
+y_c <- rnorm(num_c, 20, 3)
+
+toy_data <- tibble(x = c(x_a, x_b, x_c), y = c(y_a, y_b, y_c), class = c(rep("A", num_a), rep("B", num_b), rep("C", num_c)))
+```
+
+```{r}
+toy_data %>%
+  ggplot() + 
+  geom_point(aes(x = x, y = y, color = class))
+```
+
+Now that we have some toy data, we'll build several classifiers.
+
+```{r}
+dt_clf <- decision_tree() %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
+
+dt_rec <- recipe(class ~ x + y, data = toy_data)
+
+dt_wf <- workflow() %>%
+  add_model(dt_clf) %>%
+  add_recipe(dt_rec)
+
+dt_fit <- dt_wf %>%
+  fit(toy_data)
+
+new_data <- crossing(x = seq(0, 80, length.out = 150),
+                     y = seq(0, 60, length.out = 150))
+
+new_data <- dt_fit %>%
+  augment(new_data)
+
+ggplot() + 
+  geom_point(data = new_data,
+             aes(x = x, y = y, color = .pred_class),
+             alpha = 0.05) +
+  geom_point(data = toy_data,
+             aes(x = x, y = y, color = class)) +
+  labs(title = "Class Regions for Decision Tree",
+       color = "Class")
+```
+
+Now a KNN Classifier...
+
+```{r}
+knn_clf <- nearest_neighbor(neighbors = 3) %>%
+  set_engine("kknn") %>%
+  set_mode("classification")
+
+knn_rec <- recipe(class ~ x + y, data = toy_data)
+
+knn_wf <- workflow() %>%
+  add_model(knn_clf) %>%
+  add_recipe(knn_rec)
+
+knn_fit <- knn_wf %>%
+  fit(toy_data)
+
+new_data <- crossing(x = seq(0, 80, length.out = 150),
+                     y = seq(0, 60, length.out = 150))
+
+new_data <- knn_fit %>%
+  augment(new_data)
+
+ggplot() + 
+  geom_point(data = new_data,
+             aes(x = x, y = y, color = .pred_class),
+             alpha = 0.05) +
+  geom_point(data = toy_data,
+             aes(x = x, y = y, color = class)) +
+  labs(title = "Class Regions for KNN (n = 3)",
+       color = "Class")
+```
