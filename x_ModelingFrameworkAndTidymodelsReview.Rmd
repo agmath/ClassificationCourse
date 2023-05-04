@@ -1,0 +1,195 @@
+---
+title: "Modeling Framework and `tidymodels` Workflow Review"
+author: 
+  - "Dr. Gilbert"
+format: html
+---
+
+```{r setup, warning = FALSE, message = FALSE}
+knitr::opts_chunk$set(eval = FALSE, echo = TRUE)
+library(tidyverse)
+library(tidymodels)
+```
+
+**Typical Steps:** In this notebook, our goals are to identify a standard modeling framework and workflow which can be applied across many scenarios. The main steps are below, but more detailed discussions of each follow.
+
++ Split data into *training* and *test* sets.
++ Perform exploratory analyses on *training* data.
++ Split training data into *cross-validation* folds.
++ Use *cross-validation* to estimate model performance.
++ Identify a best model or suite of models to move forward with.
++ Fit your best model(s) to your *training* set.
++ Confirm model performance expectations using your *test* set.
++ Deploy model and use it to make predictions on/for new observations.
+
+## Splitting Data into Training and Test Sets
+
+We *always* need to split our data into training and test sets. As a reminder, we can think of *training* data as observations that our models can practice on and learn from (say a practice exam) and *test* observations as "new" observations that our model(s) were unable to study from. These *test* observations play the role of future observations and ensure that our model performs as expected when applied to observations it hasn't seen before.
+
+The functionality for splitting data into training and test sets appears below.
+
+```{r}
+set.seed(123) #set a seed to get same training/test data every time
+data_splits <- initial_split(my_data) #mark observations as training or test
+train <- training(data_splits) #obtain training data
+test <- testing(data_splits) #obtain test data
+```
+
+## Exploratory Analyses on Training Data
+
+Exploratory data analysis, computing summary statistics and engaging in data visualization is an important part of any modeling project. We must make sure to do this work with our *training* data (`train`) because otherwise, information from our *test* data (`test`) leaks into our training process. This means that the `test` data is no longer an unbiased estimate of model performance -- we, and therefore our model, know information about the observations in the test set that we should not know.
+
+More on exploratory data analyses and data visualization are covered in the `x_TidyAnalysesReview` and `x_DataVizReview` notebooks.
+
+## Split Training Data Into Cross-Validation Folds
+
+The *training* and *test* set approach alone isn't enough to reliably estimate model performance. For instance, if we simply train our models on our *training* data and evaluate them on a single *test* set, how do we know that we didn't give our model a "test" which was easier than average (underestimating error rates) or more difficult than average (overestimating error rates)? We put a lot of faith in a single random split of our data when we do this and we risk untrustworthy performance estimates. 
+
+Cross-validation seeks to solve the issue outlined above by training and testing a model on multiple *validation-folds*, which act like test sets early in the modeling process. The idea is to take the *training* data and break it up into approximately equally sized folds. Each fold takes one turn being left out of the model training process and is used as a validation set for a model training on the remaining folds. That is, if we use 10-fold cross-validation for a logistic regression classifier, we obtain 10 estimated models and 10 estimates of model performance. We can average these performance estimates together to obtain a *cross-validation* performance estimate and we can even compute a standard deviation in the individual performance estimates on each fold so that we can construct a confidence interval for the expected performance of our model. In doing this, those "easy" and "difficult" validation sets that we encounter by chance, balance eachother out and we obtain a more reliable estimate of future model performance through the cross-validation process.
+
+The code required to break our training data into cross validation folds is as follows:
+
+```{r}
+set.seed(456) #Set seed for reproducibility
+train_folds <- vfold_cv(train, v = 10) #Create 10 cross-validation folds
+```
+
+## Estimate Model Performance with Cross-Validation
+
+As mentioned above, cross-validation helps us obtain more reliable estimates of future model performance. It does this by averaging performance estimates computed on each individual fold.
+
+### Building a Model Workflow
+
+Building a model workflow comes in three stages. We need,
+
++ A model *specification* (an instance of the class of model we'd like to build)
++ A model *recipe* (a description of the response and predictor variables our model will use)
++ A *workflow* will contain our *specification* and *recipe*.
+
+The setup will always look something like the following:
+
+```{r}
+dt_spec <- decision_tree(max_depth = 6) %>% #build a decision tree with  max_depth fixed at 6
+  set_engine("rpart") %>% #use the rpart package in R to build the tree
+  set_mode("classification") #set mode to "classification" or "regression"
+
+dt_rec <- recipe(response ~ ., data = train) %>% #use all available predictors to predict the response variable
+  step_xxyy() %>% #add a feature engineering step
+  step_yyzz() #add another feature engineering step...
+
+dt_wf <- workflow() %>%
+  add_model(dt_spec) %>%
+  add_recipe(dt_rec)
+```
+
+#### Estimating Model Performance with Cross-Validation
+
+To run *cross-validation* on a model workflow, we can pipe our model workflow into the `fit_resamples()` function and passing our cross-validation folds as the argument to it. 
+
+```{r}
+dt_cv_results <- dt_wf %>%
+  fit_resamples(train_folds)
+```
+
+Once we have run cross-validation we can collect (and summarize) our performance metrics using the `collect_metrics()` function.
+
+```{r}
+#Overall Cross-Validation Results (Summarized)
+dt_cv_results %>%
+  collect_metrics()
+
+#Results by Fold
+dt_cv_results %>%
+  collect_metrics(summarize = FALSE)
+```
+
+## Identify a Best Model(s)
+
+Generally, your best model will be the model that optimizes your cross-validation performance metric. That may be minimizing cross-validation error, or maximizing a type of accuracy metric.
+
+## Fit Best Model to Training Data
+
+The problem with the cross-validation we've done above is that it doesn't leave us with a fitted model. We'll need to go back and fit the model to our *training* data before we can use it. We can *fit* our model by piping it into the `fit()` function with our training data (`train`) as the argument. 
+
+If the best model we've built is contained in a workflow called `best_model_wf`, then we can fit that model as follows:
+
+```{r}
+best_model_fit <- best_model_wf %>%
+  fit(train)
+```
+
+## Verify Model Performance on Test Data
+
+We can use our model to make predictions on *new data* by piping our fitted model into the `augment()` function with the new data as the sole argument to `augment()`. The result of using the `augment()` function is a new column attached to the data set called `.pred`. Since the `test` set has a column for our response variable and now our model's predictions, we can compare those using a performance metric or set of performance metrics. With the `test` data, we do this like so:
+
+```{r}
+my_metrics <- metric_set(accuracy, precision, recall)
+
+best_model_fit %>%
+  augment(test)
+```
+
+## Making Predictions with a Fitted Model
+
+Once you have a fitted model, you can use it to make predictions about the responses associated with new observations. As long as the new data has the same features as the model was trained/fitted on, then we can use the `augment()` function to make those predictions.
+
+```{r}
+best_model_fit %>%
+  augment(new_data)
+```
+
+As a reminder, the use of the `augment()` function adds a new column to the `new_data` data frame, called `.pred` which contains the model's predictions.
+
+## Summary
+
+The detailed discussions above have broken up the `tidymodels` workflow and perhaps made it seem daunting. Here is a condensed version:
+
+```{r}
+#training and test sets
+set.seed(123)
+data_splits <- initial_split(my_data)
+train <- training(data_splits)
+test <- testing(data_splits)
+
+#build cross-validation folds
+set.seed(456)
+train_folds <- vfold_cv(train, v = 10)
+
+#Create a model specification
+dt_spec <- decision_tree(max_depth = 6) %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
+
+#Create a recipe
+dt_rec <- recipe(response ~ ., data = train) %>%
+  step_dummy(all_nominal_predictors()) #add recipe steps as needed
+
+#Create a workflow
+dt_wf <- workflow() %>%
+  add_model(dt_spec) %>%
+  add_recipe(dt_rec)
+
+#Run cross-validation to obtain cross-validation performance estimate
+dt_cv_results <- dt_wf %>%
+  fit_resamples(train_folds)
+
+#Collect cross-validation results
+dt_cv_results %>%
+  collect_metrics()
+
+#Fit model to training data
+dt_fit <- dt_wf %>%
+  fit(train)
+
+#Assess model on test data
+my_metrics <- metric_set(accuracy, precision, recall)
+dt_fit %>%
+  augment(test) %>%
+  my_metrics(response, .pred)
+
+#Use model to predict for new data
+dt_fit %>%
+  augment(new_data)
+```
+
+The steps in the code block above can be copied/pasted/adapted while you continue to build familiarity with the modeling process and also with the `tidymodels` framework. Generally, you'll build several model workflows and assess those models using cross-validation. That is, you'll work through the blocks of code to create a *specification*, a *recipe*, and a *workflow* multiple times for different models/recipes. You'll also *run cross-validation* and *collect performance metrics* for each of the model workflows you are constructing. From that point on, only the best model(s) are kept. 
