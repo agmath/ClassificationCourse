@@ -1,0 +1,146 @@
+---
+title: '`tidymodels` Framework Example Model Construction`'
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+  pdf_document: default
+---
+
+```{r global-options, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(tidyverse)
+library(tidymodels)
+library(kableExtra)
+```
+
+**Objectives:** This notebook shows an example of a model being assessed and constructed using the framework proposed in notebook `x_ModelingFrameworkAndTidymodelsReview`. We'll use the `penguins` data from the `palmerpenguins` packages and try to predict penguin `species` using the other variables available in the dataset.
+
+## The `penguins` data
+
+The `penguins` data set contains measurements on `r penguins %>% nrow()` penguins from the Palmer Research Station in Antarctica. Measurements are mostly physiological, with some demographic information including `sex`, `year` observed, and `island` of observation.
+
+```{r}
+penguins <- palmerpenguins::penguins %>%
+  filter(!is.na(species))
+
+penguins %>%
+  head(n = 2) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+In this notebook, we'll show how to assess, fit and use a model to classify observed penguin `species` given physiological attributes. To keep things simple, we'll use `body_mass_g`, `island`, `sex`, and `flipper_length_mm` as predictors.
+
+## Splitting Data and Creating Folds
+
+We'll start by splitting our data into *training* and *test* sets and create folds using our *training* data.
+
+```{r}
+set.seed(123)
+penguin_splits <- initial_split(penguins, prop = 0.75)
+train <- training(penguin_splits)
+test <- testing(penguin_splits)
+
+set.seed(456)
+train_folds <- vfold_cv(train, v = 3)
+```
+
+## Building Model Workflows
+
+We'll build workflows for a logistic regression model and a decision tree model.
+
+```{r}
+#knn workflow
+knn_spec <- nearest_neighbor() %>%
+  set_engine("kknn") %>%
+  set_mode("classification")
+
+knn_rec <- recipe(species ~ body_mass_g + island + sex + flipper_length_mm, data = train) %>%
+  step_impute_median(all_numeric_predictors()) %>%
+  step_unknown(all_nominal_predictors()) %>%
+  step_dummy(all_nominal_predictors())
+
+knn_wf <- workflow() %>%
+  add_model(knn_spec) %>%
+  add_recipe(knn_rec)
+
+#decision tree workflow
+dt_spec <- decision_tree() %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
+
+dt_rec <- recipe(species ~ body_mass_g + island + sex + flipper_length_mm, data = train) %>%
+  step_impute_median(all_numeric_predictors()) %>%
+  step_unknown(all_nominal_predictors()) %>%
+  step_dummy(all_nominal_predictors())
+
+dt_wf <- workflow() %>%
+  add_model(dt_spec) %>%
+  add_recipe(dt_rec)
+```
+
+## Evaluating Models Using Cross-Validation
+
+We'll now use cross-validation to evaluate our two workflows.
+
+```{r}
+knn_cv_results <- knn_wf %>%
+  fit_resamples(train_folds)
+
+dt_cv_results <- dt_wf %>%
+  fit_resamples(train_folds)
+
+knn_cv_results %>%
+  collect_metrics() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+
+dt_cv_results %>%
+  collect_metrics() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+It looks like the nearest neighbor model outperforms the decision tree using both *accuracy* and *ROC-AUC* as the performance metric. Let's fit the nearest neighbors model to the training data.
+
+## Fit, Assess, and Utilize Our Best Model
+
+We'll start by fitting our best model to our training data.
+
+```{r}
+knn_fit <- knn_wf %>%
+  fit(train)
+```
+
+Now that the model has been fitted, we'll use our model to make predictions on our `test` observations. The performance metrics should align with our cross-validation estimate (if not, then we'll have concerns which will prevent us from putting the model into production).
+
+```{r}
+knn_fit %>%
+  augment(test) %>%
+  accuracy(species, .pred_class)
+```
+
+The model was even more accurate than expected given the cross-validation results. Since it doesn't look like our model is overfit, let's use it to make a prediction on the `species` of a newly observed penguin.
+
+```{r}
+new_penguin <- tibble(
+  body_mass_g = 4750,
+  island = "Dream",
+  sex = "male",
+  flipper_length_mm = 38
+)
+
+new_penguin %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+
+knn_fit %>%
+  augment(new_penguin) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+## Summary
+
+There it is -- we've walked through a basic modeling process using the `tidymodels` framework. We'll discuss this in greater detail and introduce more advanced techniques throughout MAT434.
