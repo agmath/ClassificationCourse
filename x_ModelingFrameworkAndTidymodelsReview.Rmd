@@ -5,8 +5,11 @@ author:
 format: html
 ---
 
-```{r setup, warning = FALSE, message = FALSE}
+```{r knitOptionsChunk, include = FALSE}
 knitr::opts_chunk$set(eval = FALSE, echo = TRUE)
+```
+
+```{r setup, warning = FALSE, message = FALSE}
 library(tidyverse)
 library(tidymodels)
 ```
@@ -126,7 +129,8 @@ We can use our model to make predictions on *new data* by piping our fitted mode
 my_metrics <- metric_set(accuracy, precision, recall)
 
 best_model_fit %>%
-  augment(test)
+  augment(test) %>%
+  my_metrics(response_column, .pred)
 ```
 
 ## Making Predictions with a Fitted Model
