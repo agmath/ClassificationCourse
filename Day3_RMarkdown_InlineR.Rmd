@@ -1,0 +1,152 @@
+---
+title: "R Markdown and Inline R"
+author: "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+## Objectives
+
+This notebook will remind you how to use and navigate R Markdown documents. In particular it will cover
+
+-   the basic structure of an R Markdown document.
+-   the *Visual* editor versus the *Source* editor.
+-   code chunks versus *markdown* "cells".
+-   formatting text and creating lists within code cells.
+-   using inline R code to semi-automate reporting.
+
+**Note:** Returning students who are familiar with R Markdown may want to skip immediately to the section on [inline R code](#inline-r). New students may want to focus on the first three sections and may or may not get to the section on inline R.
+
+**Goal and Clarification:** After leaving this notebook, you should be comfortable working in R Markdown notebooks and switching between code and text fluently. The use of inline R is not required in our course, though it can reduce some tedious components of your document-writing workload.
+
+## Basic Structure of an R Markdown Document
+
+In simplest terms, any R Markdown document contains three major components.
+
+-   A *Yet Another Markdown Language* (YAML) header
+-   Code chunks with grey background
+-   Text "cells" with white background
+
+#### YAML Header
+
+The YAML header contains important components such as your document's `title`, the `author`s and also instructions for how your document should be processed upon *knitting*. As a reminder, *knitting* is the process of turning the `*.Rmd` file into a shareable document. I like to use HTML outputs but PDF, Word, Powerpoint, and other output options also exist.
+
+The YAML header appears at the top of any R Markdown document between sets of three hyphens (`---`). You can see an example of such a header below:
+
+```{r, echo = TRUE, eval = FALSE}
+---
+title: 'R Markdown and Inline R'
+author: 
+  - "Dr. Gilbert"
+  - "Dr. Duryea"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: cerulean
+---
+```
+
+The `title:`, `author:`, and `date:` components are provided in quotes (single or double-quotes both work). In the line for the `date:` we are telling `r` to collect today's date from the computer (*Sys*tem) and to format it using the full month name followed by the day and then a comma followed by the four-digit year. You could also choose to simply type any date you like -- perhaps `"June 7, 2023"`, which is the date that I am writing this notebook.
+
+The `output:` section controls how the document will be processed when the *knit* button is pushed. For this notebook we'll be generating an `html_document` and we're planning to use the *cerulean* `theme:`, which just gives the headers a steel blue color. You can [see some other available themes here](https://www.datadreaming.org/post/r-markdown-theme-gallery/).
+
+For the most part you should be able to copy/paste your YAML headers from one document to the next, just changing the document title and perhaps author(s). In fact, I used to start a new R Markdown notebook by opening an old notebook, navigating to `File -> Save As...` to save the new notebook, and then removing what I don't want before creating the new document. I did this for a very long time.
+
+#### Code Chunks
+
+As mentioned in the bulleted list, code chunks are accompanied by a grey background. They are where you can write and execute the code associated with your analysis. We'll specifically be using R, but you can use several other languages in these notebooks including Python and SQL. It is even possible to pass objects back and forth between languages within the same notebook -- this is great if you like Python for some things and R for others or if you have collaborators who prefer to work in different languages.
+
+We'll cover more on code chunks later in this notebook. For now, we'll just highlight that code chunks begin and end with three back-ticks. The set of back ticks at the beginning of a code cell will also have curly braces with options for the code cell -- at a minimum, we'll provide the language being used in all lowercase letters. For example, below creates a default R code chunk in an R Markdown document.
+
+ADD VERBATIM CELL HERE...
+
+#### Text "Cells"
+
+Everything else in an R Markdown document is text. As mentioned in the bulleted list, if you are typing over a white background, then you are typing freeform text. More will be discussed on text later in this notebook.
+
+## Visual Editor versus Source Editor
+
+If you are just getting used to working in R and R Markdown, you might prefer using the Visual editor since it provides an interface more like MS Word. That is, it makes formatting buttons available to you so that you don't need to remember the markdown syntax for different font styles, hyperlinks, or lists. You can work from either the Source or Visual editors -- the choice is yours. You can toggle back and forth from the top-left corner of the pane where you are typing your R Markdown document. I think it is worth eventually getting used to the *source* editor since you'll be much faster working from there than you will from the visual editor.
+
+## Code Chunks
+
+As mentioned earlier, code chunks are where you can write and execude R code (and code in other languages too, if you like). Code chunks appear with a grey background in an R Markdown notebook. There are several ways you can create a code cell.
+
+-   You can manually create a code cell by typing in the opening and closing sets of triple backticks. Don't forget to declare the language in the curly braces immediately next to the opening triple backtick.
+-   You can click the green "+C" icon at the top of the markdown editing pane and select the language you want the code cell to recognize.
+-   If you are in the visual editor, you can type a forward slash (/) and choose the type of code chunk you want from the dropdown list that appears.
+
+**Note:** All code written in a code cell must run without error or the code will prevent your document from being knitted.
+
+#### Options for Code Chunks
+
+It is possible to declare options for code chunks. You've seen me doing this often if you've looked at any of my R Markdown documents for classes. All options appear inside the curly braces after the language declared for the chunk and are separated by commas. Some common options appear below.
+
+-   `echo = TRUE` says to print out the code cell to the notebook. That is, your notebook will contain the code. Note that `TRUE` is the default for this setting -- it is common that you'll want to set `echo = FALSE` in your final drafts of notebooks. Displaying the code to produce the analysis can be distracting to the person reading your notebook.
+-   `eval = TRUE` says that the code in the code cell should be evaluated. Note that `TRUE` is the default for this, but setting `eval = FALSE` can help you with troubleshooting broken code or to preven cells that take a long time to run from running during the knitting process. Just beware, if a code cell is not evaluated, then no later code can use results from the code cell, otherwise errors will be thrown.
+-   `message = FALSE` and/or `warning = FALSE` can be used to prevent messages and warnings from being knitted into your notebook. I find these particularly useful when working with `ggplot()`.
+-   `fig.cap = "description of figure"` can be used to caption any figures that result from the execution of the code cell.
+
+Your markdown notebook can contain as many code chunks as you like. Typically notebooks contain a mixture of code chunks and text "cells" following the YAML header at the top of the notebook.
+
+## Text "Cells"
+
+The remainder of your notebook will consist of text "cells" where you can type freely. If you are using the visual *editor*, you can use the formatting buttons to change the font style (italics, bold, etc.), create bulleted or numbered lists, insert images, etc. If you are using the *source* editor, then the following tips will be helpful.
+
+-   Create a new paragraph by including an empty line in your markdown source file.
+-   Format text in *italics* by surrounding the text by a single asterisk on each side.
+-   Format text in **bold** by surrounding the text by a double asterisk on each side.
+-   Create bulleted list items by beginning each line with a `+` sign. You'll need an empty line in your R Markdown document before beginning the list.
+-   You can create nested lists by indenting with the `tab` key. You'll need an empty line in your markdown document before the new, indented level though.
+-   Numbered lists are created in the same way as bulleted lists -- you just begin each line with `1.` instead of with `+`. You can manually increment you numbers or R will automatically incremement them if you begin every line with `1.`.
+-   Titles, Section Headings, Subsection Headings, etc. can be created by setting them on their own line and beginning that line with one or more hashtags (\#). The more hashtags you use, the smaller the heading.
+-   Hyperlinks are created by surrounding the text you want the hyperlink attached to with square brackets and immediately following those with round parentheses having the URL inside of them. For example `[course webpage](https://agmath.github.io/ClassificationCourse.html)` would create a hyperlink to our course webpage and the blue link text would be *course webpage*.
+
+## Inline R Code {#inline-r}
+
+You can really supercharge your productivity and explanation power by using inline R code. You can use inline-R by typing a backtick followed by a lowercase `r` and then the R code that you want to run, closing the R code with another backtick. For example, typing `` `r data %>% nrow()` `` would calculate the number of rows in the data frame stored in the object called `data`. If you're not convinced that this is useful, consider the following sentence which might appear in a document you are preparing.
+
+> *This report was prepared using all available web traffic data over the past week. Over that time period we had 348 unique visitors to our site.*
+
+If this is a weekly report, then every week you would need to replace the 348 with the correct number of visitors for the new time period. Assuming that the data we are using comes from a data frame called `site_traffic`, we could write the following into our report to avoid the need for manual updating.
+
+> *This report was prepared using all available web traffic data over the past week. Over that time period we had `` ` r site_traffic %>% nrow()` `` unique visitors to our site.*
+
+Now think about how you could use similar techniques to automatically fill in or update sections of reports by using inline R code. Making use of inline R has the potential to really boost your efficiency!
+
+#### Lists and Inline R
+
+Inline R is great, but writing lengthy commands inline is unweildy, difficult to troubleshoot, and difficult to read. For example, the following example sentence includes inline code required to extract a model coefficient from a fitted model.
+
+> The fitted coefficient on `flipper_length` in our model is `` ` r model_fit %>% extract_fit_engine() %>% tidy() %>% filter(term == "flipper_length") %>% pull(estimate)` `` .
+
+It can be useful to pre-compute these values and store them into a named list so that they can be more easily used inline. All this just means, putting more complex code into a code chunk to build a list because extracting list elements inline is very quick to do. For example, we could use a code cell like the one below to obtain all of the coefficients for a model into a named vector called `coef_list`.
+
+```{r echo = TRUE, eval = FALSE}
+coef_list <- c(
+  lr_summary %>% pull(estimate)
+)
+
+names(coef_list) <- lr_summary %>% pull(term)
+
+coef_list
+```
+
+This would now allow us to rewrite the sentence with inline R code from above as follows.
+
+> The fitted coefficient on `flipper_length` in our model is `` ` r coef_list["flipper_length"]` ``.
+
+***
+
+## Next Steps
+
+Try what you've learned by working with our Kaggle InClass competition data on property price ranges in an R Markdown notebook. If you already worked with the competition data back on Day 2, you should revisit that notebook and identify opportunities to utilize inline R code, otherwise you should start a new R Markdown notebook. Be sure to keep your notebook in the directory corresponding to your GitHub repository that is being managed by RStudio -- don't forget to `Pull -> Commit -> Push` your changes to your GitHub repository when you are done.
+
+See Slack for a link to the Kaggle Competition site, where our data lives.
