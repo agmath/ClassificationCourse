@@ -106,6 +106,35 @@ ul.task-list li input[type="checkbox"] {
 <li>Check that your <em>top-right</em> pane in RStudio now has a <code>Git</code> tab. This will track your changed files and allow you to sync the changes you’ve made to your local files with your remote GitHub repository (<em>origin</em>).</li>
 </ul>
 </section>
+<section id="adding-a-file-to-your-repository" class="level2">
+<h2 class="anchored" data-anchor-id="adding-a-file-to-your-repository">Adding a File to your Repository</h2>
+<p>Any changes you make within the directory corresponding to the R project you just created will be tracked in the <code>Git</code> tab. You’ll see a list of changed files here that need to be synced to your remote repository on GitHub. Right now that tab is empty though. Let’s change that.</p>
+<ul>
+<li><p>Navigate to our <a href="https://agmath.github.io/ClassificationCourse.html">course webpage</a> and download the <code>*.Rmd</code> file for either <em>new</em> students or <em>returning</em> students.</p>
+<ul>
+<li>The difference between the two documents is the amount of guidance I am providing. If you remember the basics about piping chains of commands together in R, then use the <em>returning</em> student version. Otherwise, choose the <em>new</em> student version.</li>
+</ul></li>
+<li><p>Open the <code>*.Rmd</code> document in RStudio and use <code>File -&gt; Save As</code> to save the file in the directory corresponding to your R Project associated with the GitHub repository you made earlier.</p>
+<ul>
+<li>Note that the file has shown up in that <code>Git</code> tab!</li>
+</ul></li>
+<li><p>Use the following sequence of button pushes in that top-right pane:</p>
+<ul>
+<li><p><code>Pull</code> in changes from the remote repository to your local repository using the blue, downward-pointing arrow icon.</p></li>
+<li><p>Click the checkbox(es) under the staged column next to the file(s) you’ve changed.</p>
+<ul>
+<li>New files that aren’t present in your remote repository will be accompanied by yellow question mark icons, files with changes have blue icons.</li>
+</ul></li>
+<li><p>Click the <code>Commit</code> button, add a <em>commit message</em> describing the updates you are making to the textbox, and then click the <code>Commit</code> button.</p></li>
+<li><p>Finally, <code>Push</code> your changes out to the remote repository by using the green, upward-pointing arrow icon.</p></li>
+</ul></li>
+</ul>
+<p>Navigate back to your GitHub repository on the web and check that your files are there. This is how you will ensure that the version of your repository on your local machine is the same as the version present on GitHub. The <code>Pull</code> -&gt; <code>Commit</code> -&gt; <code>Push</code> pattern is an important workflow to follow as it will minimize the impact of collisions (conflicting changes) once you start working with other collaborators.</p>
+</section>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>
+<p>Now that you’re using RStudio to manage your GitHub repository, work through the version of the <em>Tidy Analysis</em> notebook that you’ve selected and sync your changes to GitHub using the <code>Pull -&gt; Commit -&gt; Push</code> workflow. Don’t forget to knit/render your notebook so that you are syncing both the <code>*.Rmd</code> file and the resulting <code>*.html</code> file to GitHub.</p>
+</section>
 
 </main>
 <!-- /main column -->
