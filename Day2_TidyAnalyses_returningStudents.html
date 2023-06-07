@@ -12,7 +12,7 @@
 <meta name="author" content="Dr. Gilbert" />
 
 
-<title>R Projects and Version Control</title>
+<title>Tidy Analyses in R for Returning Students</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -326,168 +326,107 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">R Projects and Version Control</h1>
+<h1 class="title toc-ignore">Tidy Analyses in R for Returning
+Students</h1>
 <h4 class="author">Dr. Gilbert</h4>
 
 </div>
 
 
-<p><strong>Objectives:</strong> The objectives of this notebook are
-to:</p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<p>This notebook will help you remind yourself of the following
+items.</p>
 <ul>
-<li>Show you how to create a GitHub Repository.</li>
-<li>Use RStudio to create a clone of your GitHub repository on your
-local machine via an R Project, and use that R Project to manage your
-GitHub repository.</li>
-</ul>
-<div id="why-use-version-control" class="section level2">
-<h2>Why Use Version Control?</h2>
-<p>Now that you’ve created a GitHub account, you can use GitHub to house
-repositories for projects that you’re working on. For example, I have a
-GitHub repository for most of the courses I teach. Those repositories
-house many of my course notes, old exams, projects, and more.
-Importantly, those repositories also track the evolution of these course
-materials. This means that if I try something new and don’t like how it
-turned out when I implemented it, I can simply revert the status of the
-repository back to its state prior to making those changes. This is a
-powerful upgrade from explicitly saving lots of different versions of
-files. Firstly, it is a much more organized approach and, secondly, it
-is safer and more reliable.</p>
-</div>
-<div id="creating-a-github-repository" class="section level2">
-<h2>Creating a GitHub Repository</h2>
-<p>Creating a GitHub can be done in many ways. We’ll use the simplest
-method.</p>
-<ul>
-<li>Navigate to <a href="https://github.com/">GitHub</a> and log in
-using the username and password that you originally selected.</li>
-<li>Once you’ve logged in, you should see a green button with the word
-<code>New</code> on it. Click it to create a new repository (or
-<em>repo</em> if you want to be up on your git-<em>slang</em>).</li>
-<li>Give your repository a name – something like <code>MAT434</code>
-should do. Choose something that will let you know that this is a GitHub
-repository associated with our course.</li>
-<li>(Optional) Add a description if you would like.</li>
-<li>Decide whether you want your repository to be <code>public</code>
-(anyone with the link can see the repository) or <code>private</code>
-(only people you explicitly invite can see the repository).</li>
-<li>You can click the checkbox to initialize the repository with a
-<code>README</code> if you’d like. A <code>README</code> file shows in
-the repository by default and is a place where you can describe, in
-detail, the contents and the state of the repository.</li>
-<li>Set the <code>.gitignore</code> template to <code>R</code>. This
-will prevent GitHub from syncing files specific to your local R
-workspace (such as your R code history and any API keys – passwords –
-that you may have provided during your R session).</li>
-<li>You can choose a license for your project if you’ve like. I usually
-choose the MIT license which is really permissive. It allows people to
-use my files and edite their own copies of my files. <a href="https://gist.github.com/nicolasdao/a7adda51f2f185e8d2700e1573d8a633">This
-document</a> provides a reasonable description of a few license
-types.</li>
-<li>Click the green button to <code>Create repository</code>.</li>
+<li>How do I install and load packages in R? In particular we’ll work
+with the <code>tidyverse</code>.</li>
+<li>How do I read data into R?</li>
+<li>How do I interact with, and manipulate, data using the tools and
+principles of the <code>tidyverse</code>?</li>
 </ul>
 </div>
-<div id="using-an-r-project-to-manage-a-github-repository" class="section level2">
-<h2>Using an R Project to Manage a GitHub Repository</h2>
-<p>Since you have RStudio configured to work with GitHub, you can now
-use RStudio to clone a copy of your repository to your local machine and
-to use RStudio to manage that GitHub repository.</p>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<p>Use <code>File -&gt; New File -&gt; R Markdown...</code> to create a
+new R Markdown notebook. Clear out the boilerplate and use the
+<code>setup</code> chunk to load the <code>tidyverse</code> and
+<code>tidymodels</code> libraries. You may also want to load
+<code>kableExtra</code> for printing out nicely formatted tables in your
+knitted notebook.</p>
+<p>Navigate to this semester’s InClass Kaggle Competition on home
+valuation. See Slack for the link. Download the data and use
+<code>read_csv()</code> to read the <code>data.csv</code> file into R
+using the <code>setup</code> chunk.</p>
+<p>Create a new code chunk and use it to print out the
+<code>head()</code> of the dataset and provide a description of the
+overall context of the data.</p>
+</div>
+<div id="some-initial-tasks" class="section level2">
+<h2>Some Initial Tasks</h2>
+<p>Answer the following questions about the data.</p>
+<ol style="list-style-type: decimal">
+<li>How many <em>records</em>/<em>observations</em> are there in the
+data set?</li>
+<li>How many <em>variables</em> are in the data set? What are their
+types?</li>
+<li>How many homes from each price range are there in the data set? Can
+you also obtain proportions for each price range since this may be
+easier to interpret than raw counts? How would you describe the
+distribution of the price range variable?</li>
+</ol>
 <ul>
-<li>From your GitHub repository, click the green <code>Code</code>
-button and copy the <code>https</code> location of the repository.</li>
-<li>Open RStudio on your computer.</li>
-<li>Go to <code>File -&gt; New Project</code>.</li>
-<li>Click on <code>Version Control</code> and then on
-<code>git</code>.</li>
-<li>Paste the repository URL into the first line of the dialog box.</li>
-<li>Change the name of the project if you don’t like the default
-name.</li>
-<li>Change the location where you want the clone of your repository to
-live on your computer. I have a GitHub directory inside of my Documents
-folder. All my local repositories live here.</li>
-<li>Click to <code>Create project</code>.</li>
-<li>Check that your <em>top-right</em> pane in RStudio now has a
-<code>Git</code> tab. This will track your changed files and allow you
-to sync the changes you’ve made to your local files with your remote
-GitHub repository (<em>origin</em>).</li>
+<li>Why might we want to know the distribution of this variable before
+we split into <em>training</em> and <em>test</em> sets?</li>
+</ul>
+<ol start="4" style="list-style-type: decimal">
+<li>Are there any missing values in the data set? If so, where are
+they?</li>
+</ol>
+<ul>
+<li>Why might we want to know this before splitting into
+<em>training</em> and <em>test</em> sets?</li>
+<li>What are some techniques for dealing with missing values? What are
+the concerns associated with each?</li>
 </ul>
 </div>
-<div id="adding-a-file-to-your-repository" class="section level2">
-<h2>Adding a File to your Repository</h2>
-<p>Any changes you make within the directory corresponding to the R
-project you just created will be tracked in the <code>Git</code> tab.
-You’ll see a list of changed files here that need to be synced to your
-remote repository on GitHub. Right now that tab is empty though. Let’s
-change that.</p>
+<div id="some-exploratory-questions" class="section level2">
+<h2>Some Exploratory Questions</h2>
+<p>Use <code>initial_split()</code> and its helper functions to split
+your data into <em>training</em> and <em>test</em> sets. Don’t forget to
+set a seed for reproducibility. Answer the following questions.</p>
+<ol style="list-style-type: decimal">
+<li>What is the distribution of the price range variable in your
+<em>training</em> set? Does this match your expectations given what you
+observed when considering the entire data set?</li>
+<li>Compute the distributions for the other categorical variables in the
+<em>training</em> set. Describe them and discuss any challenges you
+might expect coming from these distributions.</li>
+<li>What is the average lot size for a property in your
+<em>training</em> set? Is this a good measure of the <em>typical</em>
+lot size for a property in your <em>training</em> data? How do you
+know?</li>
+</ol>
 <ul>
-<li><p>Click on <code>File -&gt; New File -&gt; R Markdown...</code>,
-add a <code>title</code>, include your name as the <code>author</code>,
-check the checkbox to <em>use current date when rendering</em>, and
-leave the default output set as HTML. Click <code>Okay</code> to create
-the document.</p></li>
-<li><p>Click <code>File -&gt; Save As...</code> and save the R markdown
-file in the directory corresponding to your R Project and GitHub
-repository. That should be the location that opens by default when you
-click on <code>Save As...</code></p>
-<ul>
-<li>Note that the file has shown up in that <code>Git</code> tab!</li>
-</ul></li>
-<li><p>Use the following sequence of button pushes in that top-right
-pane:</p>
-<ul>
-<li><p><code>Pull</code> in changes from the remote repository to your
-local repository using the blue, downward-pointing arrow icon.</p></li>
-<li><p>Click the checkbox(es) under the staged column next to the
-file(s) you’ve changed.</p>
-<ul>
-<li>New files that aren’t present in your remote repository will be
-accompanied by yellow question mark icons, files with changes have blue
-icons.</li>
-</ul></li>
-<li><p>Click the <code>Commit</code> button, add a <em>commit
-message</em> describing the updates you are making to the textbox, and
-then click the <code>Commit</code> button.</p></li>
-<li><p>Finally, <code>Push</code> your changes out to the remote
-repository by using the green, upward-pointing arrow icon.</p></li>
-</ul></li>
-<li><p>Navigate back to your GitHub repository on the web and check that
-your files are there. This is how you will ensure that the version of
-your repository on your local machine is the same as the version present
-on GitHub. The <code>Pull</code> -&gt; <code>Commit</code> -&gt;
-<code>Push</code> pattern is an important workflow to follow as it will
-minimize the impact of collisions (conflicting changes) once you start
-working with other collaborators.</p></li>
+<li>What challenges might you associate with working with this
+variable?</li>
 </ul>
-<hr />
+<ol start="4" style="list-style-type: decimal">
+<li><p>Compute summary statistics for the other <em>numerical</em>
+predictors available to you. Provide similar discussions for those
+variables.</p></li>
+<li><p>All the questions I’ve prompted you with above are
+single-variable questions. Identify some multi-variable questions that
+you think are interesting and will be insightful. Provide a discussion
+about each question and why it is relevant to the overall goal of
+classifying property price range. Conduct the analysis necessary to
+answer the question and discuss the insight(s) you’ve gained.</p></li>
+</ol>
 </div>
-<div id="next-steps" class="section level2">
-<h2>Next Steps</h2>
-<p>Now that you’re using RStudio to manage your GitHub repository, let’s
-make this notebook into something meaningful.</p>
-<ul>
-<li><p>Navigate to our <a href="https://agmath.github.io/ClassificationCourse.html">course
-webpage</a> and open the Tidy Analyses in R notebook for either
-<em>new</em> students or <em>returning</em> students.</p>
-<ul>
-<li>The difference between the two documents is in the data set being
-utilized and in the amount of guidance I am providing. If you remember
-the basics about piping chains of commands together in R, then use the
-<em>returning</em> student version. Otherwise, choose the <em>new</em>
-student version.</li>
-</ul></li>
-<li><p>Use your notebook to either follow the walkthrough (<em>new</em>
-students) or complete the tasks (<em>returning</em> students). Be sure
-to add discussion to your notebooks. Mixing text and code is a real
-strength of markdown notebooks.</p></li>
-</ul>
-<p>When you are done, <em>knit</em> your document and then sync your
-changes to GitHub using the <code>Pull -&gt; Commit -&gt; Push</code>
-workflow.</p>
-<ul>
-<li><strong>Note:</strong> <em>Knitting</em> your document takes the
-markdown and code that you’ve been writing here and compiles it into a
-shareable HTML file.</li>
-</ul>
+<div id="pushing-your-changes-to-github" class="section level2">
+<h2>Pushing Your Changes to GitHub</h2>
+<p>Once you are done, use the <code>Pull -&gt; Commit -&gt; Push</code>
+workflow from the <code>Git</code> tab of your top-right pane in RStudio
+to send your updated file to your remote repository.</p>
 </div>
 
 

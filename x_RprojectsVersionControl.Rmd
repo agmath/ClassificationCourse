@@ -1,8 +1,10 @@
 ---
 title: "R Projects and Version Control"
-author: 
-  - "Dr. Gilbert"
-format: html
+author: "Dr. Gilbert"
+output: 
+  html_document:
+    theme: cerulean
+    highlight: pygments
 ---
 
 **Objectives:** The objectives of this notebook are to:
@@ -46,14 +48,12 @@ Since you have RStudio configured to work with GitHub, you can now use RStudio t
 
 Any changes you make within the directory corresponding to the R project you just created will be tracked in the `Git` tab. You'll see a list of changed files here that need to be synced to your remote repository on GitHub. Right now that tab is empty though. Let's change that. 
 
-+ Navigate to our [course webpage](https://agmath.github.io/ClassificationCourse.html) and download the `*.Rmd` file for either *new* students or *returning* students. 
++ Click on `File -> New File -> R Markdown...`, add a `title`, include your name as the `author`, check the checkbox to *use current date when rendering*, and leave the default output set as HTML. Click `Okay` to create the document.
 
-  + The difference between the two documents is the amount of guidance I am providing. If you remember the basics about piping chains of commands together in R, then use the *returning* student version. Otherwise, choose the *new* student version.
-  
-+ Open the `*.Rmd` document in RStudio and use `File -> Save As` to save the file in the directory corresponding to your R Project associated with the GitHub repository you made earlier.
++ Click `File -> Save As...` and save the R markdown file in the directory corresponding to your R Project and GitHub repository. That should be the location that opens by default when you click on `Save As...`
 
   + Note that the file has shown up in that `Git` tab!
-
+  
 + Use the following sequence of button pushes in that top-right pane:
 
   + `Pull` in changes from the remote repository to your local repository using the blue, downward-pointing arrow icon.
@@ -64,8 +64,20 @@ Any changes you make within the directory corresponding to the R project you jus
   + Click the `Commit` button, add a *commit message* describing the updates you are making to the textbox, and then click the `Commit` button.
   + Finally, `Push` your changes out to the remote repository by using the green, upward-pointing arrow icon.
   
-Navigate back to your GitHub repository on the web and check that your files are there. This is how you will ensure that the version of your repository on your local machine is the same as the version present on GitHub. The `Pull` -> `Commit` -> `Push` pattern is an important workflow to follow as it will minimize the impact of collisions (conflicting changes) once you start working with other collaborators.
++ Navigate back to your GitHub repository on the web and check that your files are there. This is how you will ensure that the version of your repository on your local machine is the same as the version present on GitHub. The `Pull` -> `Commit` -> `Push` pattern is an important workflow to follow as it will minimize the impact of collisions (conflicting changes) once you start working with other collaborators.
+
+***
 
 ## Next Steps
 
-Now that you're using RStudio to manage your GitHub repository, work through the version of the *Tidy Analysis* notebook that you've selected and sync your changes to GitHub using the `Pull -> Commit -> Push` workflow. Don't forget to knit/render your notebook so that you are syncing both the `*.Rmd` file and the resulting `*.html` file to GitHub.
+Now that you're using RStudio to manage your GitHub repository, let's make this notebook into something meaningful.
+
++ Navigate to our [course webpage](https://agmath.github.io/ClassificationCourse.html) and open the Tidy Analyses in R notebook for either *new* students or *returning* students. 
+
+  + The difference between the two documents is in the data set being utilized and in the amount of guidance I am providing. If you remember the basics about piping chains of commands together in R, then use the *returning* student version. Otherwise, choose the *new* student version.
+  
++ Use your notebook to either follow the walkthrough (*new* students) or complete the tasks (*returning* students). Be sure to add discussion to your notebooks. Mixing text and code is a real strength of markdown notebooks.
+
+When you are done, *knit* your document and then sync your changes to GitHub using the `Pull -> Commit -> Push` workflow.
+
+  + **Note:** *Knitting* your document takes the markdown and code that you've been writing here and compiles it into a shareable HTML file.
