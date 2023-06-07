@@ -15,7 +15,7 @@ Setup instructions for Windows and macOS follow.
 
 ## Software
 
-While many of you already have R and RStudio installed, this document will cover installing that software as well as setting up a free GitHub account, installing `git`, and configuring RStudio to manage *projects* connected to GitHub repositories.
+While many of you already have R and RStudio installed, this document will cover installing that software as well as setting up a free GitHub account, installing `git`, and configuring RStudio to manage *projects* connected to GitHub repositories. You'll probably want to update your version of R anyway.
 
 ### Technical Computing with R
 
@@ -27,7 +27,7 @@ The primary language we'll use to interact with data in our course is called R. 
     -   Navigate to [CRAN, the Comprehensive R Archive Network](https://cran.r-project.org/){target="_blank"}.
     -   Click on the *Download R for Windows* link.
     -   Click the link to *install R for the first time*.
-    -   Click the link in the grey rectangle to download the most recent version of R. As of current writing, this is *R-4.2.0 for Windows*.
+    -   Click the link in the grey rectangle to download the most recent version of R. At the time I'm writing this document, that version is *R-4.3.0 for Windows*.
     -   Once the download has completed, open the setup file and complete the installation by accepting all of the default settings.
 
 **macOS:**
@@ -36,6 +36,7 @@ The primary language we'll use to interact with data in our course is called R. 
     -   Navigate to [CRAN, the Comprehensive R Archive Network](https://cran.r-project.org/){target="_blank"}.
     -   Click on the *Download R for macOS* link.
     -   Look for the *Latest release* heading and download/install the most recent version of R. At the time of writing this is *R-4.2.0.pkg*.
+    -   The version you download and install will depend on whether you have an *Intel* or *ARM* processor. If you accidentally download the wrong version, the installer will just prompt you to download and install the correct version.
 
 **Linux:**
 

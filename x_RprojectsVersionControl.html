@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.475">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dr.&nbsp;Gilbert">
+
+<title>R Projects and Version Control</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="x_RprojectsVersionControl_files/libs/clipboard/clipboard.min.js"></script>
+<script src="x_RprojectsVersionControl_files/libs/quarto-html/quarto.js"></script>
+<script src="x_RprojectsVersionControl_files/libs/quarto-html/popper.min.js"></script>
+<script src="x_RprojectsVersionControl_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="x_RprojectsVersionControl_files/libs/quarto-html/anchor.min.js"></script>
+<link href="x_RprojectsVersionControl_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="x_RprojectsVersionControl_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="x_RprojectsVersionControl_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="x_RprojectsVersionControl_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="x_RprojectsVersionControl_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">R Projects and Version Control</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dr.&nbsp;Gilbert </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p><strong>Objectives:</strong> The objectives of this notebook are to:</p>
+<ul>
+<li>Show you how to create a GitHub Repository.</li>
+<li>Use RStudio to create a clone of your GitHub repository on your local machine via an R Project, and use that R Project to manage your GitHub repository.</li>
+</ul>
+<section id="why-use-version-control" class="level2">
+<h2 class="anchored" data-anchor-id="why-use-version-control">Why Use Version Control?</h2>
+<p>Now that you’ve created a GitHub account, you can use GitHub to house repositories for projects that you’re working on. For example, I have a GitHub repository for most of the courses I teach. Those repositories house many of my course notes, old exams, projects, and more. Importantly, those repositories also track the evolution of these course materials. This means that if I try something new and don’t like how it turned out when I implemented it, I can simply revert the status of the repository back to its state prior to making those changes. This is a powerful upgrade from explicitly saving lots of different versions of files. Firstly, it is a much more organized approach and, secondly, it is safer and more reliable.</p>
+</section>
+<section id="creating-a-github-repository" class="level2">
+<h2 class="anchored" data-anchor-id="creating-a-github-repository">Creating a GitHub Repository</h2>
+<p>Creating a GitHub can be done in many ways. We’ll use the simplest method.</p>
+<ul>
+<li>Navigate to <a href="https://github.com/">GitHub</a> and log in using the username and password that you originally selected.</li>
+<li>Once you’ve logged in, you should see a green button with the word <code>New</code> on it. Click it to create a new repository (or <em>repo</em> if you want to be up on your git-<em>slang</em>).</li>
+<li>Give your repository a name – something like <code>MAT434</code> should do. Choose something that will let you know that this is a GitHub repository associated with our course.</li>
+<li>(Optional) Add a description if you would like.</li>
+<li>Decide whether you want your repository to be <code>public</code> (anyone with the link can see the repository) or <code>private</code> (only people you explicitly invite can see the repository).</li>
+<li>You can click the checkbox to initialize the repository with a <code>README</code> if you’d like. A <code>README</code> file shows in the repository by default and is a place where you can describe, in detail, the contents and the state of the repository.</li>
+<li>Set the <code>.gitignore</code> template to <code>R</code>. This will prevent GitHub from syncing files specific to your local R workspace (such as your R code history and any API keys – passwords – that you may have provided during your R session).</li>
+<li>You can choose a license for your project if you’ve like. I usually choose the MIT license which is really permissive. It allows people to use my files and edite their own copies of my files. <a href="https://gist.github.com/nicolasdao/a7adda51f2f185e8d2700e1573d8a633">This document</a> provides a reasonable description of a few license types.</li>
+<li>Click the green button to <code>Create repository</code>.</li>
+</ul>
+</section>
+<section id="using-an-r-project-to-manage-a-github-repository" class="level2">
+<h2 class="anchored" data-anchor-id="using-an-r-project-to-manage-a-github-repository">Using an R Project to Manage a GitHub Repository</h2>
+<p>Since you have RStudio configured to work with GitHub, you can now use RStudio to clone a copy of your repository to your local machine and to use RStudio to manage that GitHub repository.</p>
+<ul>
+<li>From your GitHub repository, click the green <code>Code</code> button and copy the <code>https</code> location of the repository.</li>
+<li>Open RStudio on your computer.</li>
+<li>Go to <code>File -&gt; New Project</code>.</li>
+<li>Click on <code>Version Control</code> and then on <code>git</code>.</li>
+<li>Paste the repository URL into the first line of the dialog box.</li>
+<li>Change the name of the project if you don’t like the default name.</li>
+<li>Change the location where you want the clone of your repository to live on your computer. I have a GitHub directory inside of my Documents folder. All my local repositories live here.</li>
+<li>Click to <code>Create project</code>.</li>
+<li>Check that your <em>top-right</em> pane in RStudio now has a <code>Git</code> tab. This will track your changed files and allow you to sync the changes you’ve made to your local files with your remote GitHub repository (<em>origin</em>).</li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

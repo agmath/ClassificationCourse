@@ -1,0 +1,43 @@
+---
+title: "R Projects and Version Control"
+author: 
+  - "Dr. Gilbert"
+format: html
+---
+
+**Objectives:** The objectives of this notebook are to:
+
++ Show you how to create a GitHub Repository.
++ Use RStudio to create a clone of your GitHub repository on your local machine via an R Project, and use that R Project to manage your GitHub repository.
+
+## Why Use Version Control?
+
+Now that you've created a GitHub account, you can use GitHub to house repositories for projects that you're working on. For example, I have a GitHub repository for most of the courses I teach. Those repositories house many of my course notes, old exams, projects, and more. Importantly, those repositories also track the evolution of these course materials. This means that if I try something new and don't like how it turned out when I implemented it, I can simply revert the status of the repository back to its state prior to making those changes. This is a powerful upgrade from explicitly saving lots of different versions of files. Firstly, it is a much more organized approach and, secondly, it is safer and more reliable.
+
+## Creating a GitHub Repository
+
+Creating a GitHub can be done in many ways. We'll use the simplest method.
+
++ Navigate to [GitHub](https://github.com/) and log in using the username and password that you originally selected.
++ Once you've logged in, you should see a green button with the word `New` on it. Click it to create a new repository (or *repo* if you want to be up on your git-*slang*).
++ Give your repository a name -- something like `MAT434` should do. Choose something that will let you know that this is a GitHub repository associated with our course.
++ (Optional) Add a description if you would like.
++ Decide whether you want your repository to be `public` (anyone with the link can see the repository) or `private` (only people you explicitly invite can see the repository).
++ You can click the checkbox to initialize the repository with a `README` if you'd like. A `README` file shows in the repository by default and is a place where you can describe, in detail, the contents and the state of the repository.
++ Set the `.gitignore` template to `R`. This will prevent GitHub from syncing files specific to your local R workspace (such as your R code history and any API keys -- passwords -- that you may have provided during your R session).
++ You can choose a license for your project if you've like. I usually choose the MIT license which is really permissive. It allows people to use my files and edite their own copies of my files. [This document](https://gist.github.com/nicolasdao/a7adda51f2f185e8d2700e1573d8a633) provides a reasonable description of a few license types.
++ Click the green button to `Create repository`.
+
+## Using an R Project to Manage a GitHub Repository
+
+Since you have RStudio configured to work with GitHub, you can now use RStudio to clone a copy of your repository to your local machine and to use RStudio to manage that GitHub repository. 
+
++ From your GitHub repository, click the green `Code` button and copy the `https` location of the repository.
++ Open RStudio on your computer.
++ Go to `File -> New Project`.
++ Click on `Version Control` and then on `git`.
++ Paste the repository URL into the first line of the dialog box.
++ Change the name of the project if you don't like the default name.
++ Change the location where you want the clone of your repository to live on your computer. I have a GitHub directory inside of my Documents folder. All my local repositories live here.
++ Click to `Create project`.
++ Check that your *top-right* pane in RStudio now has a `Git` tab. This will track your changed files and allow you to sync the changes you've made to your local files with your remote GitHub repository (*origin*). 
