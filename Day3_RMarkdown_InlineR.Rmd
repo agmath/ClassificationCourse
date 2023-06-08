@@ -135,8 +135,6 @@ coef_list <- c(
 )
 
 names(coef_list) <- lr_summary %>% pull(term)
-
-coef_list
 ```
 
 This would now allow us to rewrite the sentence with inline R code from above as follows.

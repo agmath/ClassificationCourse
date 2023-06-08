@@ -52,7 +52,7 @@ Why might we want to know answers to these questions? Answer them for your datas
 
 Once you have these answers, use `initial_split()` and its corresponding helper functions to split your data into *training* and *test* sets. Look into the `strata` argument and determine if you should be using it. Use it if so, and don't forget to set a seed so that you are always obtaining the same *training* and *test* data.
 
-## Univariable Questions
+## Univariate Questions
 
 Univariate questions are questions involving a single variable. These types of questions are useful towards gaining insight into the distribution of your variables. In particular, understanding the distribution of the response variable is important (as it was above). These questions can also give us insight into whether the random *training* set we've obtained is somehow not representative of the overall dataset we began with. For example, are some categories vastly over- or under-represented in our training set?
 

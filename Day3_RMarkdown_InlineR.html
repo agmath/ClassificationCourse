@@ -11,7 +11,7 @@
 
 <meta name="author" content="Dr. Gilbert" />
 
-<meta name="date" content="2023-06-07" />
+<meta name="date" content="2023-06-08" />
 
 <title>R Markdown and Inline R</title>
 
@@ -358,7 +358,7 @@ display: none;
 
 <h1 class="title toc-ignore">R Markdown and Inline R</h1>
 <h4 class="author">Dr. Gilbert</h4>
-<h4 class="date">June 07, 2023</h4>
+<h4 class="date">June 08, 2023</h4>
 
 </div>
 
@@ -620,9 +620,7 @@ the coefficients for a model into a named vector called
   lr_summary %&gt;% pull(estimate)
 )
 
-names(coef_list) &lt;- lr_summary %&gt;% pull(term)
-
-coef_list</code></pre>
+names(coef_list) &lt;- lr_summary %&gt;% pull(term)</code></pre>
 <p>This would now allow us to rewrite the sentence with inline R code
 from above as follows.</p>
 <blockquote>
