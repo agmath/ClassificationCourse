@@ -1,0 +1,140 @@
+---
+title: "A Public-Facing Portfolio and GitHub Pages"
+author: "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+## Objectives
+
+This notebook will help you create a public facing portfolio (a professional webpage) using GitHub pages. You can use this portfolio to share projects that you are proud of so that future employers or graduate programs can see what you are capable of. In particular, you'll do the following.
+
++ Create a `username.github.io` repository.
++ Enable this repository to use the *Pages* environment
++ Add a theme to make your site look less plain.
++ Organize a page using headings and free form text.
++ Post projects you are proud of or are working on by either adding them to your GitHub repository, sharing them via Google Drive links, or allowing documents from other GitHub repositories to be posted by allowing *pages* to access their files. 
+
+### Create a `username.github.io` Repository
+
+We'll start by creating a GitHub repository dedicated to hosting your page. It is easy to manage this repository and page directly from GitHub, so you won't create an R Project to manage it.
+
+1. Navigate to [GitHub](https://github.com/) and log in.
+2. Click the *green* `New` button to create a new repository.
+3. **Important:** You *must* name this repository`username.github.io`, where `username` is replaced by your GitHub username. For example, the repository corresponding to my page is `agmath.github.io`.
+4. Click the checkbox to initialize your repository with a `README` file.
+5. You can choose your preferred settings for the remaining fields -- changing any of them is optional.
+6. Click to `Create repository`.
+
+### Enable your Repository with the Pages Environment
+
+1. Enter your new repository and go to `Settings` -- you can find it in the grey banner at the top of the repository. You may need to use the triple-dot icon to access `Settings`.
+2. In the navigation menu on the left-hand side of the page, locate the `Pages` tab and click on it.
+3. Underneath *Build and deployment*, choose `Deploy from a branch` under the *Source* heading.
+4. Underneath *Branch* choose either `master` or `main` and set the folder to `/(root)`, which should be the default. Then click `Save`.
+
+It may take a minute or two to deploy, but try navigating to `username.github.io` (again, where `username` is your GitHub username) and view your little corner of the web! Don't worry, we'll make it more exciting now.
+
+### Adding a Theme 
+
+Adding a theme is the quickest way to make your webpage look more professional. You can [see the available `jekyll-themes` here](https://pages.github.com/themes/). Clicking on a theme will open up a repository, but if you scroll down to the README below the file listing, there is an explanation of the theme components along with a link to *preview the theme to see what it looks like*. Check out the available themes and identify one you like.
+
+Once you've identified a theme you'd like to use, you are ready to add it to your page.
+
+1. Return to your `username.github.io` repository. Make sure you go to the actual repository rather than the public-facing webpage you've enabled.
+2. Locate the `Add file` button to the left of the *green* `Code` button, click on it, and select to `Create new file`.
+3. **Important:** In the `Name your file` box, you must name this file `_config.yml`.
+4. In the body of the file, you'll add a single line `theme: jekyll-theme-theme.name`, where `theme.name` is replaced by the name of the theme you've chosen in all lowercase letters.
+5. You can add more items here to further improve your page if you like. For example, you can add a `title`, a `description`, enable `google_analytics`. The contents of my `_config.yml` file are below:
+
+```{verbatim}
+theme: jekyll-theme-cayman
+title: Welcome
+description: This is the homepage of Adam Gilbert, Associate Professor of Mathematics at Southern New Hampshire University. I am interested in data science, discrete mathematics, and developing open educational resources (OER). You'll find information on these topics as well as the courses I regularly teach scattered across these pages.
+```
+
+6. Make any updates you like and then scroll to the top of the page to find the *green* `Commit changes...` button. Click on it, add a *commit* message to describe what you've done, and then click to confirm.
+
+It may take another minute or so to push the changes to your public-facing site. Navigate back there to confirm that you've made the change.
+
+### Organizing Your Page Using Headers and Free Text
+
+Good news! You construct your *GitHub pages* page using markdown syntax just like we've been using in our R Markdown notebooks. You add headers with hastags (#) -- more hashtags means lower-level headers. You separate paragraphs with an empty line in your markdown file. You can format italic text with single asterisks on either side, and bold text with double-asterisks on either side. You'll pick up more techniques as you need them. Additionally, if you know any HTML, those tags are also usable here in your markdown file as well.
+
+1. Back in your `username.github.io` repository, you'll see two files in your file listing -- `_config.yml` and `README.md`. Click on the `README.md` file to open it.
+2. Use the pencil icon in the top-right corner of the preview block to edit your file.
+3. Change the name of the file to `index.md` instead of `README.md`. This will be helpful if you decide to structure your page as a full-on website (with multiple pages) rather than a single webpage.
+4. Use what you know about markdown syntax to add a few sections to your page. Perhaps you'd like to include an *About Me* section as well as a section about your *Goals and Interests* and maybe even some sections about relevant research projects or coursework you've engaged in.
+5. If you didn't add a `title:` or `description:` to your `_config.yml` file, you can add a page-specific `title:` and `description:` on any of your pages by using what you know about YAML headers. For example, at the top of your `index.md` file, you may include the following:
+
+```{verbatim}
+---
+title: Welcome
+description: This is the homepage of Douglas Yancey Funnie, proud resident of Bluffington!
+---
+```
+
+6. Once you are done, again navigate to the top of the page and find the *green* `Commit changes...` button. Click it, add a commit message, and confirm.
+
+Wait a few minutes and then navigate back to your public-facing webpage. Be proud of what you've created so far!
+
+### Adding Links and Files
+
+You may remember from our discussions about R Markdown that we can create hyperlinks by surrounding the link text in square brackets and providing the URL to the item on the web we want to navigate to in round parentheses immediately after the closing square bracket. For example, `[navigate to my website](agmath.github.io)` would result in a hyperlink to my webpage where the displayed link text would be *navigate to my website*. You can use this same technique to share files with people who are landing on your webpage.
+
+#### Sharing Files from Google Drive
+
+If you have files in Google Drive that you'd like to share, then the process of sharing from Google Drive is simple.
+
+1. Navigate to the location of the file in Google Drive.
+2. Click on the file and select the option to `+Share`.
+3. Make sure that the settings on the link are appropriate -- for example, under `General access`, you must choose *Anyone with the link*, and you almost certainly want to provide them only with *Viewer* access.
+4. Copy the link using the `Copy link` button.
+5. Paste this link between the parentheses corresponding to the link you are creating in your markdown file.
+6. Don't forget to Commit your changes and then check that your link works!
+
+#### Sharing Files From Your `username.github.io` Repository
+
+Since your `username.github.io` repository is indeed a repository, you can add folders and files here. In order to keep a clean-looking repository though, you'll definitely want to use folder structure for this.
+
+1. Navigate to your `username.github.io` repository and click the `Add file` button and choose `Create a new file`.
+2. In the filename box, type something like `shared_docs/about`, which will create a new subdirectory (folder) in your repository called `shared_docs`. 
+3. In the body of the file, I might just add something like *this folder contains documents that I'll be sharing*.
+4. Commit your changes.
+5. You'll now be in the `shared_docs` subdirectory of your repository.
+6. Navigate to the file you'd like to share on your computer and drag/drop it into your repository. This will create a copy of the file in the `shared_docs` subdirectory of your `username.github.pages` repository. You may be asked to provide a commit message and commit the change.
+7. You can now create a hyperlink as usual. the URL to access that file will be `https://username.github.io/shared_docs/file_name.extension`, where `username` is your GitHub username, `shared_docs` is the name of the subdirectory you created, `file_name` is the name of the file you are sharing, and `extension` is the extension for that file (perhaps `.pdf`).
+8. Again, commit your changes, what a minute and then check to ensure that the link works as you intended from your public-facing site.
+
+Note that it is better to share PDF files than files like `.docx` because `pdf` opens directly on the web, where MS Word (and similar) files are downloaded and opened.
+
+#### Sharing Files from Another Repository
+
+You are able to link to files which exist in different GitHub repositories and link to those as well. It is really convenient to be able to do this because it prevents the need for duplicating copies of files. It also ensures that when you update a file in its home repository, the changes are immediately reflected in the version being shared on your public-facing webpage. There are lots of efficiencies in doing this.
+
+1. Navigate to the repository that you want to share a file from.
+2. Go to the `Settings` for that repository and navigate to the `Pages` tab.
+3. Underneath *Build and Deploy*, select to `Deploy from a branch`.
+4. Underneath *Branch*, choose `master` or `main` and select the `/(root)` directory and `Save`.
+
+  + Now you can create a hyperlink to any file in this repository. 
+5. Navigate back to your `username.github.io` repository and edit your `index.md` file.
+6. You create a hyperlink as usual, but the URL to that file will be of the form `https://username.github.io/RepositoryName/PathToFile/file_name.extension`, where `username` is your GitHub username, `RepositoryName` is the name of your repository where the file you want to share lives, `PathToFile` is the path to the file through subdirectories in its home repository -- if the file is just in the root directory of the repository then `PathToFile` is not present, and `file_name.extension` are the name of the file in the repository and its extension, respectively.
+7. Again, commit your changes and wait a few minutes before navigating to your public-facing web page to check that the link works as you had intended.
+
+Note, you can link to files owned by other GitHub users as long as they've enabled pages on their repositories. Be sure to give them credit for the files and not mask them as your own. In these cases, the only difference is that the URL will contain their GitHub username instead of yours.
+
+***
+
+## Summary
+
+You've created a GitHub pages webpage for yourself. My hope is that you'll continue to use this site as a professional portfolio which can be shared with prospective employers or graduate schools. You can even use it as a creative outlet. 
+
+There's lots more you can do with GitHub pages. You can add pictures, build and use custom CSS files to make your page unique, and more. You'll learn how to do things as you want to implement them -- there are lots of resources on the web. The source for my GitHub page is public and [is available here](https://github.com/agmath/agmath.github.io). There's nothing super fancy, but you are welcome to steal whatever you like!
