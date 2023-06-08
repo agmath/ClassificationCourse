@@ -20,43 +20,52 @@ This notebook will help you remind yourself of the following items.
   + How do I read data into R?
   + How do I interact with, and manipulate, data using the tools and principles of the `tidyverse`?
   
+## Dataset Choices
+
+Since you already have exposure to working with data in R, you'll have a pretty unstructured analysis to do. That means you get to decide what interesting questions to ask and how to answer them. Choose either of the following datasets to utilize.
+
++ [FAA Wildlife Airstrikes and Engine Damage](https://www.kaggle.com/competitions/sliced-s01e02-xunyc5/data)
++ [MLB Hits and Home Runs](https://www.kaggle.com/competitions/sliced-s01e09-playoffs-1/data?select=train.csv)
+
+The *hits and home runs* data perhaps provides a greater challenge than the FAA dataset since the MLB data is split across three tables. Choosing the MLB data set will give you the opportunity to practice with *joins*.
+
+Choose which data you'd prefer to work with and download the corresponding `train.csv` file. Move the file into a convenient location on your computer -- you may need to unzip it. If you choose the MLB data, then also download `park_dimensions.csv`.
+  
 ## Setup
 
 Use `File -> New File -> R Markdown...` to create a new R Markdown notebook. Clear out the boilerplate and use the `setup` chunk to load the `tidyverse` and `tidymodels` libraries. You may also want to load `kableExtra` for printing out nicely formatted tables in your knitted notebook.
 
-Navigate to this semester's InClass Kaggle Competition on home valuation. See Slack for the link. Download the data and use `read_csv()` to read the `data.csv` file into R using the `setup` chunk.
+Use `read_csv()` to read the `data.csv` file (and any other relevant files`park_dimensions.csv` if applicable) into R using the `setup` chunk. If you are having trouble writing the code, particularly the filepath, to make that happen remember that you can use the `Import Dataset` button from the `Environment` tab to help you. You'll want to copy/paste the code into your notebook rather than using this to actually import your dataset though -- otherwise, you'll need to go through this process every time you reopen the notebook.
 
-Create a new code chunk and use it to print out the `head()` of the dataset and provide a description of the overall context of the data.
-  
-## Some Initial Tasks
+Create a new code chunk and use it to print out the `head()` of the dataset(s) and provide a description of the overall context of the data.
 
-Answer the following questions about the data.
+## Training and Test Data
 
-1. How many *records*/*observations* are there in the data set?
-2. How many *variables* are in the data set? What are their types?
-3. How many homes from each price range are there in the data set? Can you also obtain proportions for each price range since this may be easier to interpret than raw counts? How would you describe the distribution of the price range variable?
-  
-  + Why might we want to know the distribution of this variable before we split into *training* and *test* sets?
+You've had previous exposure to statistical modeling and you know of the importance in splitting your data into training and test sets. We use *test* observations to assess our model's performance in an unbiased manner. These assessments are only unbiased if we don't know anything about the observations in our test set though. We need to be very careful that neither we, nor our model(s), learn anything about the observations in our test set.
 
-4. Are there any missing values in the data set? If so, where are they? 
-  
-  + Why might we want to know this before splitting into *training* and *test* sets?
-  + What are some techniques for dealing with missing values? What are the concerns associated with each?
+That being said, there are still some questions worth asking about the full dataset. For example, 
 
-## Some Exploratory Questions
++ Are there missing values in our dataset?
++ Is there severe class imbalance associated with categorical variables in our dataset? Particularly, is there severe class imbalance associated with our response variable?
 
-Use `initial_split()` and its helper functions to split your data into *training* and *test* sets. Don't forget to set a seed for reproducibility. Answer the following questions.
+Why might we want to know answers to these questions? Answer them for your dataset.
 
-1. What is the distribution of the price range variable in your *training* set? Does this match your expectations given what you observed when considering the entire data set?
-2. Compute the distributions for the other categorical variables in the *training* set. Describe them and discuss any challenges you might expect coming from these distributions.
-3. What is the average lot size for a property in your *training* set? Is this a good measure of the *typical* lot size for a property in your *training* data? How do you know?
+Once you have these answers, use `initial_split()` and its corresponding helper functions to split your data into *training* and *test* sets. Look into the `strata` argument and determine if you should be using it. Use it if so, and don't forget to set a seed so that you are always obtaining the same *training* and *test* data.
 
-  + What challenges might you associate with working with this variable?
+## Univariable Questions
 
-4. Compute summary statistics for the other *numerical* predictors available to you. Provide similar discussions for those variables.
+Univariate questions are questions involving a single variable. These types of questions are useful towards gaining insight into the distribution of your variables. In particular, understanding the distribution of the response variable is important (as it was above). These questions can also give us insight into whether the random *training* set we've obtained is somehow not representative of the overall dataset we began with. For example, are some categories vastly over- or under-represented in our training set?
 
-5. All the questions I've prompted you with above are single-variable questions. Identify some multi-variable questions that you think are interesting and will be insightful. Provide a discussion about each question and why it is relevant to the overall goal of classifying property price range. Conduct the analysis necessary to answer the question and discuss the insight(s) you've gained.
+Justify asking several univariate questions about your training data and answer them. Be sure to include narrative text and not just code as you run these analyses.
+
+## Multivariable Questions
+
+Multivariate questions are questions involving multiple variables. These questions are useful in finding connections/associations between variables. In particular, we might be interested in which variables are associated with our *response* variable. 
+
+Justify asking several multivariate questions about your training data and answer them. Be sure to include narrative text and not just code as you run these analyses.
 
 ## Pushing Your Changes to GitHub
 
 Once you are done, use the `Pull -> Commit -> Push` workflow from the `Git` tab of your top-right pane in RStudio to send your updated file to your remote repository.
+
+You'll return to this notebook next class meeting.

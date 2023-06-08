@@ -1,0 +1,62 @@
+---
+title: 'Tidy Analyses in R for Returning Students'
+author: "Dr. Gilbert"
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+---
+
+```{r global-options, include=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+## Objectives
+
+This notebook will help you remind yourself of the following items.
+
+  + How do I install and load packages in R? In particular we'll work with the `tidyverse`.
+  + How do I read data into R?
+  + How do I interact with, and manipulate, data using the tools and principles of the `tidyverse`?
+  
+## Setup
+
+Use `File -> New File -> R Markdown...` to create a new R Markdown notebook. Clear out the boilerplate and use the `setup` chunk to load the `tidyverse` and `tidymodels` libraries. You may also want to load `kableExtra` for printing out nicely formatted tables in your knitted notebook.
+
+Navigate to this semester's InClass Kaggle Competition on home valuation. See Slack for the link. Download the data and use `read_csv()` to read the `data.csv` file into R using the `setup` chunk.
+
+Create a new code chunk and use it to print out the `head()` of the dataset and provide a description of the overall context of the data.
+  
+## Some Initial Tasks
+
+Answer the following questions about the data.
+
+1. How many *records*/*observations* are there in the data set?
+2. How many *variables* are in the data set? What are their types?
+3. How many homes from each price range are there in the data set? Can you also obtain proportions for each price range since this may be easier to interpret than raw counts? How would you describe the distribution of the price range variable?
+  
+  + Why might we want to know the distribution of this variable before we split into *training* and *test* sets?
+
+4. Are there any missing values in the data set? If so, where are they? 
+  
+  + Why might we want to know this before splitting into *training* and *test* sets?
+  + What are some techniques for dealing with missing values? What are the concerns associated with each?
+
+## Some Exploratory Questions
+
+Use `initial_split()` and its helper functions to split your data into *training* and *test* sets. Don't forget to set a seed for reproducibility. Answer the following questions.
+
+1. What is the distribution of the price range variable in your *training* set? Does this match your expectations given what you observed when considering the entire data set?
+2. Compute the distributions for the other categorical variables in the *training* set. Describe them and discuss any challenges you might expect coming from these distributions.
+3. What is the average lot size for a property in your *training* set? Is this a good measure of the *typical* lot size for a property in your *training* data? How do you know?
+
+  + What challenges might you associate with working with this variable?
+
+4. Compute summary statistics for the other *numerical* predictors available to you. Provide similar discussions for those variables.
+
+5. All the questions I've prompted you with above are single-variable questions. Identify some multi-variable questions that you think are interesting and will be insightful. Provide a discussion about each question and why it is relevant to the overall goal of classifying property price range. Conduct the analysis necessary to answer the question and discuss the insight(s) you've gained.
+
+## Pushing Your Changes to GitHub
+
+Once you are done, use the `Pull -> Commit -> Push` workflow from the `Git` tab of your top-right pane in RStudio to send your updated file to your remote repository.

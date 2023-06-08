@@ -345,28 +345,6 @@ with the <code>tidyverse</code>.</li>
 principles of the <code>tidyverse</code>?</li>
 </ul>
 </div>
-<div id="dataset-choices" class="section level2">
-<h2>Dataset Choices</h2>
-<p>Since you already have exposure to working with data in R, you’ll
-have a pretty unstructured analysis to do. That means you get to decide
-what interesting questions to ask and how to answer them. Choose either
-of the following datasets to utilize.</p>
-<ul>
-<li><a href="https://www.kaggle.com/competitions/sliced-s01e02-xunyc5/data">FAA
-Wildlife Airstrikes and Engine Damage</a></li>
-<li><a href="https://www.kaggle.com/competitions/sliced-s01e09-playoffs-1/data?select=train.csv">MLB
-Hits and Home Runs</a></li>
-</ul>
-<p>The <em>hits and home runs</em> data perhaps provides a greater
-challenge than the FAA dataset since the MLB data is split across three
-tables. Choosing the MLB data set will give you the opportunity to
-practice with <em>joins</em>.</p>
-<p>Choose which data you’d prefer to work with and download the
-corresponding <code>train.csv</code> file. Move the file into a
-convenient location on your computer – you may need to unzip it. If you
-choose the MLB data, then also download
-<code>park_dimensions.csv</code>.</p>
-</div>
 <div id="setup" class="section level2">
 <h2>Setup</h2>
 <p>Use <code>File -&gt; New File -&gt; R Markdown...</code> to create a
@@ -375,75 +353,80 @@ new R Markdown notebook. Clear out the boilerplate and use the
 <code>tidymodels</code> libraries. You may also want to load
 <code>kableExtra</code> for printing out nicely formatted tables in your
 knitted notebook.</p>
-<p>Use <code>read_csv()</code> to read the <code>data.csv</code> file
-(and any other relevant files<code>park_dimensions.csv</code> if
-applicable) into R using the <code>setup</code> chunk. If you are having
-trouble writing the code, particularly the filepath, to make that happen
-remember that you can use the <code>Import Dataset</code> button from
-the <code>Environment</code> tab to help you. You’ll want to copy/paste
-the code into your notebook rather than using this to actually import
-your dataset though – otherwise, you’ll need to go through this process
-every time you reopen the notebook.</p>
+<p>Navigate to this semester’s InClass Kaggle Competition on home
+valuation. See Slack for the link. Download the data and use
+<code>read_csv()</code> to read the <code>data.csv</code> file into R
+using the <code>setup</code> chunk.</p>
 <p>Create a new code chunk and use it to print out the
-<code>head()</code> of the dataset(s) and provide a description of the
+<code>head()</code> of the dataset and provide a description of the
 overall context of the data.</p>
 </div>
-<div id="training-and-test-data" class="section level2">
-<h2>Training and Test Data</h2>
-<p>You’ve had previous exposure to statistical modeling and you know of
-the importance in splitting your data into training and test sets. We
-use <em>test</em> observations to assess our model’s performance in an
-unbiased manner. These assessments are only unbiased if we don’t know
-anything about the observations in our test set though. We need to be
-very careful that neither we, nor our model(s), learn anything about the
-observations in our test set.</p>
-<p>That being said, there are still some questions worth asking about
-the full dataset. For example,</p>
+<div id="some-initial-tasks" class="section level2">
+<h2>Some Initial Tasks</h2>
+<p>Answer the following questions about the data.</p>
+<ol style="list-style-type: decimal">
+<li>How many <em>records</em>/<em>observations</em> are there in the
+data set?</li>
+<li>How many <em>variables</em> are in the data set? What are their
+types?</li>
+<li>How many homes from each price range are there in the data set? Can
+you also obtain proportions for each price range since this may be
+easier to interpret than raw counts? How would you describe the
+distribution of the price range variable?</li>
+</ol>
 <ul>
-<li>Are there missing values in our dataset?</li>
-<li>Is there severe class imbalance associated with categorical
-variables in our dataset? Particularly, is there severe class imbalance
-associated with our response variable?</li>
+<li>Why might we want to know the distribution of this variable before
+we split into <em>training</em> and <em>test</em> sets?</li>
 </ul>
-<p>Why might we want to know answers to these questions? Answer them for
-your dataset.</p>
-<p>Once you have these answers, use <code>initial_split()</code> and its
-corresponding helper functions to split your data into <em>training</em>
-and <em>test</em> sets. Look into the <code>strata</code> argument and
-determine if you should be using it. Use it if so, and don’t forget to
-set a seed so that you are always obtaining the same <em>training</em>
-and <em>test</em> data.</p>
+<ol start="4" style="list-style-type: decimal">
+<li>Are there any missing values in the data set? If so, where are
+they?</li>
+</ol>
+<ul>
+<li>Why might we want to know this before splitting into
+<em>training</em> and <em>test</em> sets?</li>
+<li>What are some techniques for dealing with missing values? What are
+the concerns associated with each?</li>
+</ul>
 </div>
-<div id="univariable-questions" class="section level2">
-<h2>Univariable Questions</h2>
-<p>Univariate questions are questions involving a single variable. These
-types of questions are useful towards gaining insight into the
-distribution of your variables. In particular, understanding the
-distribution of the response variable is important (as it was above).
-These questions can also give us insight into whether the random
-<em>training</em> set we’ve obtained is somehow not representative of
-the overall dataset we began with. For example, are some categories
-vastly over- or under-represented in our training set?</p>
-<p>Justify asking several univariate questions about your training data
-and answer them. Be sure to include narrative text and not just code as
-you run these analyses.</p>
-</div>
-<div id="multivariable-questions" class="section level2">
-<h2>Multivariable Questions</h2>
-<p>Multivariate questions are questions involving multiple variables.
-These questions are useful in finding connections/associations between
-variables. In particular, we might be interested in which variables are
-associated with our <em>response</em> variable.</p>
-<p>Justify asking several multivariate questions about your training
-data and answer them. Be sure to include narrative text and not just
-code as you run these analyses.</p>
+<div id="some-exploratory-questions" class="section level2">
+<h2>Some Exploratory Questions</h2>
+<p>Use <code>initial_split()</code> and its helper functions to split
+your data into <em>training</em> and <em>test</em> sets. Don’t forget to
+set a seed for reproducibility. Answer the following questions.</p>
+<ol style="list-style-type: decimal">
+<li>What is the distribution of the price range variable in your
+<em>training</em> set? Does this match your expectations given what you
+observed when considering the entire data set?</li>
+<li>Compute the distributions for the other categorical variables in the
+<em>training</em> set. Describe them and discuss any challenges you
+might expect coming from these distributions.</li>
+<li>What is the average lot size for a property in your
+<em>training</em> set? Is this a good measure of the <em>typical</em>
+lot size for a property in your <em>training</em> data? How do you
+know?</li>
+</ol>
+<ul>
+<li>What challenges might you associate with working with this
+variable?</li>
+</ul>
+<ol start="4" style="list-style-type: decimal">
+<li><p>Compute summary statistics for the other <em>numerical</em>
+predictors available to you. Provide similar discussions for those
+variables.</p></li>
+<li><p>All the questions I’ve prompted you with above are
+single-variable questions. Identify some multi-variable questions that
+you think are interesting and will be insightful. Provide a discussion
+about each question and why it is relevant to the overall goal of
+classifying property price range. Conduct the analysis necessary to
+answer the question and discuss the insight(s) you’ve gained.</p></li>
+</ol>
 </div>
 <div id="pushing-your-changes-to-github" class="section level2">
 <h2>Pushing Your Changes to GitHub</h2>
 <p>Once you are done, use the <code>Pull -&gt; Commit -&gt; Push</code>
 workflow from the <code>Git</code> tab of your top-right pane in RStudio
 to send your updated file to your remote repository.</p>
-<p>You’ll return to this notebook next class meeting.</p>
 </div>
 
 
