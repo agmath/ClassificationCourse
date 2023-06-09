@@ -1,0 +1,421 @@
+---
+title: "Introduction to Support Vector Classifiers"
+author: 
+  - "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+library(kableExtra)
+```
+
+**Objectives:** In this notebook we'll introduce the notion of Support Vector Classifiers (Support Vector Machines). In particular we'll see
+
++ Support vector machines and classifiers are distance-based models.
++ Support vector machines and classifiers are not impacted by observations far away from the decision boundary.
++ Support vectors are those observations near the decision boundary which influence its position and shape.
+
+## The Big Idea
+
+In this document we discuss support vector classifiers and support vector machines. 
+
+```{r echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+set.seed(44)
+x1 <- runif(20, 0, 100)
+x2 <- runif(20, 0, 100)
+y1 <- runif(20, x1+25, 150)
+y2 <- runif(20, -25, x2-25)
+
+toy_data1 <- tibble(X1 = c(x1, x2), 
+                   X2 = c(y1, y2), 
+                   Class = c(rep("A", 20), rep("B", 20)))
+toy_data2 <- toy_data1 %>%
+  bind_rows(tibble(X1 = 100,
+                   X2 = 104,
+                   Class= "?"))
+
+z1 <- runif(20, x1-10, 100)
+z2 <- runif(20, -25, x2+10)
+toy_data3 <- tibble(X1 = c(x1, x2), 
+                   X2 = c(z1, z2), 
+                   Class = c(rep("A", 20), rep("B", 20)))
+```
+
+The first dataset we deal with has `r nrow(toy_data1)` observations. The first few rows of the dataset can be seen below:
+
+```{r echo = FALSE, eval = TRUE}
+toy_data1 %>%
+  head() %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 12)
+```
+
+```{r echo = FALSE, eval = TRUE}
+toy_data1 %>%
+  ggplot() + 
+  geom_point(mapping = aes(x = X1, 
+                           y = X2, 
+                           color = Class), 
+             size = 2, alpha = 0.75) +
+  scale_color_manual(values = c("purple", "orange"))
+```
+
+**Hyperplane:** A hyperplane in $p$ dimensions is simply an object that can be described in the form $\beta_0+\beta_1x_1 + \beta_2x_2 + \dots + \beta_px_p = 0$. You are very familiar with the hyperplane in two dimensions: $\beta_0+\beta_1x_1+\beta_2x_2 = 0$ (or $Ax+By=C$). 
+
+```{r echo = FALSE, eval = TRUE}
+toy_data1 %>%
+  ggplot() + 
+  geom_point(mapping = aes(x = X1, 
+                           y = X2, 
+                           color = Class), 
+             size = 2, alpha = 0.9) + 
+  geom_abline(intercept = -13, slope = 1.1, size = 1) +
+  scale_color_manual(values = c("purple", "orange"))
+```
+
+**Separating Hyperplane:** In the classification setting, a separating hyperplane is a hyperplane that separates the two classes without any observations violating the border.
+
+  + In general, if one separating hyperplane exists, there are infinitely many choices of separating hyperplane.
+  + How do we choose?
+
+```{r echo = FALSE, eval = TRUE}
+toy_data2 %>%
+  ggplot() + 
+  geom_point(mapping = aes(x = X1, 
+                           y = X2, 
+                           color = Class), 
+             size = 2, alpha = 0.9) + 
+  geom_abline(intercept = -13, slope = 1.1, size = 1) + 
+  geom_abline(intercept = -2, slope = 1.39, size = 1, linetype = 2) +
+  scale_color_manual(values = c("forestgreen", "purple", "orange"))
+```
+
+## Maximal Margin Classifier
+
+```{r echo = FALSE, eval = TRUE}
+toy_data1 %>%
+  ggplot() + 
+  geom_point(mapping = aes(x = X1,
+                           y = X2, 
+                           color = Class), 
+             size = 2, alpha = 0.9) + 
+  geom_abline(intercept = -0.5, slope = 1.1, size = 1) +
+  geom_abline(intercept = 25, slope = 1.1, size = 0.5, lty = "dashed") +
+  geom_abline(intercept = -29, slope = 1.1, size = 0.5, lty = "dashed") +
+  scale_color_manual(values = c("purple", "orange"))
+```
+
+**Constrained Optimization Problem (MMC):** The constrained optimization problem for the *maximal margin classifier* is as follows:
+
+  + $\displaystyle{\max_{\beta_0,~\beta_1,~\dots,~\beta_p}M}$
+  + $\displaystyle{\sum_{j=1}^{p}{\beta_j^2} = 1}$
+  + $\displaystyle{y_i\left(\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\dots +\beta_px_{ip}\right)\geq M,~\forall i\in\left[n\right]}$
+
+```{r echo = FALSE, eval = TRUE}
+toy_data2 %>%
+  ggplot() + 
+  geom_point(mapping = aes(x = X1, 
+                           y = X2, 
+                           color = Class), 
+             size = 2, alpha = 0.9) + 
+  geom_abline(intercept = -2, slope = 1.1, size = 1) + 
+  geom_abline(intercept = 22, slope = 1.1, size = 0.5, lty = "dashed") + 
+  geom_abline(intercept = -27, slope = 1.1, size = 0.5, lty = "dashed") +
+  scale_color_manual(values = c("forestgreen", "purple", "orange"))
+```
+
+## Soft Margins
+
+A potential problem with the maximal margin classifier is that very few observations are used to *fit* the classifier. Only the very closest observations are used to determine the classifier and margin. This makes the classifier extremely sensitive to those datapoints closest to the decision boundary. We can reduce the classifier's dependence on these very few individual observations by allowing some budget for observations to violate the margin. Doing this increases the number of support vectors.
+
+## The non-separable case
+
+```{r echo = FALSE, eval = TRUE}
+toy_data3 %>%
+  ggplot() + 
+  geom_point(mapping = aes(x = X1, 
+                           y = X2, 
+                           color = Class), 
+             size = 2, alpha = 0.9) +
+  scale_color_manual(values = c("purple", "orange"))
+```
+
+```{r echo = FALSE, eval = TRUE}
+toy_data3 %>%
+  ggplot() + 
+  geom_point(mapping = aes(x = X1,
+                           y = X2, 
+                           color = Class), 
+             size = 2, alpha = 0.9) + 
+  geom_abline(intercept = 1.8, slope = 1.05, size = 1) +
+  scale_color_manual(values = c("purple", "orange"))
+```
+
+**Constrained Optimization Problem (SVC):** The constrained optimization problem for the *support vector classifier* is as follows:
+
+  + $\displaystyle{\max_{\beta_0,~\beta_1,~\dots,~\beta_p,~\varepsilon_1,~\varepsilon2,~\dots,~\varepsilon_n}M}$
+  + $\displaystyle{\sum_{j=1}^{p}{\beta_j^2} = 1}$
+  + $\displaystyle{y_i\left(\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\dots +\beta_px_{ip}\right)\geq M\left(1-\varepsilon_i\right),~\forall i\in\left[n\right]}$
+  + $\varepsilon_i \geq 0,~\forall i\in [n]$
+  + $\displaystyle{\sum_{i=1}^{n}{\varepsilon_i}\leq C}$
+
+```{r echo = FALSE, eval = TRUE}
+p1 <- toy_data3 %>%
+  ggplot() + 
+  geom_point(mapping = aes(x = X1, 
+                           y = X2, 
+                           color = Class), 
+             size = 2, alpha = 0.9) + 
+  geom_abline(intercept = 1.8, slope = 1.05, size = 1) + 
+  geom_abline(intercept = 6, slope = 1.05, size = 0.5, lty = "dashed") + 
+  geom_abline(intercept = -2.6, slope = 1.05, size = 0.5, lty = "dashed") + 
+  scale_color_manual(values = c("purple", "orange")) +
+  labs(title = "SVC with Small Margin",
+       subtitle = "(High Cost Violations)") +
+  theme(legend.position = "none")
+
+p2 <- toy_data3 %>% 
+  ggplot() + 
+  geom_point(mapping = aes(x = X1, 
+                           y = X2, 
+                           color = Class), 
+             size = 2, alpha = 0.9) + 
+  geom_abline(intercept = 1.8, slope = 1.05, size = 1) + 
+  geom_abline(intercept = 21, slope = 1.05, size = 0.5, lty = "dashed") + 
+  geom_abline(intercept = -17.6, slope = 1.05, size = 0.5, lty = "dashed") + 
+  scale_color_manual(values = c("purple", "orange")) +
+  labs(title = "SVC with Wide Margin",
+       subtitle = "(Low Cost Violations)")
+
+p1 + p2
+```
+
+## Support Vectors and Observations with Influence
+
+Now that we have some idea how support vector classifiers work, we can use `{tidymodels}` to fit and use these types of models just like we would any other class of model. We'll fit several support vector classifiers on slightly different *toy* data sets. The data sets will differ by a single observation being moved around.
+
+```{r echo = FALSE}
+toy_data3 <- toy_data3 %>%
+  mutate(Size = 1)
+
+svc_spec <- svm_linear() %>%
+  set_mode("classification")
+svc_rec <- recipe(Class ~ X1 + X2, data = toy_data3)
+svc_wf <- workflow() %>%
+  add_model(svc_spec) %>%
+  add_recipe(svc_rec)
+svc_fit1 <- svc_wf %>%
+  fit(toy_data3)
+
+toy_data4 <- toy_data3 %>%
+  bind_rows(tibble(X1 = 90,
+                   X2 = 20,
+                   Class = "B",
+                   Size = 3))
+
+svc_spec <- svm_linear() %>%
+  set_mode("classification")
+svc_rec <- recipe(Class ~ X1 + X2, data = toy_data4)
+svc_wf <- workflow() %>%
+  add_model(svc_spec) %>%
+  add_recipe(svc_rec)
+svc_fit2 <- svc_wf %>%
+  fit(toy_data4)
+
+toy_data5 <- toy_data3 %>%
+  bind_rows(tibble(X1 = 15,
+                   X2 = 15,
+                   Class = "B",
+                   Size = 3))
+svc_spec <- svm_linear() %>%
+  set_mode("classification")
+svc_rec <- recipe(Class ~ X1 + X2, data = toy_data5)
+svc_wf <- workflow() %>%
+  add_model(svc_spec) %>%
+  add_recipe(svc_rec)
+svc_fit3 <- svc_wf %>%
+  fit(toy_data5)
+
+new_data <- crossing(X1 = seq(0, 100, length.out = 100),
+                     X2 = seq(-30, 100, length.out = 150))
+new_data <- svc_fit1 %>%
+  augment(new_data) %>%
+  select(X1, X2, pred_class_1 = .pred_class)
+new_data <- svc_fit2 %>%
+  augment(new_data) %>%
+  select(X1, X2, pred_class_1, pred_class_2 = .pred_class)
+new_data <- svc_fit3 %>%
+  augment(new_data) %>%
+  select(X1, X2, pred_class_1, pred_class_2, pred_class_3 = .pred_class)
+
+p1 <- ggplot() + 
+  geom_point(data = new_data,
+             aes(x = X1, 
+                 y = X2,
+                 color = pred_class_1),
+             alpha = 0.1) + 
+  geom_point(data = toy_data3,
+             aes(x = X1,
+                 y = X2, 
+                 color = Class)) +
+  scale_color_manual(values = c("purple", "orange")) +
+  theme(legend.position = "none")
+p2 <- ggplot() + 
+  geom_point(data = new_data,
+             aes(x = X1, 
+                 y = X2,
+                 color = pred_class_2),
+             alpha = 0.1) + 
+  geom_point(data = toy_data4,
+             aes(x = X1,
+                 y = X2, 
+                 color = Class,
+                 size = Size/10)) +
+  scale_color_manual(values = c("purple", "orange")) +
+  theme(legend.position = "none")
+p3 <- ggplot() + 
+  geom_point(data = new_data,
+             aes(x = X1, 
+                 y = X2,
+                 color = pred_class_3),
+             alpha = 0.1) + 
+  geom_point(data = toy_data5,
+             aes(x = X1,
+                 y = X2, 
+                 color = Class,
+                 size = Size/10)) +
+  scale_color_manual(values = c("purple", "orange")) +
+  theme(legend.position = "none")
+
+p1 + p2 + p3
+```
+
+The large orange data point in the middle and rightmost plots above was added to the training data for the support vector classifier. Visually, we can see that the addition of the large orange observation in the middle plot had no impact on the decision boundary. This is because that data point is *outside the margin* for the support vector classifier. In the rightmost plot we see that the large orange observation has influenced the decision boundary because it was placed in violation of the margin. That is, the large orange observation in the right-most plot is a *support vector*.
+
+***
+
+## Summary
+
+In this notebook we introduced the basics of support vector classifiers. The classifiers we looked at produced linear boundaries, but there are other versions of support vector classifiers which produce non-linear boundaries. Linear algebra is doing some heavy lifting behind the scenes here. Since that course is not a prerequisite for this one, we'll just mention that there exist linear support vector machines, polynomial support vector machines, and radial basis support vector machines. They are each implemented in `{tidymodels}` with the model specifications `svm_linear()`, `svm_poly()`, and `svm_radial()` respectively. An example of how these different variations of support vector machines appears below on a different dataset.
+
+#### Appendix: SVMs With Alternative Kernels
+
+Consider the following data set for which a linear support vector machine may perform poorly.
+
+```{r echo = FALSE}
+x = matrix(rnorm(200*2), ncol = 2)
+x[1:100, ] <- x[1:100, ] + 2
+x[101:150, ] <- x[101:150, ] - 2
+y <- c(rep(1, 150), rep(2,50))
+toy_data6 <- tibble(X1 = x[ ,1],
+                    X2 = x[ ,2], 
+                    Class = as.factor(y))
+
+toy_data6 %>%
+  ggplot() + 
+  geom_point(mapping = aes(x = X1, 
+                           y = X2, 
+                           color = Class), 
+             size = 2, alpha = .75) +
+  scale_color_manual(values = c("purple", "orange"))
+```
+
+We'll fit support vector classifiers with a linear kernel, a polynomial kernel, and a radial kernel and show the decision boundaries below. For the *polynomial* support vector classifier, I'll use `step_poly()` to allow for second degree polynomial features to be used.
+
+```{r echo = FALSE}
+lsvm_spec <- svm_linear() %>%
+  set_mode("classification")
+psvm_spec <- svm_poly() %>%
+  set_mode("classification")
+rsvm_spec <- svm_rbf() %>%
+  set_mode("classification")
+
+svm_rec <- recipe(Class ~ X1 + X2, data = toy_data6)
+psvm_rec <- recipe(Class ~ X1 + X2, data = toy_data6) %>%
+  step_poly(all_numeric_predictors(), degree = 2, options = list(raw = TRUE))
+
+lsvm_wf <- workflow() %>%
+  add_model(lsvm_spec) %>%
+  add_recipe(svm_rec)
+
+psvm_wf <- workflow() %>%
+  add_model(psvm_spec) %>%
+  add_recipe(psvm_rec)
+
+rsvm_wf <- workflow() %>%
+  add_model(rsvm_spec) %>%
+  add_recipe(svm_rec)
+
+lsvm_fit <- lsvm_wf %>%
+  fit(toy_data6)
+
+psvm_fit <- psvm_wf %>%
+  fit(toy_data6)
+
+rsvm_fit <- rsvm_wf %>%
+  fit(toy_data6)
+
+new_data <- crossing(X1 = seq(-4.5, 5.5, length.out = 100),
+                   X2 = seq(-4.5, 5.5, length.out = 100))
+
+new_data <- lsvm_fit %>%
+  augment(new_data) %>%
+  select(X1, X2, linear_pred = .pred_class)
+new_data <- psvm_fit %>%
+  augment(new_data) %>%
+  select(X1, X2, linear_pred, poly_pred = .pred_class)
+new_data <- rsvm_fit %>%
+  augment(new_data) %>%
+  select(X1, X2, linear_pred, poly_pred, radial_pred = .pred_class)
+
+p1 <- ggplot() + 
+  geom_point(data = new_data,
+             aes(x = X1, 
+                 y = X2,
+                 color = linear_pred),
+             alpha = 0.1) + 
+  geom_point(data = toy_data6,
+             aes(x = X1,
+                 y = X2, 
+                 color = Class)) +
+  scale_color_manual(values = c("purple", "orange")) +
+  theme(legend.position = "none") +
+  labs(title = "Linear Kernel")
+p2 <- ggplot() + 
+  geom_point(data = new_data,
+             aes(x = X1, 
+                 y = X2,
+                 color = poly_pred),
+             alpha = 0.1) + 
+  geom_point(data = toy_data6,
+             aes(x = X1,
+                 y = X2, 
+                 color = Class)) +
+  scale_color_manual(values = c("purple", "orange")) +
+  theme(legend.position = "none") +
+  labs(title = "Polynomial Kernel")
+p3 <- ggplot() + 
+  geom_point(data = new_data,
+             aes(x = X1, 
+                 y = X2,
+                 color = radial_pred),
+             alpha = 0.1) + 
+  geom_point(data = toy_data6,
+             aes(x = X1,
+                 y = X2, 
+                 color = Class)) +
+  scale_color_manual(values = c("purple", "orange")) +
+  theme(legend.position = "none") +
+  labs(title = "Radial Kernel")
+
+p1 + p2 + p3
+```
+
+Notice that the linear support vector classifier doesn't attempt to draw any boundaries. The best it is able to do is just classify all observations as belonging to the purple class since it is the dominant one (most of the training observations are purple). The support vector classifiers using the *polynomial* or *radial basis function* kernels are able to fit more complex boundaries.
