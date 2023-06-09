@@ -1,0 +1,148 @@
+---
+title: "Introduction to Principal Component Analysis (PCA)"
+author: 
+  - "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+library(kableExtra)
+```
+
+**Objectives:** In this notebook we'll introduce the notion of Principal Component Analysis (PCA) for dimension reduction. In particular we'll see
+
++ High-dimensional data (data with lots of features) presents challenges associated with overfitting and often the presence of multicollinearity (correlated predictors).
++ Often times we can take a few orthogonal linear combinations of our features and still maintain much of the variability in the original data. These orthogonal linear combinations are known as *principal components*.
++ By using principal components rather than raw features, we can reduce the number of features we use to model our response without losing predictive value.
+
+## The Big Idea
+
+We'll start with a very simple, small example with just two *features* since that is easy to visualize. 
+
+```{r echo = FALSE}
+num_obs <- 250
+X1 <- runif(num_obs, 0, 100)
+X2 <- 2*X1 + X1*(X1 - 100)/500*rnorm(num_obs, 0, 5)
+Class <- rep("A", num_obs)
+for(i in 1:num_obs){
+  Class[i] <- sample(c("A", "B"), size = 1, prob = c(X1[i]/100, 1 - X1[i]/100))
+}
+
+toy_data <- tibble(X1 = X1,
+                   X2 = X2,
+                   Class = Class)
+
+toy_data %>%
+  ggplot() + 
+  geom_point(mapping = aes(x = X1,
+                           y = X2)) +
+  labs(title = "Features X1 and X2")
+```
+
+Looking at the plot, you may notice that `X1` and `X2` are correlated with one another. If you've taken linear algebra, you may be able to recognize that basis vectors corresponding to `X1` (that is, $\left[\begin{array}{c} 1\\ 0\end{array}\right]$) and `X2` (that is, $\left[\begin{array}{r} 0\\ 1\end{array}\right]$) are perhaps not optimal for representing this data. Principal components analysis is a method for changing to a more appropriate basis. If you haven't taken linear algebra, then all you need to know is that Principal Components are a way to more efficiently encode our data, while maintaining as much of the variability as possible.
+
+The first principal component will identify the direction through the "scattercloud" of data which captures as much of the variability as possible. In some sense, you can think of this as the first principal component finding the direction of the longest "diameter" through the scattercloud. The second principal component will do the same thing, but with the restriction that the direction must be *orthogonal* to (at a 90-degree angle with) the first principal component. The third principal component will do the same thing, but must be orthogonal to the first two principal components, and so on.
+
+Seeing this with our small example will help!
+
+```{r echo = FALSE}
+pca_rec <- recipe(Class ~ X1 + X2, data = toy_data) %>%
+  step_pca(all_numeric(), num_comp = 2, keep_original_cols = TRUE)
+
+pca_loadings <- pca_rec %>%
+  prep(toy_data) %>%
+  tidy(number = 1, type = "coef")
+
+pc1_x <- pca_loadings %>%
+  filter(component == "PC1", terms == "X1") %>%
+  pull(value)
+pc1_y <- pca_loadings %>%
+  filter(component == "PC1", terms == "X2") %>%
+  pull(value)
+
+pc2_x <- pca_loadings %>%
+  filter(component == "PC2", terms == "X1") %>%
+  pull(value)
+pc2_y <- pca_loadings %>%
+  filter(component == "PC2", terms == "X2") %>%
+  pull(value)
+
+p1 <- toy_data %>% 
+  ggplot() + 
+  geom_point(aes(x = X1,
+                 y = X2)) +
+  labs(x = "X1",
+       y = "X2",
+       title = "Raw X1 and X2 Values")
+
+p2 <- toy_data %>% 
+  ggplot() + 
+  geom_segment(aes(x = 0, y = 0, 
+                   xend = pc1_x, yend = pc1_y),
+               arrow = arrow(length = unit(0.3,"cm"))) +
+  geom_segment(aes(x = 0, y = 0, 
+                   xend = pc2_x, yend = pc2_y),
+               arrow = arrow(length = unit(0.3,"cm"))) +
+  labs(x = "X1",
+       y = "X2",
+       title = "Principal Component Vectors") +
+  coord_equal()
+
+p3 <- pca_rec %>%
+  prep(toy_data) %>%
+  bake(toy_data) %>%
+  ggplot() + 
+  geom_point(aes(x = PC1,
+                 y = PC2),
+             color = "purple",
+             alpha = 0.75) +
+  labs(x = "PC1",
+       y = "PC2",
+       title = "Principal Components")
+
+(p1 + p2) / p3
+```
+
+Note that even if we just kept the first principal component and dropped the second principal component (going from two variables to one variable), we would maintain over 99.5% of the variation in the original data. We can see this in the table below.
+
+```{r echo = FALSE}
+pca_rec %>%
+  prep(toy_data) %>%
+  tidy(number = 1, type = "variance") %>%
+  filter(terms == "percent variance") %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+Now, can you imagine how helpful this might be if we had hundreds or thousands of available predictors? Perhaps we could encode much of the variability across 100 predictors in just five or ten principal components. 
+
+One drawback of using PCA is that the resulting model uses *linear combinations* of the original predictors. That is, our model is not directly interpretable with respect to the original variables.
+
+## The Curse of Dimensionality
+
+Principal Component Analysis is often used to mediate what is referred to as *the curse of dimensionality*. The basic idea is this that, the region of the feature-space required to contain an expected proportion of observations grows exponentially in the number of dimensions. That is, data requirements explode as more features are utilized. An example will help us.
+
+**Example:** Consider a collection of features `X1`, `X2`, ..., `Xp` the observed values for which are all uniformly distributed over the interval $\left[0, 1\right]$.
+
++ In the single-variable case (`X1`), an interval of width $0.1$ in `X1` would be expected to contain about 10% of all of the observations.
++ In the two-variable case (`X1` and `X2`), intervals of width $0.1$ in `X1` and `X2` would result in a square region that is only be expected to contain about 1% of all of the observations. In order to build a region expected to contain 10% of all observations, we would need intervals of width over $0.3$.
++ In the three-variable case (`X1`, `X2`, and `X3`), intervals of width $0.1$ in `X1`, `X2`, and `X3` would result in a cube region that is only be expected to contain about 0.1% of all of the observations. In order to build a region expected to contain 10% of all observations, we would need intervals of width over $0.46$.
+
+Put another way, if we had 10,000 observations, the expected number of observations falling into the interval of width $0.1$ corresponding to `X1` is 1,000. In the two variable case, the number of observations expected to fall into a square region in the two variable case with side length of $0.1$ is 100. In the three-variable case, the cube is expected to contain 10 observations. Once we move to four variables there is only one observation expected and five or more variables no observations are expected.
+
+Principal components helps to mediate *the curse of dimensionality* by compressing the feature space back down to fewer variables.
+
+***
+
+## Summary
+
+Principal Component Analysis is a technique using *linear algebra* to create a new set of synthetic features, *principal components*, from the original features present in a dataset. It is often the case that much of the variability in the original dataset can be encapsulated in a number of principal components much smaller than the size of the original feature set. In doing this, we decrease the number of features used in our model (reducing the risk of overfitting) and those principal components we've obtained are also uncorrelated with one another.
+
+In our class meeting we'll see how to use PCA to reduce the dimensionality in a dataset on gene-expressions in cancerous tumors.
