@@ -135,7 +135,52 @@ Principal Component Analysis is often used to mediate what is referred to as *th
 + In the two-variable case (`X1` and `X2`), intervals of width $0.1$ in `X1` and `X2` would result in a square region that is only be expected to contain about 1% of all of the observations. In order to build a region expected to contain 10% of all observations, we would need intervals of width over $0.3$.
 + In the three-variable case (`X1`, `X2`, and `X3`), intervals of width $0.1$ in `X1`, `X2`, and `X3` would result in a cube region that is only be expected to contain about 0.1% of all of the observations. In order to build a region expected to contain 10% of all observations, we would need intervals of width over $0.46$.
 
-Put another way, if we had 10,000 observations, the expected number of observations falling into the interval of width $0.1$ corresponding to `X1` is 1,000. In the two variable case, the number of observations expected to fall into a square region in the two variable case with side length of $0.1$ is 100. In the three-variable case, the cube is expected to contain 10 observations. Once we move to four variables there is only one observation expected and five or more variables no observations are expected.
+Put another way, if we had 1,000 observations, the expected number of observations falling into the interval of width $0.1$ corresponding to `X1` is 100. In the two variable case, the number of observations expected to fall into a square region in the two variable case with side length of $0.1$ is 10. In the three-variable case, the cube is expected to contain 1 observations. Once we move to four or more variables there are no observations expected.
+
+The visuals below may help. Note that in the plot on the left, the "y"-coordinate is meaningless -- I've added some random noise there to make the observations discernible from one another. In that plot we are only interested in the `X1` (horizontal) position of the observations. In the plot on the right, we've added a dimension by plotting the `X1` and `X2` location of the observations.
+
+```{r echo = FALSE}
+x1 <- runif(1000, 0, 1)
+x1_low_lim <- 0.45
+x1_high_lim <- 0.55
+x1_in_lim <- sum((x1 > x1_low_lim) & (x1 < x1_high_lim))
+
+x2 <- runif(1000, 0, 1)
+x2_low_lim <- 0.45
+x2_high_lim <- 0.55
+x1x2_in_box <- sum((x1 > x1_low_lim) & (x1 < x1_high_lim) & (x2 > x2_low_lim) & (x2 < x2_high_lim))
+
+p1 <- ggplot() +
+  geom_jitter(aes(x = x1, y = 0), 
+              height = 0.2, color = "purple") +
+  geom_vline(xintercept = x1_low_lim, lty = "dashed") + 
+  geom_vline(xintercept = x1_high_lim, lty = "dashed") +
+  geom_rect(aes(xmin = x1_low_lim, xmax = x1_high_lim,
+                ymin = -Inf, ymax = Inf),
+            alpha = 0.5) +
+  labs(x = "X1",
+       y = "",
+       title = paste0("There are ", x1_in_lim, " observations \n in the interval")) +
+  ylim(c(-0.5, 0.5))
+
+p2 <- ggplot() +
+  geom_point(aes(x = x1, y = x2), 
+              color = "purple") +
+  geom_vline(xintercept = x1_low_lim, lty = "dashed") + 
+  geom_vline(xintercept = x1_high_lim, lty = "dashed") +
+  geom_hline(yintercept = x2_low_lim, lty = "dashed") + 
+  geom_hline(yintercept = x2_high_lim, lty = "dashed") +
+  geom_rect(aes(xmin = x1_low_lim, xmax = x1_high_lim, 
+                ymin = x2_low_lim, ymax = x2_high_lim),
+            alpha = 0.5) +
+  labs(x = "X1",
+       y = "X2",
+       title = paste0("There are ", x1x2_in_box, " observations \n in the box"))
+
+p1 + p2
+```
+
+
 
 Principal components helps to mediate *the curse of dimensionality* by compressing the feature space back down to fewer variables.
 
