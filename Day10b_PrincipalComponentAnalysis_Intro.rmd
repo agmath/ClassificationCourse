@@ -78,9 +78,18 @@ p1 <- toy_data %>%
   ggplot() + 
   geom_point(aes(x = X1,
                  y = X2)) +
+  geom_segment(aes(x = 0, y = 0, 
+                   xend = 50*pc1_x, yend = 50*pc1_y),
+               arrow = arrow(length = unit(0.3,"cm")),
+               color = "purple") +
+  geom_segment(aes(x = 0, y = 0, 
+                   xend = 50*pc2_x, yend = 50*pc2_y),
+               arrow = arrow(length = unit(0.3,"cm")),
+               color = "purple") +
   labs(x = "X1",
        y = "X2",
-       title = "Raw X1 and X2 Values")
+       title = "Raw X1 and X2 Values",
+       subtitle = "with Principal Component Vectors")
 
 p2 <- toy_data %>% 
   ggplot() + 
