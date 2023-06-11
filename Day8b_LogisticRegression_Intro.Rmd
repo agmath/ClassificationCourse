@@ -66,7 +66,7 @@ Our goal then is to fit a model that will help us determine whether a frog with 
 
 ## Why Not Linear Regression?
 
-Linear regression techniques are problematic here because of the nature of polynomial functions. They are [nearly] all unbounded -- that is, eventually any non-constant polynomial will escape the interval $\left[0, 1\right]$ and predicted values will run off towards positive or negative infinity. You can see this below where we are fitting and plotting several linear regression models.
+Linear regression techniques are problematic here because of the nature of polynomial functions. They are [nearly] all unbounded -- that is, eventually, any non-constant polynomial will escape the interval $\left[0, 1\right]$ and predicted values will run off towards positive or negative infinity. You can see this below where we are fitting and plotting several linear regression models to the simulated frog weight data.
 
 ```{r echo = FALSE}
 frogs_df <- frogs_df %>%

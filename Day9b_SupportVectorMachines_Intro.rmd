@@ -24,7 +24,7 @@ library(kableExtra)
 
 ## The Big Idea
 
-In this document we discuss support vector classifiers and support vector machines. 
+In this document we discuss support vector classifiers and support vector machines. we'll use some simulated data throughout this introduction.
 
 ```{r echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 set.seed(44)
@@ -48,14 +48,6 @@ toy_data3 <- tibble(X1 = c(x1, x2),
                    Class = c(rep("A", 20), rep("B", 20)))
 ```
 
-The first dataset we deal with has `r nrow(toy_data1)` observations. The first few rows of the dataset can be seen below:
-
-```{r echo = FALSE, eval = TRUE}
-toy_data1 %>%
-  head() %>%
-  kable() %>% 
-  kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 12)
-```
 
 ```{r echo = FALSE, eval = TRUE}
 toy_data1 %>%
@@ -76,14 +68,14 @@ toy_data1 %>%
                            y = X2, 
                            color = Class), 
              size = 2, alpha = 0.9) + 
-  geom_abline(intercept = -13, slope = 1.1, size = 1) +
+  geom_abline(intercept = -13, slope = 1.1, linewidth = 1) +
   scale_color_manual(values = c("purple", "orange"))
 ```
 
 **Separating Hyperplane:** In the classification setting, a separating hyperplane is a hyperplane that separates the two classes without any observations violating the border.
 
   + In general, if one separating hyperplane exists, there are infinitely many choices of separating hyperplane.
-  + How do we choose?
+  + How do we choose which one we should use?
 
 ```{r echo = FALSE, eval = TRUE}
 toy_data2 %>%
@@ -92,12 +84,14 @@ toy_data2 %>%
                            y = X2, 
                            color = Class), 
              size = 2, alpha = 0.9) + 
-  geom_abline(intercept = -13, slope = 1.1, size = 1) + 
-  geom_abline(intercept = -2, slope = 1.39, size = 1, linetype = 2) +
+  geom_abline(intercept = -13, slope = 1.1, linewidth = 1) + 
+  geom_abline(intercept = -2, slope = 1.39, linewidth = 1, linetype = 2) +
   scale_color_manual(values = c("forestgreen", "purple", "orange"))
 ```
 
 ## Maximal Margin Classifier
+
+We can use a margin around the separating hyperplane, making the margin as wide as possible before encountering any observations. These observations sitting on the edge of the margin are called *support vectors*, and they are the only observations involved in fitting the classifier. That is, any other observation can move and it will not impact the position of the decision boundary unless the observation moves into the margin. You can see a maximal margin classifier below.
 
 ```{r echo = FALSE, eval = TRUE}
 toy_data1 %>%
@@ -106,9 +100,9 @@ toy_data1 %>%
                            y = X2, 
                            color = Class), 
              size = 2, alpha = 0.9) + 
-  geom_abline(intercept = -0.5, slope = 1.1, size = 1) +
-  geom_abline(intercept = 25, slope = 1.1, size = 0.5, lty = "dashed") +
-  geom_abline(intercept = -29, slope = 1.1, size = 0.5, lty = "dashed") +
+  geom_abline(intercept = -0.5, slope = 1.1, linewidth = 1) +
+  geom_abline(intercept = 25, slope = 1.1, linewidth = 0.5, lty = "dashed") +
+  geom_abline(intercept = -29, slope = 1.1, linewidth = 0.5, lty = "dashed") +
   scale_color_manual(values = c("purple", "orange"))
 ```
 
@@ -118,6 +112,8 @@ toy_data1 %>%
   + $\displaystyle{\sum_{j=1}^{p}{\beta_j^2} = 1}$
   + $\displaystyle{y_i\left(\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\dots +\beta_px_{ip}\right)\geq M,~\forall i\in\left[n\right]}$
 
+**Note:** Because the maximal margin classifier is distance-based, this model class is not well-suited for categorical predictors and we must scale our numerical predictors prior to using it.
+
 ```{r echo = FALSE, eval = TRUE}
 toy_data2 %>%
   ggplot() + 
@@ -125,9 +121,9 @@ toy_data2 %>%
                            y = X2, 
                            color = Class), 
              size = 2, alpha = 0.9) + 
-  geom_abline(intercept = -2, slope = 1.1, size = 1) + 
-  geom_abline(intercept = 22, slope = 1.1, size = 0.5, lty = "dashed") + 
-  geom_abline(intercept = -27, slope = 1.1, size = 0.5, lty = "dashed") +
+  geom_abline(intercept = -2, slope = 1.1, linewidth = 1) + 
+  geom_abline(intercept = 22, slope = 1.1, linewidth = 0.5, lty = "dashed") + 
+  geom_abline(intercept = -27, slope = 1.1, linewidth = 0.5, lty = "dashed") +
   scale_color_manual(values = c("forestgreen", "purple", "orange"))
 ```
 
@@ -154,7 +150,7 @@ toy_data3 %>%
                            y = X2, 
                            color = Class), 
              size = 2, alpha = 0.9) + 
-  geom_abline(intercept = 1.8, slope = 1.05, size = 1) +
+  geom_abline(intercept = 1.8, slope = 1.05, linewidth = 1) +
   scale_color_manual(values = c("purple", "orange"))
 ```
 
@@ -173,12 +169,12 @@ p1 <- toy_data3 %>%
                            y = X2, 
                            color = Class), 
              size = 2, alpha = 0.9) + 
-  geom_abline(intercept = 1.8, slope = 1.05, size = 1) + 
-  geom_abline(intercept = 6, slope = 1.05, size = 0.5, lty = "dashed") + 
-  geom_abline(intercept = -2.6, slope = 1.05, size = 0.5, lty = "dashed") + 
+  geom_abline(intercept = 1.8, slope = 1.05, linewidth = 1) + 
+  geom_abline(intercept = 6, slope = 1.05, linewidth = 0.5, lty = "dashed") + 
+  geom_abline(intercept = -2.6, slope = 1.05, linewidth = 0.5, lty = "dashed") + 
   scale_color_manual(values = c("purple", "orange")) +
   labs(title = "SVC with Small Margin",
-       subtitle = "(High Cost Violations)") +
+       subtitle = "(Small Budget for Violations)") +
   theme(legend.position = "none")
 
 p2 <- toy_data3 %>% 
@@ -187,12 +183,12 @@ p2 <- toy_data3 %>%
                            y = X2, 
                            color = Class), 
              size = 2, alpha = 0.9) + 
-  geom_abline(intercept = 1.8, slope = 1.05, size = 1) + 
-  geom_abline(intercept = 21, slope = 1.05, size = 0.5, lty = "dashed") + 
-  geom_abline(intercept = -17.6, slope = 1.05, size = 0.5, lty = "dashed") + 
+  geom_abline(intercept = 1.8, slope = 1.05, linewidth = 1) + 
+  geom_abline(intercept = 21, slope = 1.05, linewidth = 0.5, lty = "dashed") + 
+  geom_abline(intercept = -17.6, slope = 1.05, linewidth = 0.5, lty = "dashed") + 
   scale_color_manual(values = c("purple", "orange")) +
   labs(title = "SVC with Wide Margin",
-       subtitle = "(Low Cost Violations)")
+       subtitle = "(Large Budget for Violations)")
 
 p1 + p2
 ```
@@ -260,7 +256,7 @@ p1 <- ggplot() +
              aes(x = X1, 
                  y = X2,
                  color = pred_class_1),
-             alpha = 0.1) + 
+             alpha = 0.05) + 
   geom_point(data = toy_data3,
              aes(x = X1,
                  y = X2, 
@@ -272,12 +268,12 @@ p2 <- ggplot() +
              aes(x = X1, 
                  y = X2,
                  color = pred_class_2),
-             alpha = 0.1) + 
+             alpha = 0.05) + 
   geom_point(data = toy_data4,
              aes(x = X1,
                  y = X2, 
                  color = Class,
-                 size = Size/10)) +
+                 size = Size)) +
   scale_color_manual(values = c("purple", "orange")) +
   theme(legend.position = "none")
 p3 <- ggplot() + 
@@ -285,12 +281,12 @@ p3 <- ggplot() +
              aes(x = X1, 
                  y = X2,
                  color = pred_class_3),
-             alpha = 0.1) + 
+             alpha = 0.05) + 
   geom_point(data = toy_data5,
              aes(x = X1,
                  y = X2, 
                  color = Class,
-                 size = Size/10)) +
+                 size = Size)) +
   scale_color_manual(values = c("purple", "orange")) +
   theme(legend.position = "none")
 
