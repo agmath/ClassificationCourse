@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Principal Component Analysis (PCA)"
+title: "Introduction to Ensembles, Bagging, and Random Forests"
 author: 
   - "Dr. Gilbert"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
@@ -68,6 +68,13 @@ There's a problem with *bagging* in that, all of the resulting models are likely
 A *random forest* is a form of bootstrap aggregation where we construct a decision tree model on each of the bootstrapped training sets. Rather than just constructing a decision tree though, we allow each tree access to only a random subset of predictors each time it makes a split. Since the trees are provided random access to the predictors, our trees won't all look alike. This means that the decision trees in our *random forest ensemble* won't make the same errors and the ensemble can benefit from the wisdom of the crowd.
 
 Because a *random forest* is an *ensemble* of models, typically consisting of hundreds of trees, it has much lower interpretive value than an individual decision tree has. That being said, we can look at variable importance plots to determine which variables were selected most often by trees in the forest when the opportunity to take them arose. In this way, we are able to interpret which features are most strongly associated with the response variable.
+
+## Some Warnings
+
+It will be useful to beware of the following regarding random forests.
+
++ Random forests can be large an take time to fit. 
++ Random forests can be sensitive to tree depth, a parameter that should be tuned either directly (by tuning `max_depth`) or indirectly (by tuning a parameter like `min_n`).
 
 ***
 
