@@ -171,7 +171,7 @@ boost_tree_spec <- boosted_tree(trees = tune(),
   set_mode("classification") #or "regression"
 ```
 
-Note that the parameters set to `tune()` are hyperparameters whose values will be learned during cross-validation. As a reminder, we use `tune_grid()` for this
+Note that the parameters set to `tune()` are hyperparameters whose values will be learned during cross-validation. As a reminder, we can use the `tune_grid()` function for this.
 
 ***
 
