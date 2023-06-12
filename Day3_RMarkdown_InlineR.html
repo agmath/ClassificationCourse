@@ -11,7 +11,7 @@
 
 <meta name="author" content="Dr. Gilbert" />
 
-<meta name="date" content="2023-06-08" />
+<meta name="date" content="2023-06-12" />
 
 <title>R Markdown and Inline R</title>
 
@@ -358,7 +358,7 @@ display: none;
 
 <h1 class="title toc-ignore">R Markdown and Inline R</h1>
 <h4 class="author">Dr. Gilbert</h4>
-<h4 class="date">June 08, 2023</h4>
+<h4 class="date">June 12, 2023</h4>
 
 </div>
 
@@ -454,7 +454,11 @@ also have curly braces with options for the code cell – at a minimum,
 we’ll provide the language being used in all lowercase letters. For
 example, below creates a default R code chunk in an R Markdown
 document.</p>
-<p>ADD VERBATIM CELL HERE…</p>
+<pre class="default"><code>
+```{r}
+#R code goes here
+```
+</code></pre>
 </div>
 <div id="text-cells" class="section level4">
 <h4>Text “Cells”</h4>
@@ -505,26 +509,34 @@ classes. All options appear inside the curly braces after the language
 declared for the chunk and are separated by commas. Some common options
 appear below.</p>
 <ul>
-<li><code>echo = TRUE</code> says to print out the code cell to the
+<li><p><code>echo = TRUE</code> says to print out the code cell to the
 notebook. That is, your notebook will contain the code. Note that
 <code>TRUE</code> is the default for this setting – it is common that
 you’ll want to set <code>echo = FALSE</code> in your final drafts of
 notebooks. Displaying the code to produce the analysis can be
-distracting to the person reading your notebook.</li>
-<li><code>eval = TRUE</code> says that the code in the code cell should
-be evaluated. Note that <code>TRUE</code> is the default for this, but
-setting <code>eval = FALSE</code> can help you with troubleshooting
-broken code or to preven cells that take a long time to run from running
-during the knitting process. Just beware, if a code cell is not
-evaluated, then no later code can use results from the code cell,
-otherwise errors will be thrown.</li>
-<li><code>message = FALSE</code> and/or <code>warning = FALSE</code> can
-be used to prevent messages and warnings from being knitted into your
-notebook. I find these particularly useful when working with
-<code>ggplot()</code>.</li>
-<li><code>fig.cap = &quot;description of figure&quot;</code> can be used to
+distracting to the person reading your notebook.</p></li>
+<li><p><code>eval = TRUE</code> says that the code in the code cell
+should be evaluated. Note that <code>TRUE</code> is the default for
+this, but setting <code>eval = FALSE</code> can help you with
+troubleshooting broken code or to prevent cells that take a long time to
+run from running during the knitting process. Just beware, if a code
+cell is not evaluated, then no later code can use results from the code
+cell, otherwise errors will be thrown.</p></li>
+<li><p><code>message = FALSE</code> and/or <code>warning = FALSE</code>
+can be used to prevent messages and warnings from being knitted into
+your notebook. I find these particularly useful when working with
+<code>ggplot()</code>.</p></li>
+<li><p><code>fig.cap = &quot;description of figure&quot;</code> can be used to
 caption any figures that result from the execution of the code
-cell.</li>
+cell.</p></li>
+<li><p><code>cache = TRUE</code> is a setting that can save you lots of
+knitting time. Use it sparingly, but some places you might use it
+are:</p>
+<ul>
+<li>code chunks where large plots are being constructed.</li>
+<li>code chunks running cross-validation and hyperparameter tuning.</li>
+<li>code chunks fitting large models.</li>
+</ul></li>
 </ul>
 <p>Your markdown notebook can contain as many code chunks as you like.
 Typically notebooks contain a mixture of code chunks and text “cells”
