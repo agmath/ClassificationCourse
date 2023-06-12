@@ -153,7 +153,15 @@ We should beware of the following when using boosting methods.
 
 ## Implementation in `{tidymodels}`
 
-Boosting is implemented in `{tidymodels}` using trees. This is a "model class" which is defined by the `boost_tree()` model specification. The model `recipe()` and `workflow()` are defined as with all other `{tidymodels}` model classes. That is, to create a *boosting ensemble* of trees, we run
+Boosting is implemented in `{tidymodels}` using trees. This is a "model class" which is defined by the `boost_tree()` model specification. The model `recipe()` and `workflow()` are defined as with all other `{tidymodels}` model classes. That is, to create a basic *boosting ensemble* of trees with default settings, we run
+
+```{r echo = TRUE, eval = FALSE}
+boost_tree_spec <- boosted_tree() %>%
+  set_engine("xgboost") %>%
+  set_mode("classification") #or "regression"
+```
+
+It is more likely, however, that you'll want to tune some of the hyperparameters associated with the ensemble. In particular, tuning the number of boosting iterations (`trees`) and the learning rate (`learn_rate`) are good ideas.
 
 ```{r echo = TRUE, eval = FALSE}
 boost_tree_spec <- boosted_tree(trees = tune(),
@@ -163,7 +171,7 @@ boost_tree_spec <- boosted_tree(trees = tune(),
   set_mode("classification") #or "regression"
 ```
 
-Note that the parameters set to `tune()` are hyperparameters whose values will be learned during cross-validation.
+Note that the parameters set to `tune()` are hyperparameters whose values will be learned during cross-validation. As a reminder, we use `tune_grid()` for this
 
 ***
 
