@@ -79,7 +79,7 @@ The remaining words look much more informative, and now we've only got `r tokeni
 
 Tokenization is a very basic approach, but it can be really powerful. For example, let's consider two full texts from Jane Austen -- *Pride and Prejudice* and *Sense and Sensibility*. We can get these using the `{janeaustenr}` package.
 
-```{r echo = FALSE}
+```{r echo = FALSE, message = FALSE, warning = FALSE}
 library(janeaustenr)
 library(plotly)
 pp_df <- tibble(book = "PridePrejudice",
