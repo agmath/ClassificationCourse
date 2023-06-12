@@ -96,6 +96,7 @@ p <- books_df %>%
   group_by(book) %>%
   count(word) %>%
   pivot_wider(id_cols = word, names_from = book, values_from = n, values_fill = 0) %>%
+  filter(PridePrejudice + SenseSensibility > 20) %>%
   ggplot() + 
   geom_point(aes(x = PridePrejudice,
                  y = SenseSensibility),
