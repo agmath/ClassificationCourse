@@ -177,7 +177,7 @@ ggplot() +
              alpha = 0.05) +
   geom_point(data = toy_data,
              aes(x = x, y = y, color = class)) +
-  labs(title = "Class Regions for KNN (n = 3)",
+  labs(title = "Logistic Regression",
        color = "Class")
 ```
 
