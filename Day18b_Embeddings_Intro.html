@@ -612,8 +612,8 @@ the <span class="math inline">\(\tt{Token}\)</span> across the entire
 corpus.</p>
 <p>In the formula for <span class="math inline">\(\text{tf_idf}\left(\text{Token}\right)\)</span>,
 if <span class="math inline">\(\tt{Token}\)</span> appears across all of
-the documents, then the ration <span class="math inline">\(\frac{n_{\text{Documents}}}{\text{n_{\text{Documents
-Containing Token}}}}\)</span> will evaluate to <span class="math inline">\(1\)</span> and the logarithm will be <span class="math inline">\(0\)</span>. That is, a <em>token</em> appearing
+the documents, then the ration <span class="math inline">\(\frac{n_{\text{Documents}}}{n_{\text{Documents
+Containing Token}}}\)</span> will evaluate to <span class="math inline">\(1\)</span> and the logarithm will be <span class="math inline">\(0\)</span>. That is, a <em>token</em> appearing
 across all documents cannot be useful in differentiating the document.
 That logarithm will be largest when the <em>token</em> in question
 appears in just one of the documents and none of the others. This means
