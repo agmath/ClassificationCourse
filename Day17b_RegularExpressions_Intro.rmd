@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Text and Tokenization"
+title: "Introduction to Pattern Matching and Regular Expressions"
 author: 
   - "Dr. Gilbert"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
