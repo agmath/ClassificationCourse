@@ -12,9 +12,7 @@ library(tidyverse)
 library(kableExtra)
 ```
 
-## Objectives
-
-This notebook will remind you how to use and navigate R Markdown documents. In particular it will cover
+**Purpose:** This notebook will remind you how to use and navigate R Markdown documents. In particular it will cover
 
 -   the basic structure of an R Markdown document.
 -   the *Visual* editor versus the *Source* editor.
@@ -124,21 +122,21 @@ The remainder of your notebook will consist of text "cells" where you can type f
 
 You can really supercharge your productivity and explanation power by using inline R code. You can use inline-R by typing a backtick followed by a lowercase `r` and then the R code that you want to run, closing the R code with another backtick. For example, typing `` `r data %>% nrow()` `` would calculate the number of rows in the data frame stored in the object called `data`. If you're not convinced that this is useful, consider the following sentence which might appear in a document you are preparing.
 
-> *This report was prepared using all available web traffic data over the past week. Over that time period we had 348 unique visitors to our site.*
+> *This report was prepared using all available web traffic data over the past week. Over that time period we had 348 visitors to our site.*
 
 If this is a weekly report, then every week you would need to replace the 348 with the correct number of visitors for the new time period. Assuming that the data we are using comes from a data frame called `site_traffic`, we could write the following into our report to avoid the need for manual updating.
 
-> *This report was prepared using all available web traffic data over the past week. Over that time period we had `` ` r site_traffic %>% nrow()` `` unique visitors to our site.*
+> *This report was prepared using all available web traffic data over the past week. Over that time period we had `` ` r site_traffic %>% nrow()` `` visitors to our site.*
 
 Now think about how you could use similar techniques to automatically fill in or update sections of reports by using inline R code. Making use of inline R has the potential to really boost your efficiency!
 
 #### Lists and Inline R
 
-Inline R is great, but writing lengthy commands inline is unweildy, difficult to troubleshoot, and difficult to read. For example, the following example sentence includes inline code required to extract a model coefficient from a fitted model.
+Inline R is great, but writing lengthy commands inline is unweildy, difficult to troubleshoot, and difficult to read. For example, the following sentence includes inline code required to extract a model coefficient from a fitted model.
 
 > The fitted coefficient on `flipper_length` in our model is `` ` r model_fit %>% extract_fit_engine() %>% tidy() %>% filter(term == "flipper_length") %>% pull(estimate)` `` .
 
-It can be useful to pre-compute these values and store them into a named list so that they can be more easily used inline. All this just means, putting more complex code into a code chunk to build a list because extracting list elements inline is very quick to do. For example, we could use a code cell like the one below to obtain all of the coefficients for a model into a named vector called `coef_list`.
+It can be useful to pre-compute these values and store them into a named list so that they can be more easily used inline. All this just means, putting more complex code into a code chunk to build a list because extracting list elements inline is easier than extracting them from their native environment. For example, we could use a code cell like the one below to obtain all of the coefficients for a model into a named vector called `coef_list`.
 
 ```{r echo = TRUE, eval = FALSE}
 coef_list <- c(

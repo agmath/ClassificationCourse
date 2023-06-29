@@ -11,7 +11,7 @@
 
 <meta name="author" content="Dr. Gilbert" />
 
-<meta name="date" content="2023-06-12" />
+<meta name="date" content="2023-06-29" />
 
 <title>R Markdown and Inline R</title>
 
@@ -358,15 +358,13 @@ display: none;
 
 <h1 class="title toc-ignore">R Markdown and Inline R</h1>
 <h4 class="author">Dr. Gilbert</h4>
-<h4 class="date">June 12, 2023</h4>
+<h4 class="date">June 29, 2023</h4>
 
 </div>
 
 
-<div id="objectives" class="section level2">
-<h2>Objectives</h2>
-<p>This notebook will remind you how to use and navigate R Markdown
-documents. In particular it will cover</p>
+<p><strong>Purpose:</strong> This notebook will remind you how to use
+and navigate R Markdown documents. In particular it will cover</p>
 <ul>
 <li>the basic structure of an R Markdown document.</li>
 <li>the <em>Visual</em> editor versus the <em>Source</em> editor.</li>
@@ -383,7 +381,6 @@ you should be comfortable working in R Markdown notebooks and switching
 between code and text fluently. The use of inline R is not required in
 our course, though it can reduce some tedious components of your
 document-writing workload.</p>
-</div>
 <div id="basic-structure-of-an-r-markdown-document" class="section level2">
 <h2>Basic Structure of an R Markdown Document</h2>
 <p>In simplest terms, any R Markdown document contains three major
@@ -593,8 +590,8 @@ that this is useful, consider the following sentence which might appear
 in a document you are preparing.</p>
 <blockquote>
 <p><em>This report was prepared using all available web traffic data
-over the past week. Over that time period we had 348 unique visitors to
-our site.</em></p>
+over the past week. Over that time period we had 348 visitors to our
+site.</em></p>
 </blockquote>
 <p>If this is a weekly report, then every week you would need to replace
 the 348 with the correct number of visitors for the new time period.
@@ -604,7 +601,7 @@ to avoid the need for manual updating.</p>
 <blockquote>
 <p><em>This report was prepared using all available web traffic data
 over the past week. Over that time period we had
-<code>` r site_traffic %&gt;% nrow()`</code> unique visitors to our
+<code>` r site_traffic %&gt;% nrow()`</code> visitors to our
 site.</em></p>
 </blockquote>
 <p>Now think about how you could use similar techniques to automatically
@@ -614,8 +611,8 @@ of inline R has the potential to really boost your efficiency!</p>
 <h4>Lists and Inline R</h4>
 <p>Inline R is great, but writing lengthy commands inline is unweildy,
 difficult to troubleshoot, and difficult to read. For example, the
-following example sentence includes inline code required to extract a
-model coefficient from a fitted model.</p>
+following sentence includes inline code required to extract a model
+coefficient from a fitted model.</p>
 <blockquote>
 <p>The fitted coefficient on <code>flipper_length</code> in our model is
 <code>` r model_fit %&gt;% extract_fit_engine() %&gt;% tidy() %&gt;% filter(term == &quot;flipper_length&quot;) %&gt;% pull(estimate)`</code>
@@ -624,10 +621,10 @@ model coefficient from a fitted model.</p>
 <p>It can be useful to pre-compute these values and store them into a
 named list so that they can be more easily used inline. All this just
 means, putting more complex code into a code chunk to build a list
-because extracting list elements inline is very quick to do. For
-example, we could use a code cell like the one below to obtain all of
-the coefficients for a model into a named vector called
-<code>coef_list</code>.</p>
+because extracting list elements inline is easier than extracting them
+from their native environment. For example, we could use a code cell
+like the one below to obtain all of the coefficients for a model into a
+named vector called <code>coef_list</code>.</p>
 <pre class="r"><code>coef_list &lt;- c(
   lr_summary %&gt;% pull(estimate)
 )
