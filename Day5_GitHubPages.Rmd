@@ -12,9 +12,7 @@ library(tidyverse)
 library(kableExtra)
 ```
 
-## Objectives
-
-This notebook will help you create a public facing portfolio (a professional webpage) using GitHub pages. You can use this portfolio to share projects that you are proud of so that future employers or graduate programs can see what you are capable of. In particular, you'll do the following.
+**Purpose:** This notebook will help you create a public facing portfolio (a professional webpage) using GitHub pages. You can use this portfolio to share projects that you are proud of so that future employers or graduate programs can see what you are capable of. In particular, you'll do the following.
 
 + Create a `username.github.io` repository.
 + Enable this repository to use the *Pages* environment

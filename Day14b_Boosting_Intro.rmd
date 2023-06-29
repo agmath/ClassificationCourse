@@ -16,7 +16,7 @@ library(patchwork)
 library(kableExtra)
 ```
 
-**Objectives:** In this notebook we'll continue our exploration of *ensembles* by looking at *boosting* methods. While our previous topic -- bagging and random forests -- looked at models in parallel, *boosting* methods use models in series. That is, boosting methods chain models together, passing information from previous models as inputs to subsequent models. In particular, 
+**Purpose:** In this notebook we'll continue our exploration of *ensembles* by looking at *boosting* methods. While our previous topic -- bagging and random forests -- looked at models in parallel, *boosting* methods use models in series. That is, boosting methods chain models together, passing information from previous models as inputs to subsequent models. In particular, 
 
 ## The Big Idea
 

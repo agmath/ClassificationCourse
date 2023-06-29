@@ -16,7 +16,7 @@ library(patchwork)
 library(kableExtra)
 ```
 
-**Objectives:** In this notebook we'll introduce the notion of Principal Component Analysis (PCA) for dimension reduction. In particular we'll see
+**Purpose:** In this notebook we'll introduce the notion of Principal Component Analysis (PCA) for dimension reduction. In particular we'll see
 
 + High-dimensional data (data with lots of features) presents challenges associated with overfitting and often the presence of multicollinearity (correlated predictors).
 + Often times we can take a few orthogonal linear combinations of our features and still maintain much of the variability in the original data. These orthogonal linear combinations are known as *principal components*.

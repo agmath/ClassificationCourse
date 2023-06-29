@@ -2,7 +2,9 @@
 title: "Regression Versus Classification"
 author: 
   - "Dr. Gilbert"
-format: html
+output: 
+  html_document:
+    theme: cerulean
 ---
 
 ```{r setup, include = FALSE}
@@ -10,7 +12,7 @@ library(tidyverse)
 library(tidymodels)
 ```
 
-**Objectives:** In this notebook, our goals are to differentiate between *regression* and *classification*. In particular, we'll recognize the following:
+**Purpose:** In this notebook, our goals are to differentiate between *regression* and *classification*. In particular, we'll recognize the following:
 
 + Regression models are built to predict or explain a *numerical response*.
 + Classification models are build to predict or explain a *categorical response*.

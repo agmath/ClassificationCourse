@@ -16,7 +16,7 @@ library(marginaleffects)
 library(kableExtra)
 ```
 
-**Objectives:** In this notebook, we introduce the class of model known as logistic regression. In particular, we note the following.
+**Purpose:** In this notebook, we introduce the class of model known as logistic regression. In particular, we note the following.
 
 + Polynomial regression models cannot be used for classification since they are unbounded. 
 + Logistic regression models take the form $\displaystyle{\mathbb{P}\left[y = 1\right] = \frac{e^{\beta_0 + \beta_1x_1 + \cdots + \beta_kx_k}}{1 + e^{\beta_0 + \beta_1x_1 + \cdots + \beta_kx_k}}}$

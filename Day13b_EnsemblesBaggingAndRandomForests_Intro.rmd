@@ -16,7 +16,7 @@ library(patchwork)
 library(kableExtra)
 ```
 
-**Objectives:** In this notebook we'll introduce the notion of *ensembles* of models. In particular, we will introduce *bootstrap aggregation* (or *bagging*) and *random forests*. After reading through this notebook you should understand the following.
+**Purpose:** In this notebook we'll introduce the notion of *ensembles* of models. In particular, we will introduce *bootstrap aggregation* (or *bagging*) and *random forests*. After reading through this notebook you should understand the following.
 
 + An *ensemble* is a collection of models used together to generate a predicted response.
 + An *ensemble* can implement models in parallel or in series.

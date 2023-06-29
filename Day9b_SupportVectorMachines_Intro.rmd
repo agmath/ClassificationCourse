@@ -16,7 +16,7 @@ library(patchwork)
 library(kableExtra)
 ```
 
-**Objectives:** In this notebook we'll introduce the notion of Support Vector Classifiers (Support Vector Machines). In particular we'll see
+**Purpose:** In this notebook we'll introduce the notion of Support Vector Classifiers (Support Vector Machines). In particular we'll see
 
 + Support vector machines and classifiers are distance-based models.
 + Support vector machines and classifiers are not impacted by observations far away from the decision boundary.

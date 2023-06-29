@@ -11,7 +11,7 @@
 
 <meta name="author" content="Dr. Gilbert" />
 
-<meta name="date" content="2023-06-12" />
+<meta name="date" content="2023-06-13" />
 
 <title>Introduction to Ensembles, Bagging, and Random Forests</title>
 
@@ -583,13 +583,13 @@ display: none;
 <h1 class="title toc-ignore">Introduction to Ensembles, Bagging, and
 Random Forests</h1>
 <h4 class="author">Dr. Gilbert</h4>
-<h4 class="date">June 12, 2023</h4>
+<h4 class="date">June 13, 2023</h4>
 
 </div>
 
 
-<p><strong>Objectives:</strong> In this notebook we’ll introduce the
-notion of <em>ensembles</em> of models. In particular, we will introduce
+<p><strong>Purpose:</strong> In this notebook we’ll introduce the notion
+of <em>ensembles</em> of models. In particular, we will introduce
 <em>bootstrap aggregation</em> (or <em>bagging</em>) and <em>random
 forests</em>. After reading through this notebook you should understand
 the following.</p>
@@ -670,252 +670,28 @@ bs_9
 1
 </td>
 <td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-8
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
 3
-</td>
-<td style="text-align:right;">
-7
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-4
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-3
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-7
 </td>
 <td style="text-align:right;">
 8
 </td>
 <td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-9
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-9
+3
 </td>
 <td style="text-align:right;">
 2
 </td>
 <td style="text-align:right;">
-5
+10
 </td>
 <td style="text-align:right;">
-7
+6
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+2
 </td>
 <td style="text-align:right;">
 7
@@ -923,7 +699,74 @@ bs_9
 </tr>
 <tr>
 <td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
 9
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+7
 </td>
 <td style="text-align:right;">
 7
@@ -932,48 +775,10 @@ bs_9
 3
 </td>
 <td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
 9
 </td>
 <td style="text-align:right;">
 4
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-2
 </td>
 <td style="text-align:right;">
 10
@@ -983,6 +788,201 @@ bs_9
 </td>
 <td style="text-align:right;">
 1
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
 </td>
 </tr>
 </tbody>

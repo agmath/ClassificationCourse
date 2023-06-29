@@ -16,7 +16,7 @@ library(kableExtra)
 
 ```
 
-**Objectives:** In this notebook we introduce the *$k$ nearest neighbors* classifier. In particular, we note that
+**Purpose:** In this notebook we introduce the *$k$ nearest neighbors* classifier. In particular, we note that
 
 + the $k$ in the name of the classifier indicates the number of *voting* neighbors when a prediction is made.
 + *nearest neighbors* is a distance-based model.

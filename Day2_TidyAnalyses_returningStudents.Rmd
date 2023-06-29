@@ -12,9 +12,7 @@ library(tidyverse)
 library(kableExtra)
 ```
 
-## Objectives
-
-This notebook will help you remind yourself of the following items.
+**Purpose:** This notebook will help you remind yourself of the following items.
 
   + How do I install and load packages in R? In particular we'll work with the `tidyverse`.
   + How do I read data into R?
