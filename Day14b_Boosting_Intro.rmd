@@ -151,9 +151,9 @@ We should beware of the following when using boosting methods.
 + Model interpretability with boosting methods is very low because the model is broken into many smaller component models.
 + Training and prediction are more computationally intensive than with single models because many models must be trained and evaluated.
 
-## Implementation in `{tidymodels}`
+## How to Implementat in `{tidymodels}`
 
-Boosting is implemented in `{tidymodels}` using trees. This is a "model class" which is defined by the `boost_tree()` model specification. The model `recipe()` and `workflow()` are defined as with all other `{tidymodels}` model classes. That is, to create a basic *boosting ensemble* of trees with default settings, we run
+A boosted model is a model class (that is, a model `spec`*ification*). We define our intention to build a boosting classifier using
 
 ```{r echo = TRUE, eval = FALSE}
 boost_tree_spec <- boosted_tree() %>%
@@ -161,17 +161,23 @@ boost_tree_spec <- boosted_tree() %>%
   set_mode("classification") #or "regression"
 ```
 
-It is more likely, however, that you'll want to tune some of the hyperparameters associated with the ensemble. In particular, tuning the number of boosting iterations (`trees`) and the learning rate (`learn_rate`) are good ideas.
+As with many of our model specifications, boosting models can be used for *both* regression and classification. For this reason, the line to `set_mode()` is required when declaring the model specification. The line to `set_engine()` above is unnecessary since `xgboost` is the default engine. There are other available engines though.
 
-```{r echo = TRUE, eval = FALSE}
-boost_tree_spec <- boosted_tree(trees = tune(),
-                                tree_depth = 1,
-                                learn_rate = tune()) %>%
-  set_engine("xgboost") %>%
-  set_mode("classification") #or "regression"
-```
+#### Hyperparameters and Other Extras
 
-Note that the parameters set to `tune()` are hyperparameters whose values will be learned during cross-validation. As a reminder, we can use the `tune_grid()` function for this.
+Like other model classes, boosted models have *tunable hyperparameters*. They are
+
++ `mtry`, which determines the number of randomly chosen predictors to offer each tree at each decision juncture.
++ `trees` determines the number of trees in the forest.
++ `min_n` is an integer determining the minimum number of training observations required for a node to be split further. That is, if a node/bucket contains fewer than `min_n` training observations, it will not be split further.
++ `tree_depth` is an integer denoting the maximum depth of each individual tree (not available for all engines).
++ `learn_rate` determines how quickly the model will attempt to learn (initial boosting iterations are weighted more heavily, while later iterations have less influence in the model's ultimate predictions). 
+
+  + Powers of ten, for example `1e-5, 1e-3, 0.1, 10`, are typically a good starting point for learning rates.
+
++ Additional hyperparameters are `loss_reduction`, `sample_size`, and `stop_iter`. 
+
+You can see the full `{parsnip}` documentation for `boost_tree()`, including descriptions of those last three hyperparameters, [here](https://parsnip.tidymodels.org/reference/boost_tree.html){target="_blank"}.
 
 ***
 

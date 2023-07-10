@@ -295,6 +295,31 @@ p1 + p2 + p3
 
 The large orange data point in the middle and rightmost plots above was added to the training data for the support vector classifier. Visually, we can see that the addition of the large orange observation in the middle plot had no impact on the decision boundary. This is because that data point is *outside the margin* for the support vector classifier. In the rightmost plot we see that the large orange observation has influenced the decision boundary because it was placed in violation of the margin. That is, the large orange observation in the right-most plot is a *support vector*.
 
+## How to Implement in `{tidymodels}`
+
+A support vector classifier is a model class (that is, a model `spec`*ification*). We define our intention to build a support vector classifier using
+
+```{r echo = TRUE, eval = FALSE}
+log_reg_spec <- svm_linear() %>%
+  set_engine("LiblineaR") %>%
+  set_mode("classification")
+```
+
+In addition to `svm_linear()`, there are `svm_poly()` and `svm_rbf()` which offer more flexible models.
+
+Support vector machines can be used for *both* regression and classification. For this reason, the line to `set_mode()` is required when declaring the model specification. The line to `set_engine()` above is unnecessary since `LiblineaR` is the default engine. There are other available engines though.
+
+#### Hyperparameters and Other Extras
+
+Depending on the type of support vector machine (linear, polynomial, or radial basis function) chosen, support vector machines have tunable hyperparameters. They are
+
++ `cost`, which is a positive number associated with the *cost* of predicting an observation in violation of the margin (either within the margin or on the wrong side of the classifier altogether).
++ `degree` is a positive number identifying the polynomial degree (for *polynomial* support vector machines). This is flexible and allows for non-integer degrees.
++ `scale_factor` is a positive number denoting the scaling factor for the polynomial (for *polynomial* support vector machines).
++ `rbf_sigma` is a positive number for a radial basis function (for *radial basis function* support vector machines).
+
+You can see the full `{parsnip}` documentation for `svm_linear()` [here](https://parsnip.tidymodels.org/reference/svm_linear.html), for `svm_poly()` [here](https://parsnip.tidymodels.org/reference/svm_linear.html), and for `svm_rbf()` [here](https://parsnip.tidymodels.org/reference/svm_rbf.html).
+
 ***
 
 ## Summary

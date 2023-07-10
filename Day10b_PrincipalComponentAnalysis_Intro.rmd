@@ -95,10 +95,12 @@ p2 <- toy_data %>%
   ggplot() + 
   geom_segment(aes(x = 0, y = 0, 
                    xend = pc1_x, yend = pc1_y),
-               arrow = arrow(length = unit(0.3,"cm"))) +
+               arrow = arrow(length = unit(0.3,"cm")),
+               color = "purple") +
   geom_segment(aes(x = 0, y = 0, 
                    xend = pc2_x, yend = pc2_y),
-               arrow = arrow(length = unit(0.3,"cm"))) +
+               arrow = arrow(length = unit(0.3,"cm")), 
+               color = "purple") +
   labs(x = "X1",
        y = "X2",
        title = "Principal Component Vectors") +
@@ -189,9 +191,37 @@ p2 <- ggplot() +
 p1 + p2
 ```
 
-
-
 Principal components helps to mediate *the curse of dimensionality* by compressing the feature space back down to fewer variables.
+
+## How to Implement in `{tidymodels}`
+
+Principal Component Analysis is a feature engineering step (that is, it is a `step_` in a `recipe()`). We define our intention to use PCA as follows
+
+```{r echo = TRUE, eval = FALSE}
+my_rec <- recipe(<your_formula>, data = train) %>%
+  step_pca()
+```
+
+By default, `step_pca()` will try to find *principal components* for all predictors. You may want to limit this step to include `all_numeric_predictors()` which can be done by passing this as an argument to the step. Additionally, PCA is a distance-sensitive process. For this reason, we should scale our numeric predictors prior to using `step_pca()`. That is, your recipe is more likely to look like:
+
+```{r echo = TRUE, eval = FALSE}
+my_rec <- recipe(<your_formula>, data = train) %>%
+  step_normalize(all_numeric_predictors()) %>%
+  step_pca(all_numeric_predictors())
+```
+
+with other feature engineering `step_*()` functions likely to be included in the pipeline as well.
+
+#### Hyperparameters and Other Extras
+
+There are several options and *tunable hyperparameters* associated with `step_pca)()`. You are likely to use:
+
++ `num_comp`, which determines the *number of principal components* to compute, or
++ `threshold`, which determines the *proportion of total variance* that should be covered by the principal components.
+
+Both of these directly impact the number of principal components which will result from using the recipe step. If `threshold` is used, then `num_comp` will be ignored.
+
+You can see the full `{recipe}` documentation for `step_pca()` [here](https://recipes.tidymodels.org/reference/step_pca.html).
 
 ***
 

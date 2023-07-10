@@ -180,6 +180,36 @@ mfx %>%
 
 The output above shows estimates for the marginal effects of a unit increase in `weight`. We can see that the marginal effect is largest near a weight of about 45 units. For weights less than 35 units and more than 55 units, there is little change in probability that the corresponding observation belongs to Species B. Plots like the one above can be really helpful in understanding what our model suggests is the association between our predictor(s) and response.
 
+## How to Implement in `{tidymodels}`
+
+A logistic regressor is a model class (that is, a model `spec`*ification*). We define our intention to build a logistic regressor using
+
+```{r echo = TRUE, eval = FALSE}
+log_reg_spec <- logistic_reg() %>%
+  set_engine("glm") %>%
+  set_mode("classification")
+```
+
+#### Hyperparameters and Other Extras
+
+The lines to `set_engine()` and `set_mode()` are unnecessary since these are the defaults. I include them here just so that we continue to be reminded that setting an engine and setting a mode are typically things that we will need to do.
+
+Depending on the fitting *engine* chosen, logistic regression models have two (2) tunable hyperparameters. They are
+
++ `penalty`, which is a model constraint penalizing the inclusion of multiple model terms and large coefficients.
+
+  + Typical penalty values are powers of 10 -- for example `1e-3, 0.01, 0.1, 1, 10`.
+  + Remember to *scale* all of your numerical predictors if you use this parameter. Otherwise some predictors are artificially *cheap* or *expensive* depending on the magnitude of their raw values.
+
++ `mixture` is a number between $0$ and $1$ which determines the type of regularization to use. Basically, this governs how our "spent coefficient budget is computed". 
+
+  + `mixture = 0` results in `L1` regularization (Ridge Regression)
+  + `mixture = 1` results in `L2` regularization (LASSO)
+  + `mixture` values between $0$ and $1$ are a *mixture* of Ridge and LASSO, where the value provided represents the proportion of the budget calculation corresponding to the LASSO.
+  + As a reminder, you can read more about Ridge Regression, the LASSO, and how these approaches work [here](https://agmath.github.io/RegressionCourse/17d_VariableSelectionMethods.html).
+
+You can see the full `{parsnip}` documentation for `logistic_reg()` [here](https://parsnip.tidymodels.org/reference/logistic_reg.html).
+
 ***
 
 ## Summary

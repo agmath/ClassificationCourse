@@ -76,6 +76,28 @@ It will be useful to beware of the following regarding random forests.
 + Random forests can be large an take time to fit. 
 + Random forests can be sensitive to tree depth, a parameter that should be tuned either directly (by tuning `max_depth`) or indirectly (by tuning a parameter like `min_n`).
 
+## How to Implement in `{tidymodels}`
+
+A Random Forest is a model class (that is, a model `spec`*ification*). We define our intention to build a Random Forest classifier using
+
+```{r echo = TRUE, eval = FALSE}
+rf_clf_spec <- rand_forest() %>%
+  set_engine("ranger") %>%
+  set_mode("classification")
+```
+
+As with many of our model specifications, random forests can be used for *both* regression and classification. For this reason, the line to `set_mode()` is required when declaring the model specification. The line to `set_engine()` above is unnecessary since `ranger`` is the default engine. There are other available engines though.
+
+#### Hyperparameters and Other Extras
+
+Like other model classes, nearest neighbors have *tunable hyperparameters*. They are
+
++ `mtry`, which determines the number of randomly chosen predictors to offer each tree at each decision juncture.
++ `trees` determines the number of trees in the forest.
++ `min_n` is an integer determining the minimum number of training observations required for a node to be split further. That is, if a node/bucket contains fewer than `min_n` training observations, it will not be split further.
+
+You can see the full `{parsnip}` documentation for `rand_forest()` [here](https://parsnip.tidymodels.org/reference/rand_forest.html){target="_blank"}.
+
 ***
 
 ## Summary

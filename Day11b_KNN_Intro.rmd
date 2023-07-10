@@ -105,6 +105,30 @@ It is worth noting that $k$ *nearest neighbors* can be used in both the *classif
 + For *classification*, each neighbor provides a vote for the class of the new observation and the plurality wins. 
 + For *regression*, the value of the response for each of the nearest neighbors are averaged to obtain the predicted response for the new observation.
 
+## How to Implement in `{tidymodels}`
+
+A KNN classifier is a model class (that is, a model `spec`*ification*). We define our intention to build a KNN classifier using
+
+```{r echo = TRUE, eval = FALSE}
+knn_clf_spec <- nearest_neighbor() %>%
+  set_engine("kknn") %>%
+  set_mode("classification")
+```
+
+K Nearest Neighbors can be used for *both* regression and classification. For this reason, the line to `set_mode()` is required when declaring the model specification. The line to `set_engine()` above is unnecessary since `kknn` is the default engine. There are other available engines though.
+
+#### Hyperparameters and Other Extras
+
+Like other model classes, nearest neighbors have *tunable hyperparameters*. They are
+
++ `neighbors`, which determines the number of *voting neighbors* to determine the model's ultimate prediction on a new observation.
+
+  + Remember, the fewer voting neighbors, the more flexible the model is.
+
++ `weight_func` determines how we'll compute distances between observations. More than just Euclidean distance (`"rectangular"`) are available. 
+
+You can see the full `{parsnip}` documentation for `nearest_neighbor()` [here](https://parsnip.tidymodels.org/reference/nearest_neighbor.html){target="_blank"}.
+
 ***
 
 ## Summary
