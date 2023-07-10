@@ -1,0 +1,153 @@
+---
+title: "Introduction to Decision Tree Classifiers"
+author: 
+  - "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+library(kableExtra)
+library(rpart.plot)
+```
+
+**Purpose:** In this notebook we'll introduce *decision tree* models. These are another class of model which can be used in both the regression and classification settings. In particular, we note that
+
++ Decision tree models are an intuitive model class which mimic human decision-making in an "*If this, then that*" style.
++ Decision trees slice the *feature-space* into right-rectangular prisms whose edges are perpendicular to the feature axes.
++ Decision trees can be used to fit highly non-linear data.
++ There are cases for which decision trees perform quite well and other cases where they fail spectacularly.
+
+## The Big Idea
+
+Decision tree models begin with all observations belonging to a single "group". Within this single group/bucket, all observations would have the same predicted response. The fitting algorithms for decision trees then ask whether we could improve our predictions by splitting this bucket into two smaller buckets of observations, each getting their own prediction. The fitting algorithm continues in this manner until predictions are no longer improved or some stopping criteria is met.
+
+Let's see this in action by building a decision tree classifier on some *toy data* with four classes.
+
+```{r echo = FALSE}
+num_red <- 75
+red_class_x1 <- runif(num_red, 0, 100)
+red_class_x2 <- rnorm(num_red, 50, 5)
+red_class <- rep("red", num_red)
+
+num_green <- 60
+green_class_x1 <- sort(runif(num_green, 0, 50))
+green_class_x2 <- c(runif(num_green/2, 0, 20), runif(num_green/2, 20, 40))
+green_class <- rep("darkgreen", num_green)
+
+num_purple <- 40
+purple_class_x1 <- runif(num_purple, 80, 100)
+purple_class_x2 <- runif(num_purple, 25, 45)
+purple_class <- rep("purple", num_purple)
+
+num_gold <- 25
+gold_class_x1 <- rnorm(num_gold, 60, 5)
+gold_class_x2 <- rnorm(num_gold, 20, 5)
+gold_class <- rep("gold", num_gold)
+
+toy_data <- tibble(x1 = c(red_class_x1, green_class_x1, purple_class_x1, gold_class_x1),
+                   x2 = c(red_class_x2, green_class_x2, purple_class_x2, gold_class_x2),
+                   class = c(red_class, green_class, purple_class, gold_class))
+
+toy_data %>%
+  ggplot() + 
+  geom_point(aes(x = x1, 
+                 y = x2, 
+                 color = class)) + 
+  scale_color_manual(values = c("darkgreen", "gold", "purple", "red")) +
+  labs(x = "X1", y = "X2",
+       title = "A Four-Class Classification Problem") +
+  theme(legend.pos = "none")
+
+```
+
+Now that we have our data, let's build a decision tree classifier on it.
+
+```{r echo = FALSE}
+dt_clf_spec <- decision_tree() %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
+
+dt_clf_rec <- recipe(class ~ ., data = toy_data)
+
+dt_clf_wf <- workflow() %>%
+  add_model(dt_clf_spec) %>%
+  add_recipe(dt_clf_rec)
+
+dt_clf_fit <- dt_clf_wf %>%
+  fit(toy_data)
+
+new_data <- crossing(x1 = seq(0, 100, length.out = 100),
+                     x2 = seq(0, 75, length.out = 75))
+new_data <- dt_clf_fit %>%
+  augment(new_data)
+
+ggplot() + 
+  geom_point(data = new_data,
+             aes(x = x1,
+                 y = x2,
+                 color = .pred_class),
+             alpha = 0.1) +
+  geom_point(data = toy_data,
+             aes(x = x1, 
+                 y = x2, 
+                 color = class)) + 
+  scale_color_manual(values = c("darkgreen", "gold", "purple", "red")) +
+  labs(x = "X1", y = "X2",
+       title = "A Four-Class Classification Problem",
+       subtitle = "and Decision Tree Boundaries") +
+  theme(legend.pos = "none")
+```
+
+In the plot above, we see that the decision tree classifier seems to do quite well! The tree is asking yes/no questions about individual predictors (`X1` or `X2`) which can be seen because the decision boundaries are perpendicular to those axes. In the plot below, we can see the actual structure of the decision tree.
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+rpart.plot(dt_clf_fit %>% extract_fit_engine(), box.palette = list("Greens", "Oranges", "Purples", "Reds"))
+```
+
+Trees won't always perform well, however. Indeed, if the optimal structure of the decision boundaries is not constructable via line segments perpendicular to the feature axes, we may end up requiring a very deep tree to approximate the decision boundary. A different model class is likely to be a better choice in these cases.
+
+<center> [ADD ANOTHER TOY EXAMPLE TO ILLUSTRATE] </center>
+
+## Some Warnings
+
+It will be useful to beware of the following regarding decision trees.
+
++ Decision tree models are enticed to *overfit* by their fitting process. 
++ The deeper a tree, or the more end-nodes it has, the more flexible the model is.
++ We need to use *regularization* techniques to constrain our trees and prevent this overfitting.
+
+
+## How to Implement in `{tidymodels}`
+
+A decision tree is a model class (that is, a model `spec`*ification*). We define our intention to build a decision tree classifier using
+
+```{r echo = TRUE, eval = FALSE}
+dt_clf_spec <- decision_tree() %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
+```
+
+Decision trees can be used for *both* regression and classification. For this reason, the line to `set_mode()` is required when declaring the model specification. The line to `set_engine()` above is unnecessary since `rpart` is the default engine. There are other available engines though.
+
+#### Hyperparameters and Other Extras
+
+Like other model classes, decision trees have *tunable hyperparameters*. They are
+
++ `cost_complexity`, which is a penalty associated with growing the tree (including additional splits).
++ `tree_depth` is an integer denoting the depth of the tree. This is the maximum number of splits between the root node and any leaf of the tree.
++ `min_n` is an integer determining the minimum number of training observations required for a node to be split further. That is, if a node/bucket contains fewer than `min_n` training observations, it will not be split further.
+
+You can see the full `{parsnip}` documentation for `decision_tree()` [here](https://parsnip.tidymodels.org/reference/decision_tree.html){target="_blank"}.
+
+***
+
+## Summary
+
+In this notebook you were introduced to decision tree models. This is a simple class of model which is highly interpretable and is easily explained to non-experts. These models mimic our own "*If this, then that"* decision-making style.

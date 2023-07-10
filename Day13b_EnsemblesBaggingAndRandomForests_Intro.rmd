@@ -90,7 +90,7 @@ As with many of our model specifications, random forests can be used for *both* 
 
 #### Hyperparameters and Other Extras
 
-Like other model classes, nearest neighbors have *tunable hyperparameters*. They are
+Like other model classes, random forests have *tunable hyperparameters*. They are
 
 + `mtry`, which determines the number of randomly chosen predictors to offer each tree at each decision juncture.
 + `trees` determines the number of trees in the forest.
