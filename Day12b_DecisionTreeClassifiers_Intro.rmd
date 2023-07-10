@@ -113,7 +113,82 @@ rpart.plot(dt_clf_fit %>% extract_fit_engine(), box.palette = list("Greens", "Or
 
 Trees won't always perform well, however. Indeed, if the optimal structure of the decision boundaries is not constructable via line segments perpendicular to the feature axes, we may end up requiring a very deep tree to approximate the decision boundary. A different model class is likely to be a better choice in these cases.
 
-<center> [ADD ANOTHER TOY EXAMPLE TO ILLUSTRATE] </center>
+Consider the secondary toy dataset with two classes which is plotted below.
+
+```{r echo = FALSE}
+num_purple <- 100
+purple_x1 <- runif(num_purple, 0, 100)
+purple_x2 <- purple_x1
+
+for(i in 1:num_purple){
+  purple_x2[i] <- purple_x2[i] + runif(1, 0, 100 - purple_x2[i])
+}
+
+num_orange <- 100
+orange_x1 <- runif(num_orange, 0, 100)
+orange_x2 <- orange_x1
+
+for(i in 1:num_orange){
+  orange_x2[i] <- orange_x2[i] - runif(1, 0, orange_x2[i])
+}
+
+toy_data <- tibble(x1 = c(orange_x1, purple_x1),
+                   x2 = c(orange_x2, purple_x2),
+                   class = c(rep("orange", num_orange), rep("purple", num_purple)))
+
+toy_data %>%
+  ggplot() + 
+  geom_point(aes(x = x1,
+                 y = x2,
+                 color = class)) +
+  scale_color_manual(values = c("orange", "purple")) +
+  labs(x = "X1",
+       y = "X2",
+       title = "A Two-Class Classification Problem") +
+  theme(legend.pos = "none")
+```
+
+Now let's try fitting a decision tree model to this data, as we did in the earlier example.
+
+```{r echo = FALSE}
+dt_clf_spec <- decision_tree() %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
+
+dt_clf_rec <- recipe(class ~ ., data = toy_data)
+
+dt_clf_wf <- workflow() %>%
+  add_model(dt_clf_spec) %>%
+  add_recipe(dt_clf_rec)
+
+dt_clf_fit <- dt_clf_wf %>%
+  fit(toy_data)
+
+new_data <- crossing(x1 = seq(0, 100, length.out = 100),
+                     x2 = seq(0, 100, length.out = 75))
+new_data <- dt_clf_fit %>%
+  augment(new_data)
+
+ggplot() + 
+  geom_point(data = new_data,
+             aes(x = x1,
+                 y = x2,
+                 color = .pred_class),
+             alpha = 0.1) +
+  geom_point(data = toy_data,
+             aes(x = x1, 
+                 y = x2, 
+                 color = class)) + 
+  scale_color_manual(values = c("orange", "purple")) +
+  labs(x = "X1", y = "X2",
+       title = "A Two-Class Classification Problem",
+       subtitle = "and Decision Tree Boundaries") +
+  theme(legend.pos = "none")
+```
+
+In the plot above, we see that the decision tree classifier is performing poorly, even though the classification problem should be quite easily! This is because the decision boundaries for a decision tree are perpendicular to those axes.
+
+Knowing a bit about the structure of our data, what a likely decision boundary may look like, and which scenarios our model classes are best-suited for can be really helpful in making our modeling endeavors more efficient!
 
 ## Some Warnings
 
@@ -122,6 +197,8 @@ It will be useful to beware of the following regarding decision trees.
 + Decision tree models are enticed to *overfit* by their fitting process. 
 + The deeper a tree, or the more end-nodes it has, the more flexible the model is.
 + We need to use *regularization* techniques to constrain our trees and prevent this overfitting.
+
+  + The `{tidymodels}` ecosystem has been built on a *pit of success* (rather than pit of failure) philosophy. The idea is that it should be easy to do the right thing, and difficult to do the wrong thing. For this reason, decision trees utilize some regularization by default to prevent overfitting.
 
 
 ## How to Implement in `{tidymodels}`
