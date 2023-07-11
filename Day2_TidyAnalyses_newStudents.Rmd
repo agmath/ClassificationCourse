@@ -14,24 +14,40 @@ library(kableExtra)
 
 **Purpose:** This notebook addresses the following items.
 
-  + How do I install and load packages in R? In particular we'll work with the `tidyverse`.
+  + How do I install and load packages in R? In particular we'll work with the `{tidyverse}`.
   + How do I read data into R from both local and remote sources?
-  + How do I interact with, and manipulate, data using the tools and principles of the `tidyverse`?
+  + How do I interact with, and manipulate, data using the tools and principles of the `{tidyverse}`?
+  
+**Note:** Below, you'll be asked to build an R Markdown notebook which includes many code cells to accomplish tasks. In addition to the code cells (grey background), be sure to leave yourself short notes in text cells (white background) which describe what you are doing with the code. Having a notebook that consists of 25 code cells with no additional context at the end of this discussion won't be very useful.
+  
+## Setup
+
+Open RStudio and use `File -> New File -> R Markdown...` to create a new R Markdown file. Fill in the title field with `Tidy Analysis of MLB Batted Balls`, update the author field with your name if it is not already there. You can check the box to use the current date when rendering your document, and leave the default output format as HTML.
+
+You can see several items in this sample markdown file. We'll cover them in detail later, but for now 
+
++ the top of the document contains a header with information about the notebook.
++ any text over a grey background is executable code.
++ any text over a white background is free-form text.
+
+You can remove all the *boilerplate* from line 12 down.
   
 ## Installing and Loading Packages
 
-We can install R packages using the command `install.packages("PACKAGE_NAME")`. Once packages are installed, we can load them into an R Session by running `library(PACKAGE_NAME)`. While packages only need to be *installed* once, they must be loaded in each R Session you intend to use them in (**note:** an R Session begins when R/RStudio are opened and ends when they are closed or terminated). We can install and load the `tidyverse` by running the code below:
+We can install R packages using the command `install.packages("PACKAGE_NAME")`. Once packages are installed, we can load them into an R Session by running `library(PACKAGE_NAME)`.
 
-```{r echo = TRUE, eval = FALSE}
-install.packages("tidyverse")
-library(tidyverse)
-```
+1. Install the `{tidyverse}` by typing `install.packages("tidyverse")` into the console. That's the lower-left pane in your RStudio window.
+  
+  + The console is great for running "one-off" code that you won't need again, like code for installing libraries.
+  + Since we're talking about libraries, install `{tidymodels}`, `{patchwork}`, and `{kableExtra}` in the console since we'll be using these later in our course.
 
-1. Open RStudio and run these commands in the Console pane (left/lower-left). We'll be using the `kableExtra` and `tidymodels` "packages" in our course -- install both of these packages as well. Load the `kableExtra` package since we'll be using it here.
+New functionality isn't made available immediately after it is installed. Any packages we wish to use must be loaded into the R session where we'll be using them. An R Session begins when R/RStudio are opened and ends when they are closed or terminated. We can load packages with the `library()` command. For example, to load `{tidyverse}`, we run `library(tidyverse)`.
+
+2. In the first code chunk in your notebook pane (that's the top left), add a new line and load the `{tidyverse}`. Make sure that line is inside the code chunk, appearing over a grey background. You can run that line by hitting `ctrl+Enter` (PC) or `cmd+Return` (Mac).
 
 ## Loading Data
 
-Now that you have the `tidyverse` loaded, the next thing we'll need is actual data to manipulate. The `tidyverse` comes with a few standard data sets for practicing with, but we'll be much more interested in working with our own data which we'll either find locally (stored on your own computer) or remotely (accessed via a web URL). The `tidyverse` includes several functions for reading data in a variety of formats:
+Now that you have the `{tidyverse}` loaded, the next thing we'll need is actual data to manipulate. The `{tidyverse}` comes with a few standard data sets for practicing with, but we'll be much more interested in working with our own data which we'll either find locally (stored on our own computers) or remotely (accessed via a web URL). The `{tidyverse}` includes several functions for reading data in a variety of formats:
 
   + `read_csv("PATH_TO_FILE")` can be used to read data from a comma separated values (csv) file.
   + `read_delim("PATH_TO_FILE", delim = "DELIMITER")` is a more general version of the `read_csv()` function -- we can use this to read text files whose delimiter is something other than a comma. Common delimiters are the tab (`\t`) or space (`\s`).
@@ -54,29 +70,23 @@ tate_artists <- read_csv("https://github.com/tategallery/collection/raw/master/a
 tate_works <- read_delim("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-01-12/artwork.csv", delim = ",")
 ```
   
+Now it's time for you to load in some data. We'll work with two data sets in this notebook: `battedballs.csv` and `park_dimensions.csv`. You can find those data sets in one of my GitHub repositories [here](https://github.com/agmath/agmath.github.io/tree/master/data/classification). In order to read these into R, we'll need a link to the raw data sources.
+
+3. Complete the following to read in the `battedballs.csv` file.
+
+  + Click on `battedballs.csv` in the file listing in the GitHub repository.
+  + Look for the button labeled `Raw` appearing above the data, and click it. The button is in the grey banner.
+  + Copy the URL that appears in your web browser.
+  + Return to your R Markdown notebook in RStudio, and add a line to read in the file from the URL you've copied. You should use `read_csv()` and don't forget to store the result into a named object: `batted_balls`.
+  + Run your code using either `ctrl+Enter` or `cmd+Return`, and then check the `Environment` tab of your top-right pane in RStudio to confirm that you have a new Data object called `batted_balls`.
+
+4. Repeat Step 3, but read in `park_dimensions.csv` instead.
+
 ## Viewing Data
 
-Now that we've got data, the first thing we should do is look at it. There are a few really handy R functions for *getting a feel* for the data you have access to. The `View()`, `head()`, `tail()`, and `glimpse()` functions are four that are really commonly used. For the remainder of this notebook we'll use a data frame called `mpg` which is built into the `tidyverse`.
+Now that we've got data, the first thing we should do is look at it. There are a few really handy R functions for *getting a feel* for the data you have access to. The `View()`, `head()`, `tail()`, and `glimpse()` functions are four that are really commonly used.
 
-  + Running `View(mpg)` will open a file viewer which allows you to navigate the data frame in a familiar spreadsheet format. 
-  + Using `head(mpg)` and `tail(mpg)` give us a convenient method for looking at the first six and last six rows of a data frame, respectively. This is typically enough to give us an idea of the type of data we are working with. Running both of these functions can also make us aware of potential inconsistencies in data collection.
-    ```{r echo = TRUE, eval = TRUE}
-    head(mpg) %>%
-      kable() %>%
-      kable_styling(bootstrap_options = c("hover", "striped"))
-    tail(mpg) %>%
-      kable() %>%
-      kable_styling(bootstrap_options = c("hover", "striped"))
-    ```
-    + Note that the `kable() %>% kable_styling(bootsrap_options = c("hover", "striped"))` commands are used to produce visually appealing tables in our html output -- they don't actually do anything to transform our data. You are encouraged (though not required) to use these lines when you want to print out tabular output. You can see what the output looks like without using `kableExtra` below. I'll continue to utilize `kableExtra` throughout our course.
-    ```{r echo = TRUE, eval = TRUE}
-    head(mpg)
-    tail(mpg)
-    ```
-  + Running `glimpse(mpg)` provides us with a bit more technical information about how R is interpreting the columns of the `mpg` data frame. Knowing how R is interpreting our variables (columns) is important because certain operations are possible with numerical data but are not possible with categorical data, and vice-versa. Common data types in R are `chr`/`fct` (categorical data) and `num`/`dbl`/`int` (numerical data).
-    ```{r echo = TRUE, eval = TRUE}
-    glimpse(mpg)
-    ```
+5. Open a new code cell in your R Markdown notebook by using the `+C` button at the top of the top-left pane in RStudio and choosing R as the language for the code cell. Use the functions mentioned above to explore your `batted_balls` and `park_dimensions` data frames.
 
 ## Manipulating Data
 
@@ -84,16 +94,18 @@ Now that we know how to load and view our data, let's talk about manipulating it
 
 ### Pipes `%>%`
 
-Pipes are a functionality that is included in a package that is part of `tidyverse` library. At first, the syntax may seem a bit strange, but pipes allow you to easily manipulate data without having to rename and save the dataset along the way. I strongly encourage you get used to working with pipes! In the previous section we saw how to use R's `head()` function to look at the first six rows of the dataset. Here's how to achieve the same outcome with the use of the pipe (`%>%`) operator.
+Pipes are a functionality that is included in a package that is part of `{tidyverse}` library. At first, the syntax may seem a bit strange, but pipes allow you to easily manipulate data without having to rename and save the data set along the way. We'll use pipes extensively in our course. In the previous section we saw how to use R's `head()` function to look at the first six rows of the dataset. Here's how to achieve the same outcome with the use of the pipe (`%>%`) operator.
 
-```{r echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
-mpg %>%
-  head() %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+```{r echo = TRUE, eval = FALSE}
+batted_balls %>%
+  head()
 ```
 
-You can read the code above as saying "take the `mpg` dataset, and plug it into the `head()` function". Putting `head()` indented on a new line is not necessary for the code to work, but it does make the code easier to read. This new method of asking for the `head()` of the dataset may seem silly and inefficient, but the real magic of the pipe is that it allows us to chain operations together in a way that mimics the way humans think about instructions. We'll see this in action as we get exposure to more data manipulation tools below.
+You can read the code above as saying "take the `batted_balls` data set, and plug it into the `head()` function". Putting `head()` indented on a new line is not necessary for the code to work, but it does make the code easier to read. 
+
+6. Rewrite your functions from earlier to use the pipe operator.
+
+This new method of asking to view our data may seem silly and inefficient, but the real magic of the pipe is that it allows us to chain operations together in a way that mimics the way humans think about instructions. We'll see this in action as we get exposure to more data manipulation tools below.
 
 ### Restricting Data
 
@@ -101,73 +113,73 @@ The most common methods for restricting data deal with filtering out rows or col
 
 #### Filtering Rows (`filter()`)
 
-Sometimes we are not interested in all of the observations in a particular dataset, but only those satisfying certain criteria. For example, maybe we only want to see vehicles falling into the class of *subcompact* cars. The `filter()` function will allow us to get rid of all other classes of vehicle.
+Sometimes we are not interested in all of the observations in a particular data set, but only those satisfying certain criteria. For example, maybe we only want to see `batted_balls` where the `pitch_name` is `"Changeup"`. The `filter()` function will allow us to get rid of all other classes of `pitch_type`.
 
-```{r echo = TRUE, eval = TRUE}
-mpg %>% 
-  filter(class == "subcompact") %>%
-  head() %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+```{r echo = TRUE, eval = FALSE}
+batted_balls %>% 
+  filter(pitch_name == "Changeup") %>%
+  head()
 ```
 
-We can also use more complex conditions on which rows to see using *and* (`&`) and *or* (`|`) statements. Maybe we want to see only those vehicles in the made by `subaru` or  getting at least a 35 highway mile per gallon rating (`hwy`).
+We can also use more complex conditions on which rows to see using *and* (`&`) and *or* (`|`) statements. Maybe we want to see only those `batted_balls` whose `bearing` is `"center"` and whose `launch_speed` exceeds 100mph.
 
-```{r echo = TRUE, eval = TRUE}
-mpg %>% 
-  filter(manufacturer == "subaru" | hwy >= 35) %>%
-  head()  %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+```{r echo = TRUE, eval = FALSE}
+batted_balls %>% 
+  filter((bearing == "center") & (launch_speed > 100)) %>%
+  head()
 ```
+
+7. Add another new code cell and use it to write and execute the filtering operations above. Verify that they work as expected.
+
+8. Create a copy of the code to show `batted_balls` whose `bearing` is `"center"` **and** whose `launch_speed` exceeds 100mph, and change it so that you obtain all `batted_balls` whose `bearing` is `"center"` **or** whose `launch_speed` exceeds 100mph.
+
+9. Add another new code cell and perform at least one additional filtering operation that you are interested in.
 
 #### Selecting Columns (`select()`)
 
-Similarly to the way we can filter rows, we can select only those columns we are interested in. We can pass the names of the columns we are interested in to R's `select()` function so that we only see those selected columns returned.
+Similarly to the way we can `filter()` rows, we can `select()` only those columns we are interested in. We can pass the names of the columns we are interested in to R's `select()` function so that we only see those selected columns returned.
 
-```{r echo = TRUE, eval = TRUE}
-mpg %>%
-  select(manufacturer, model, year, cty, hwy, class) %>%
-  head()  %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+```{r echo = TRUE, eval = FALSE}
+batted_balls %>%
+  select(batter_team, bb_type, bearing, inning, pitch_mph, launch_speed, launch_angle, is_home_run) %>%
+  head()
 ```
 
 We can also select all columns *except* certain ones by preceding the column name with a `-`.
 
-```{r echo = TRUE, eval = TRUE}
-mpg %>%
-  select(-displ,-cyl) %>%
-  head()  %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+```{r echo = TRUE, eval = FALSE}
+batted_balls %>%
+  select(-bip_id,-batter_id, -pitcher_id) %>%
+  head()
 ```
 
 The `select()` function is also useful for changing the order of the columns.
 
-```{r echo = TRUE, eval = TRUE}
-mpg %>%
-  select(cty, hwy, manufacturer) %>%
-  head() %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+```{r echo = TRUE, eval = FALSE}
+batted_balls %>%
+  select(batter_name, pitcher_name, bb_type, is_home_run, everything()) %>%
+  head()
 ```
+
+In the code cell above, we used a helper function `everything()` inside of `select()` to indicate that we wanted all of the remaining columns in their original order.
+
+10. Open another new code cell to confirm that the code from the blocks above work as expected.
+
+11. In an additional new code cell, explore the use of `select()` on your own. Can you call `select()` twice in a pipeline? Try it! What happens?
 
 We can combine `filter()` and `select()` through the pipe as well. For any pipe, the result of the "upstream" code (the code before the pipe) is passed into the function that follows the pipe.
 
-```{r echo = TRUE, eval = TRUE}
-mpg %>%
-  filter(year >= 2005) %>%
-  select(manufacturer, model, year, cty, hwy, class) %>%
-  head() %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+```{r echo = TRUE, eval = FALSE}
+batted_balls %>%
+  filter(home_team == "BOS") %>%
+  select(away_team, batter_team, batter_name, pitcher_name, bb_type, bearing, pitch_name, is_home_run) %>%
+  head()
 ```
 
-**A Note on Pipes:** The advantage to the pipe operator is probably pretty clear by now. The code we just wrote says *take the `mpg` data set, filter it so that we only see cars manufactured since 2005, show me only the few columns I am interested in, and just let me see the first six rows for now*. The alternative to this would be writing code that looks a lot less readable:
+**A Note on Pipes:** The advantage to the pipe operator is probably pretty clear by now. The code we just wrote says *take the `batted_balls` data set, filter it so that we only see batted balls when Boston is the home team, show me only the few columns I am interested in, and just let me see the first six rows for now*. The alternative to this would be writing code that looks a lot less readable:
 
 ```{r echo = TRUE, eval = FALSE}
-head(select(filter(mpg, year >= 2005), manufacturer, model, year, cty, hwy, class))
+head(select(filter(batted_balls, home_team == "BOS"), away_team, batter_team, batter_name, pitcher_name, bb_type, bearing, pitch_name, is_home_run))
 ```
 
 ### Summarizing Data
@@ -176,83 +188,93 @@ There are lots of ways we can summarize our data. We can provide simple counts, 
 
 #### Computing Counts
 
-We can start with a simple question like, *how many cars from each manufacturer are contained in this dataset?* To answer this, we simply pipe the `mpg` data frame into the `count()` function, identifying the `manufacturer` column as the column we wish to count.
+We can start with a simple question like, *how many batted balls from each team are contained in this data set?* To answer this, we simply pipe the `batted_balls` data frame into the `count()` function, identifying the `batter_team` column as the column we wish to count.
 
-```{r echo = TRUE, eval = TRUE}
-mpg %>%
-  count(manufacturer) %>%
-  head() %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+```{r echo = TRUE, eval = FALSE}
+batted_balls %>%
+  count(batter_team) %>%
+  head()
 ```
 
-The counts are displayed in alphabetical order by manufacturer. We might be interested in the most well-represented manufacturers. We'll do this with `arrange()` -- we can pass this function the argument `desc(n)` to say that we want to arrange by our new count column in descending order, and let's ask for the top 10 rows instead of the top 6.
+12. Open another new code cell in your notebook and use it to run the code above.
 
-```{r echo = TRUE, eval = TRUE}
-mpg %>%
-  count(manufacturer) %>%
-  arrange(desc(n)) %>%
-  head(n = 10) %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+The counts are displayed in alphabetical order by `batter_team`. We might be interested in the teams with the most `batted_balls`. We'll do this with `arrange()` -- we can pass this function the argument `-n` to say that we want to arrange by our new count column in descending order, and let's ask for the top 10 rows instead of the top 6.
+
+```{r echo = TRUE, eval = FALSE}
+batted_balls %>%
+  count(batter_team) %>%
+  arrange(-n) %>%
+  head(10)
 ```
 
-Let's say we wanted to know how many different models of car each manufacturer has released since the year 2000. This is a more complicated question. We would first need to filter the data so that we are only considering cars manufactured since the year 2000. Then we would subset to include only the `manufacturer` and `model` columns. There are lots of duplicates here, so we would want to remove them with a function called `distinct()`, and then finally we could count occurrences within each `manufacturer`
+13. Verify that the code above works as described by editing the code in your most recent cell and running it.
 
-```{r echo = TRUE, eval = TRUE}
-mpg %>%
-  filter(year >= 2000) %>%
-  select(manufacturer, model) %>%
-  distinct() %>%
-  count(manufacturer) %>%
-  arrange(desc(n)) %>%
-  head() %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+Let's say we wanted to know how the distribution of `pitch_type` against each of the different teams (`batter_team`) when there are 2 outs (`outs_when_up`). This is a more complicated question. We would first need to filter the data so that we are only considering batted balls, when the number of `outs_when_up` is 2. Then we would `count()` `home_team` and `pitch_name`.
+
+```{r echo = TRUE, eval = FALSE}
+battedballs %>%
+  filter(outs_when_up == 2) %>%
+  count(home_team, pitch_name) %>%
+  head(10)
 ```
+
+14. Again, verify that the code above works as described using a new code cell. Note that adding `head(10)` to our pipeline prevents lots of rows of data being printed into our notebook.
+
+15. Add another new code cell and compute summaries of categorical variables that you find interesting.
 
 #### Summarizing Numerical Data
 
-Summarizing categorical data is most often done with counts, but we've got many more choices when we are working with numerical data. We have several measures of center or spread that we could choose from -- we could even define our own metrics. Let's say we wanted to know the median highway mile per gallon rating across all vehicles in our dataset. We'll need the help of R's `summarize()` function as well as the `median()` function for this.
+Summarizing categorical data is most often done with counts, but we've got many more choices when we are working with numerical data. We have several measures of center or spread that we could choose from -- we could even define our own metrics. Let's say we wanted to know the median `launch_speed` across all of the batted balls in our data set. We'll need the help of R's `summarize()` function as well as the `median()` function for this.
 
-```{r echo = TRUE, eval = TRUE}
-mpg %>% 
-  summarize(median_hwy = median(hwy)) %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+```{r echo = TRUE, eval = FALSE}
+batted_balls %>% 
+  summarize(median_launch_speed = median(launch_speed))
 ```
 
-With the use of `summarize()` we can get multiple summaries at once. Let's compute the mean and standard deviation for both the highway and city mile per gallon ratings across all of the vehicles in our data set.
+15. Open another new code cell in your notebook and try the code above. What do you get for a median launch speed?
 
-```{r echo = TRUE, eval = TRUE}
-mpg %>% 
-  summarize(mean_hwy = mean(hwy), std_deviation_hwy = sd(hwy), mean_cty = mean(cty), std_deviation_cty = sd(cty)) %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+At least one of the rows in our data frame does not have a recorded `launch_speed`. That row contains missing data (`NA`) -- these `NA` values are *contagious*. That is, any calculation done with `NA` values results in an `NA` value. If we don't want this behavior, we can either `filter()` out any rows containing missing values prior to using `summarize()`, or some functions have an `na.rm` argument which can be set to `TRUE` to omit missing values from the calculation.
+
+```{r echo = TRUE, eval = FALSE}
+batted_balls %>%
+  filter(!is.na(launch_speed)) %>%
+  summarize(median_launch_speed = median(launch_speed))
+
+batted_balls %>%
+  summarize(median_launch_speed = median(launch_speed, na.rm = TRUE))
 ```
 
-It might be useful if we could get grouped summary statistics. Let's use `group_by()` to see how these measures vary across the different vehicle classes.
+16. Add the code above to your existing code cell. Execute it to verify that both versions of the calculation for median launch speed result in the same computed value.
 
-```{r echo = TRUE, eval = TRUE, message = FALSE}
-mpg %>%
-  group_by(class) %>%
-  summarize(mean_hwy = mean(hwy), std_deviation_hwy = sd(hwy), mean_cty = mean(cty), std_deviation_cty = sd(cty)) %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+17. Using a new code cell, compute the maximum (`max()`) launch angle for a batted ball in the data set.
+
+With the use of `summarize()` we can get multiple summaries at once. Let's compute the mean and standard deviation for both the `pitch_mph` and `launch_speed` across all of the batted balls in our data set.
+
+```{r echo = TRUE, eval = FALSE}
+batted_balls %>% 
+  summarize(mean_pitch_mph = mean(pitch_mph, na.rm = TRUE), std_deviation_pitch_mph = sd(pitch_mph, na.rm = TRUE), mean_launch_speed = mean(launch_speed, na.rm = TRUE), std_deviation_launch_speed = sd(launch_speed, na.rm = TRUE))
 ```
 
-Let's arrange the result here by mean highway mile per gallon rating in the default ascending order.
+18. As usual, open a code cell to compute the summary statistics using the code above.
 
-```{r echo = TRUE, eval = TRUE, message = FALSE}
-mpg %>%
-  group_by(class) %>%
-  summarize(mean_hwy = mean(hwy), std_deviation_hwy = sd(hwy), mean_cty = mean(cty), std_deviation_cty = sd(cty)) %>%
-  arrange(mean_hwy) %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+It might be useful if we could get grouped summary statistics. Let's use `group_by()` to see how these measures vary across pitch type (`pitch_name`).
+
+```{r echo = TRUE, eval = FALSE, message = FALSE}
+batted_balls %>% 
+  group_by(pitch_name) %>%
+  summarize(mean_pitch_mph = mean(pitch_mph, na.rm = TRUE), std_deviation_pitch_mph = sd(pitch_mph, na.rm = TRUE), mean_launch_speed = mean(launch_speed, na.rm = TRUE), std_deviation_launch_speed = sd(launch_speed, na.rm = TRUE))
 ```
 
-That's pretty informative although not totally surprising. Subcompact cars seem to have a high level of variation in their mpg ratings though!
+19. Use a code cell to verify the results of the code above. Can you arrange the results in order of mean launch speed, from slowest to fastest?
+
+```{r echo = TRUE, eval = FALSE}
+batted_balls %>%
+  group_by(pitch_name) %>%
+  summarize(mean_pitch_mph = mean(pitch_mph, na.rm = TRUE), std_deviation_pitch_mph = sd(pitch_mph, na.rm = TRUE), mean_launch_speed = mean(launch_speed, na.rm = TRUE), std_deviation_launch_speed = sd(launch_speed, na.rm = TRUE)) %>%
+  arrange(mean_launch_speed)
+```
+
+That's pretty informative! Do you notice anything surprising in the output?
 
 ### Transforming Data
 
@@ -261,34 +283,80 @@ Often, you may be in a situation where you would like to create new columns, usi
 ```{r echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
 dataset %>%
   mutate(new_column_name = function_of_old_columns)
+batted_balls
 ```
 
-In the `mpg` dataset, let's add a column which is the ratio between the city `cty` and highway `hwy` gas milages, and use the `arrange()` function to find cars with the highest city to highway gas milages:
+In the `batted_balls` data set, let's add a computed column for the vertical launch velocity of the batted ball. The vertical launch velocity can be computed as `launch_speed` * `sin(launch_angle*(pi/180))`.
 
-```{r echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
-mpg %>%
-  mutate(mpg_ratio = cty/hwy) %>%
-  select(manufacturer,model,cty,hwy,mpg_ratio) %>%
-  arrange(desc(mpg_ratio)) %>%
-  head() %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+```{r echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+batted_balls %>%
+  mutate(
+    vertical_launch_velocity = launch_speed * sin(launch_angle*(pi/180))
+  )
 ```
 
-Once pretty common step in an analysis is to create a categorical column from a variable which was originally numeric. In order to do this we can use the `if_else()` function. The three arguments of `if_else()` are a condition, and the values you want to fill if the condition is true or false, respectively.
+20. Again, add a code cell to verify that the code above works as described.
 
-```{r echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
-mpg %>%
-  mutate(pre_2000 = if_else(year < 2000, "yes", "no")) %>%
-  select(manufacturer,model,year,pre_2000) %>%
-  head() %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("hover", "striped"))
+21. Update your code to add another column for the `horizontal_launch_velocity`. It is computed the same way, but uses `cos()` instead of `sin()`. You can do this by piping your existing code into another `mutate()` or by separating the columns to be computed by a comma in a single call to `mutate()`.
+
+Once pretty common step in an analysis is to create a categorical column from a variable which was originally numeric. In order to do this we can use the `case_when()` function. The structure of this function is a collection of subsequent tests and their corresponding results if true. It will be easier to see in an example.
+
+```{r echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+batted_balls %>%
+  mutate(launch_speed_categorical = case_when(
+    (launch_speed > 100) ~ "Very Fast",
+    (launch_speed > 80) ~ "Fast",
+    (launch_speed > 65) ~ "Meh",
+    (launch_speed > 40) ~ "Kinda Slow",
+    (is.na(launch_speed)) ~ NA,
+    TRUE ~ "Was it even moving?"
+  ))
 ```
 
+22. Use another new code cell to try the code above. Before you execute the code, what do you think should happen? After executing the code, do your expectations match the output?
+
+### Joining Data
+
+It's not always the case that our data all lives neatly in a single table. Most often our data is split across multiple tables. This is the case in our baseball scenario. Useful information is stored away in the `park_dimensions()` data set. Storing this data separately reduces redundancy, reduces storage size, and improves reliability. If we want to use `park_dimensions` information in understanding our `batted_balls` data, then we can *join* the `park_dimensions` data onto our `batted_balls` data. A *join* matches two tables using at least one shared column -- the resulting table includes columns from both of the individual tables.
+
+There are several different types of join, but we'll almost always be able to get away with a *left-join*. This particular type of join begins with a table (on the left) and adds columns from another table (the table on the right) by matching on a shared column(s).
+
+A left-join to add the `park_dimensions` variables onto the `batted_balls` data appears below.
+
+```{r echo = TRUE, eval = FALSE, message = FALSE}
+batted_balls %>%
+  left_join(park_dimensions, by = c("park" = "park"))
+```
+
+The `by` argument is a list of column matches. The name of the column in the table on the left (the one before the pipe) appears to the left of the equals sign (=), and the name of the column in the table on the right appears after the equal sign. If we are joining on multiple columns, we can use a comma (,) and include additional sets of column matches inside of the `c()` function after `by`.
+
+23. Include another additional code cell and verify that the resulting data frame includes all of the original columns from `batted_balls` as well as the columns from `park_dimensions`. You can spot-check a few rows to ensure that the correct park dimension data has been appended to each row.
+
+## Misc Additional Items
+
+There is much that we haven't covered, but a few things definitely worth a quick mention are:
+
++ All of the changes we've made to the `batted_balls` data frame here are temporary. If we want to make any permanent changes, we'll need to store the results of our data manipulation as a new object with the arrow operator (`<-`). We overwrite the original object if we use the same name, but can use a different name and keep the original object available in our Global Environment. For example,
+
+    ```{r echo = TRUE, eval = FALSE}
+    bb_with_park_dims <- batted_balls %>%
+      left_join(park_dimensions, by = c("park" = "park"))
+    ```
+
++ The table outputs we've obtained while running our code look quite nice. If we `Knit` our document (using the blue ball of yarn icon), then the tables appearing in the HTML output are not nearly as readable. The `kableExtra` package provides functionality to convert our tables into visually pleasing components of our HTML document. For example, 
+
+    ```{r echo = TRUE, eval = FALSE}
+    library(kableExtra)
+    bb_with_park_dims %>%
+      head() %>%
+      kable() %>%
+      kable_styling(bootstrap_options = c("hover", "striped"))
+    ```
+
+The code in the block above will produce a nicely formatted table in which the rows are striped and if we hover over a row of our table then it will be highlighted in the HTML document. Try adding a code cell as above and then re-knitting your document. See how nice this table looks? You might copy and paste these lines to the end of each of our code cells in this notebook that output tables. The document resulting from your knitting will be much more visually pleasing.
 
 ## Final Thoughts
 
-There is a lot more to learn about data manipulation and R in general. Sticking to the `tidyverse` and the other package groups within the *tidy*-ecosystem (ie. `tidytext`, `tidymodels`, etc.) will be beneficial because they are all built on common syntax and programmatic principles. You can read more about this in the [TidyTools Manifesto](https://tidyverse.tidyverse.org/articles/manifesto.html).
+There is a lot more to learn about data manipulation and R in general. Sticking to the `{tidyverse}` and the other package groups within the *tidy*-ecosystem (ie. `{tidytext}`, `{tidymodels}`, etc.) will be beneficial because they are all built on common syntax and programmatic principles. You can read more about this in the [TidyTools Manifesto](https://tidyverse.tidyverse.org/articles/manifesto.html).
 
-You won't be an expert after working through this document, but it should provide you with a solid start. Please feel free to add your own notes to this markdown file as we encounter more advanced functionality.
+You won't be an expert after working through this document, but it should provide you with a solid start. Please feel free to continue adding notes to your markdown file as we encounter more advanced functionality.
