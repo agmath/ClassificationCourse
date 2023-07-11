@@ -161,7 +161,8 @@ my_data %>%
                width = 0.02) +
   geom_jitter(aes(x = pitch_mph, y = -0.06, 
                   color = pitch_name), 
-              height = 0.02) +
+              height = 0.02,
+              alpha = 0.4) +
   facet_wrap(~ fct_reorder(pitch_name, pitch_mph, median), ncol = 1) +
   labs(title = "Distributions of Pitch Speed (mph) by Pitch Type",
        x = "Speed (mph)",
