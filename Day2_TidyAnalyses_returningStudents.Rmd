@@ -14,45 +14,50 @@ library(kableExtra)
 
 **Purpose:** This notebook will help you remind yourself of the following items.
 
-  + How do I install and load packages in R? In particular we'll work with the `tidyverse`.
+  + How do I install and load packages in R? In particular we'll work with the `{tidyverse}`.
   + How do I read data into R?
-  + How do I interact with, and manipulate, data using the tools and principles of the `tidyverse`?
+  + How do I interact with, and manipulate, data using the tools and principles of the `{tidyverse}`?
   
 ## Dataset Choices
 
-Since you already have exposure to working with data in R, you'll have a pretty unstructured analysis to do. That means you get to decide what interesting questions to ask and how to answer them. Choose either of the following datasets to utilize.
+Since you already have exposure to working with data in R, you'll have a pretty unstructured analysis to do. That means you get to decide what interesting questions to ask and how to answer them. Choose either of the following data sets to utilize.
 
 + [FAA Wildlife Airstrikes and Engine Damage](https://www.kaggle.com/competitions/sliced-s01e02-xunyc5/data)
 + [MLB Hits and Home Runs](https://www.kaggle.com/competitions/sliced-s01e09-playoffs-1/data?select=train.csv)
 
-The *hits and home runs* data perhaps provides a greater challenge than the FAA dataset since the MLB data is split across three tables. Choosing the MLB data set will give you the opportunity to practice with *joins*.
+The *hits and home runs* data perhaps provides a greater challenge than the FAA data set since the MLB data is split across three tables. Choosing the MLB data set will give you the opportunity to practice with *joins*.
 
-Choose which data you'd prefer to work with and download the corresponding `train.csv` file. Move the file into a convenient location on your computer -- you may need to unzip it. If you choose the MLB data, then also download `park_dimensions.csv`.
+Choose which data you'd prefer to work with. For convenience, I've extracted smaller versions of these data sets and uploaded them to one of my GitHub repositories [here](https://github.com/agmath/agmath.github.io/tree/master/data/classification). 
   
 ## Setup
 
-Use `File -> New File -> R Markdown...` to create a new R Markdown notebook. Clear out the boilerplate and use the `setup` chunk to load the `tidyverse` and `tidymodels` libraries. You may also want to load `kableExtra` for printing out nicely formatted tables in your knitted notebook.
+Use `File -> New File -> R Markdown...` to create a new R Markdown notebook. Clear out the boilerplate and use the `setup` chunk to load the `{tidyverse}` and `{tidymodels}` libraries. You may also want to load `{kableExtra}` for printing out nicely formatted tables in your knitted notebook.
 
-Use `read_csv()` to read the `data.csv` file (and any other relevant files`park_dimensions.csv` if applicable) into R using the `setup` chunk. If you are having trouble writing the code, particularly the filepath, to make that happen remember that you can use the `Import Dataset` button from the `Environment` tab to help you. You'll want to copy/paste the code into your notebook rather than using this to actually import your dataset though -- otherwise, you'll need to go through this process every time you reopen the notebook.
+Loading the data from a web URL is convenient because you don't need to download anything. You'll need the following files depending on which topic you'd like to explore:
 
-Create a new code chunk and use it to print out the `head()` of the dataset(s) and provide a description of the overall context of the data.
++ FAA Birdstrikes (`faa_birdstrikes.csv`)
++ MLB Hits and Homeruns (`battedballs.csv` and `park_dimensions.csv`)
+
+To load the data, you'll click on the file name and then look for the button labeled `Raw` in the grey banner above the displayed data. Click that button and then copy the URL from your web browser (the URL should start with `raw.githubusercontent.com/...`). In the `setup` code chunk, use `read_csv()` with the URL in quotations to read the data into your notebook. Don't forget to use the arrow operator (`<-`) to store your data into a named object, and don't forget to read in both files if you are working with the baseball data.
+
+Create a new code chunk and use it to print out the `head()` of the data set(s) and provide a description of the overall context of the data.
 
 ## Training and Test Data
 
 You've had previous exposure to statistical modeling and you know of the importance in splitting your data into training and test sets. We use *test* observations to assess our model's performance in an unbiased manner. These assessments are only unbiased if we don't know anything about the observations in our test set though. We need to be very careful that neither we, nor our model(s), learn anything about the observations in our test set.
 
-That being said, there are still some questions worth asking about the full dataset. For example, 
+That being said, there are still some questions worth asking about the full data set. For example, 
 
-+ Are there missing values in our dataset?
-+ Is there severe class imbalance associated with categorical variables in our dataset? Particularly, is there severe class imbalance associated with our response variable?
++ Are there missing values in our data set?
++ Is there severe class imbalance associated with categorical variables in our data set? Particularly, is there severe class imbalance associated with our response variable?
 
-Why might we want to know answers to these questions? Answer them for your dataset.
+Why might we want to know answers to these questions? Answer them for your data set.
 
 Once you have these answers, use `initial_split()` and its corresponding helper functions to split your data into *training* and *test* sets. Look into the `strata` argument and determine if you should be using it. Use it if so, and don't forget to set a seed so that you are always obtaining the same *training* and *test* data.
 
 ## Univariate Questions
 
-Univariate questions are questions involving a single variable. These types of questions are useful towards gaining insight into the distribution of your variables. In particular, understanding the distribution of the response variable is important (as it was above). These questions can also give us insight into whether the random *training* set we've obtained is somehow not representative of the overall dataset we began with. For example, are some categories vastly over- or under-represented in our training set?
+Univariate questions are questions involving a single variable. These types of questions are useful towards gaining insight into the distribution of your variables. In particular, understanding the distribution of the response variable is important (as it was above). These questions can also give us insight into whether the random *training* set we've obtained is somehow not representative of the overall data set we began with. For example, are some categories vastly over- or under-represented in our training set?
 
 Justify asking several univariate questions about your training data and answer them. Be sure to include narrative text and not just code as you run these analyses.
 

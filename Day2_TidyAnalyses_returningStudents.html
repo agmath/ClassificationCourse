@@ -337,17 +337,17 @@ Students</h1>
 of the following items.</p>
 <ul>
 <li>How do I install and load packages in R? In particular we’ll work
-with the <code>tidyverse</code>.</li>
+with the <code>{tidyverse}</code>.</li>
 <li>How do I read data into R?</li>
 <li>How do I interact with, and manipulate, data using the tools and
-principles of the <code>tidyverse</code>?</li>
+principles of the <code>{tidyverse}</code>?</li>
 </ul>
 <div id="dataset-choices" class="section level2">
 <h2>Dataset Choices</h2>
 <p>Since you already have exposure to working with data in R, you’ll
 have a pretty unstructured analysis to do. That means you get to decide
 what interesting questions to ask and how to answer them. Choose either
-of the following datasets to utilize.</p>
+of the following data sets to utilize.</p>
 <ul>
 <li><a href="https://www.kaggle.com/competitions/sliced-s01e02-xunyc5/data">FAA
 Wildlife Airstrikes and Engine Damage</a></li>
@@ -355,34 +355,40 @@ Wildlife Airstrikes and Engine Damage</a></li>
 Hits and Home Runs</a></li>
 </ul>
 <p>The <em>hits and home runs</em> data perhaps provides a greater
-challenge than the FAA dataset since the MLB data is split across three
+challenge than the FAA data set since the MLB data is split across three
 tables. Choosing the MLB data set will give you the opportunity to
 practice with <em>joins</em>.</p>
-<p>Choose which data you’d prefer to work with and download the
-corresponding <code>train.csv</code> file. Move the file into a
-convenient location on your computer – you may need to unzip it. If you
-choose the MLB data, then also download
-<code>park_dimensions.csv</code>.</p>
+<p>Choose which data you’d prefer to work with. For convenience, I’ve
+extracted smaller versions of these data sets and uploaded them to one
+of my GitHub repositories <a href="https://github.com/agmath/agmath.github.io/tree/master/data/classification">here</a>.</p>
 </div>
 <div id="setup" class="section level2">
 <h2>Setup</h2>
 <p>Use <code>File -&gt; New File -&gt; R Markdown...</code> to create a
 new R Markdown notebook. Clear out the boilerplate and use the
-<code>setup</code> chunk to load the <code>tidyverse</code> and
-<code>tidymodels</code> libraries. You may also want to load
-<code>kableExtra</code> for printing out nicely formatted tables in your
-knitted notebook.</p>
-<p>Use <code>read_csv()</code> to read the <code>data.csv</code> file
-(and any other relevant files<code>park_dimensions.csv</code> if
-applicable) into R using the <code>setup</code> chunk. If you are having
-trouble writing the code, particularly the filepath, to make that happen
-remember that you can use the <code>Import Dataset</code> button from
-the <code>Environment</code> tab to help you. You’ll want to copy/paste
-the code into your notebook rather than using this to actually import
-your dataset though – otherwise, you’ll need to go through this process
-every time you reopen the notebook.</p>
+<code>setup</code> chunk to load the <code>{tidyverse}</code> and
+<code>{tidymodels}</code> libraries. You may also want to load
+<code>{kableExtra}</code> for printing out nicely formatted tables in
+your knitted notebook.</p>
+<p>Loading the data from a web URL is convenient because you don’t need
+to download anything. You’ll need the following files depending on which
+topic you’d like to explore:</p>
+<ul>
+<li>FAA Birdstrikes (<code>faa_birdstrikes.csv</code>)</li>
+<li>MLB Hits and Homeruns (<code>battedballs.csv</code> and
+<code>park_dimensions.csv</code>)</li>
+</ul>
+<p>To load the data, you’ll click on the file name and then look for the
+button labeled <code>Raw</code> in the grey banner above the displayed
+data. Click that button and then copy the URL from your web browser (the
+URL should start with <code>raw.githubusercontent.com/...</code>). In
+the <code>setup</code> code chunk, use <code>read_csv()</code> with the
+URL in quotations to read the data into your notebook. Don’t forget to
+use the arrow operator (<code>&lt;-</code>) to store your data into a
+named object, and don’t forget to read in both files if you are working
+with the baseball data.</p>
 <p>Create a new code chunk and use it to print out the
-<code>head()</code> of the dataset(s) and provide a description of the
+<code>head()</code> of the data set(s) and provide a description of the
 overall context of the data.</p>
 </div>
 <div id="training-and-test-data" class="section level2">
@@ -395,15 +401,15 @@ anything about the observations in our test set though. We need to be
 very careful that neither we, nor our model(s), learn anything about the
 observations in our test set.</p>
 <p>That being said, there are still some questions worth asking about
-the full dataset. For example,</p>
+the full data set. For example,</p>
 <ul>
-<li>Are there missing values in our dataset?</li>
+<li>Are there missing values in our data set?</li>
 <li>Is there severe class imbalance associated with categorical
-variables in our dataset? Particularly, is there severe class imbalance
+variables in our data set? Particularly, is there severe class imbalance
 associated with our response variable?</li>
 </ul>
 <p>Why might we want to know answers to these questions? Answer them for
-your dataset.</p>
+your data set.</p>
 <p>Once you have these answers, use <code>initial_split()</code> and its
 corresponding helper functions to split your data into <em>training</em>
 and <em>test</em> sets. Look into the <code>strata</code> argument and
@@ -419,7 +425,7 @@ distribution of your variables. In particular, understanding the
 distribution of the response variable is important (as it was above).
 These questions can also give us insight into whether the random
 <em>training</em> set we’ve obtained is somehow not representative of
-the overall dataset we began with. For example, are some categories
+the overall data set we began with. For example, are some categories
 vastly over- or under-represented in our training set?</p>
 <p>Justify asking several univariate questions about your training data
 and answer them. Be sure to include narrative text and not just code as
