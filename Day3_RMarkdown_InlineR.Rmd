@@ -154,6 +154,6 @@ This would now allow us to rewrite the sentence with inline R code from above as
 
 ## Next Steps
 
-Try what you've learned by working with our Kaggle InClass competition data on property price ranges in an R Markdown notebook. If you already worked with the competition data back on Day 2, you should revisit that notebook and identify opportunities to utilize inline R code, otherwise you should start a new R Markdown notebook. Be sure to keep your notebook in the directory corresponding to your GitHub repository that is being managed by RStudio -- don't forget to `Pull -> Commit -> Push` your changes to your GitHub repository when you are done.
+Your next homework assignment will give you an opportunity to try what you've learned by working with our Kaggle InClass competition data on property price ranges in an R Markdown notebook. Be sure to keep your notebook in the directory corresponding to your GitHub repository that is being managed by RStudio -- don't forget to `Pull -> Commit -> Push` your changes to your GitHub repository when you want to create checkpoints for your notebook.
 
 See Slack for a link to the Kaggle Competition site, where our data lives.
