@@ -136,6 +136,9 @@ For now, having some basic rules of thumb for plot geometries might be helpful:
 
 I don't think you'll learn much more by *reading*. Let's start *doing*. Think of some plots that you'd like to build that will help you better understand your data. Briefly discuss those plots and what you hope they'll tell you, and then build them into your notebook! Just remember to use your `train`ing when building these plots.
 
++ Include several *univariate* plots to better understand individual variables.
++ Move to *multivariate* plots to understand where associations between variables may exist.
+
 ***
 
 ## Recreate my Viz
