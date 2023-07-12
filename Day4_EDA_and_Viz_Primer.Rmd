@@ -15,8 +15,6 @@ library(kableExtra)
 
 ## Getting Started and Basics
 
-If you haven't done so already, open up the [EDA and `ggplot` Review](https://agmath.github.io/ClassificationCourse/x_DataViz_Primer.html). You'll likely want to use it as a reference.
-
 The goal of any exploratory data analysis (EDA) is to learn about and from our data. You did some of that in Days 2 and 3, where you looked at techniques for *tidy* data analyses in R and also inline reporting within R Markdown documents. While summary statistics are great, sometimes visuals are even more effective at helping us (and our readers) understand the data we are working with. This notebook will focus on data visualization using `ggplot()`.
 
 Open RStudio and the notebook you've been working on over the past two class meetings.
@@ -49,7 +47,7 @@ train <- training(my_data_split)
 test <- testing(my_data_split)
 ```
 
-The first line sets a seed for our random number generator so that our same results are reproduced each time we run the notebook. The second line marks each observation as belonging to training data or test data, with 80% of observations going to training. The third and fourth lines collect the *training* and *test* sets into their own data frames.
+The first line sets a seed for our random number generator so that our same results are reproduced each time we (or our collaborators) run the notebook. The second line marks each observation as belonging to training data or test data, with 80% of observations going to training. The third and fourth lines collect the *training* and *test* sets into their own data frames.
 
 In general, we'll do this near the beginning of any analysis. If you completed your tidy analysis work on your full data set, you can add this to the bottom of your notebook and just make note that we'll split into *training* and *test* sets at the beginning of our analyses from here on out.
 
