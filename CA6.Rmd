@@ -1,0 +1,35 @@
+---
+title: "MAT434: Competition Assignment 6"
+author: "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+Complete the following:
+
+1. Open RStudio and use `File -> Recent Projects` to select and open the R Project which is managing your GitHub repository.
+
+2. Use `File -> Open File...` and navigate to the location of your R Markdown notebook from Competition Assignment 2. Open it.
+
+3. Add code to your `setup` chunk which will load any packages you want to use to build deep learning models. Run all of the code in your existing notebook. 
+
+4. Return to your *Model Construction and Interpretation* section. Train at least one deep learning model. Are you able to outperform your best existing model or ensemble?
+
+    + While Neural Networks are not known for their interpretability, be sure to discuss your modeling decisions (architecture, activation functions, etc.) and why you are making the choices you are making.
+
+5. Add a *Conclusions* section to your analytics report.
+
+    + We'll omit the *Executive Summary* and *Introduction* sections from this analytics report, but you'll include those sections in the analytics report corresponding to your final course project.
+
+6. When you are done, use the blue ball of yarn button to knit the notebook into an HTML document. 
+
+7. Use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new files to your remote repository at GitHub.
+
+Stop by my office if you have any questions or need help.

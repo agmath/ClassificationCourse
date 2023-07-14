@@ -1,0 +1,41 @@
+---
+title: "MAT434: Competition Assignment 2"
+author: "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+Complete the following:
+
+1. Open RStudio and use `File -> Recent Projects` to select and open the R Project which is managing your GitHub repository.
+
+2. Use `File -> Open File...` and navigate to the location of your R Markdown notebook from Competition Assignment 1. Open it.
+
+3. Run all of the code in your existing notebook. 
+
+4. Use what you know about the competition and the data set to write an appropriate *Statement of Purpose* for the analysis and modeling you'll be doing throughout this competition. 
+
+    + As a reminder, a *Statement of Purpose* is a really short (2 - 3 sentences) description of the purpose of the project. It very pointedly answers three questions, (i) what are we doing?, (ii) who are we doing it for?, and (iii) why do they care/how do they benefit? You can think of the *Statement of Purpose* as a very brief project proposal.
+    
+5. Open a new code cell and split your data into training and test sets. Don't forget to set a seed. Think about whether you should use the `strata` argument for `initial_split()` and use it if you believe you should.
+
+6. Conduct an exploratory data analysis using your *training* data to learn more about your data set. One of your major goals in this section of your [analytics report](https://agmath.github.io/RegressionCourse/WhatIsAnAnalyticsReport.html) should be to understand which of your available features (or engineered features) are most closely associated with your response variable.
+
+    + This section of your analytics report should include a mixture of discussion and code. You'll need to use narrative discussion (text) to help walk your reader through your analysis. They should understand what you are doing and why you are doing it. 
+
+7. When you are done, use the blue ball of yarn button to knit the notebook into an HTML document. 
+
+    + You can do this step more often if you like. I do it fairly frequently because I like to see what my rendered notebook looks like.
+
+8. Use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new files to your remote repository at GitHub.
+
+    + Again, you can do this step more often if you like. One advantage to committing and pushing often is that doing so saves *checkpoints* in your project that you can revert back to if you decide that your analysis took a wrong turn.
+
+Stop by my office if you have any questions or need help.
