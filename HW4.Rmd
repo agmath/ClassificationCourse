@@ -1,0 +1,31 @@
+---
+title: "MAT434: Homework 4"
+author: "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+You've started building a [professional GitHub pages site for yourself](https://agmath.github.io/ClassificationCourse/Day5_GitHubPages.html). My hope is that you'll use this space as a platform to share your work with the wider world. Once you are happy with your site, I hope you'll add a link to it on your resume so that future employers or graduate schools may be able to learn a bit more about you and the type of work you do.
+
+1. Ensure that your site is available on the web. If you type `YOUR_USERNAME.github.io`, you should land on your page.
+  
+  + It will be quite difficult for anyone else to stumble across your site right now. If you want it to eventually be searchable, you'll need to register the site (free) with Google and other search engines.
+  
+2. Ensure that you have a theme that you like which is helping to render your page so that it doesn't look like just black text on a white background (unless you are a real minimalist and want that look).
+
+3. Add a blurb about yourself, your interests, your goals -- anything you'd like to share to the page. Use what you know about markdown to structure the page in a way that is easy to navigate.
+
+4. Add a link to your page which opens the html file corresponding to your *Tidy Analysis*. Note that your *Tidy Analysis* is located in a different repository, so be sure to follow the instructions for how to *Share Files from Another Repository* (they're near the bottom of the document linked at the start of this assignment.)
+
+5. OPTIONAL: Add a picture or digital avatar to your site.
+
+6. OPTIONAL: Add information about other projects you are proud of, or work experiences you've had, to your page.
+
+Stop by my office if you have any questions or need help.

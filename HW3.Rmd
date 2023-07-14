@@ -1,0 +1,22 @@
+---
+title: "MAT434: Homework 3"
+author: "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+Now that you know a bit more about R Markdown and inline R code, find some opportunities to use inline R to automate bits of your discussion. This way, if the data set is updated you won't need to make manual changes.
+
+1. Use inline R in a basic discussion of your data set. Use it to compute and print the number of observations and number of variables into a sentence.
+2. Use inline R to calculate at least three summary statistics in sentences where you are discussing them. 
+3. OPTIONAL: Update as much of your notebook to use inline R as you like. Think of ways that inline R can make your life easier as you write reports and try to implement them.
+4. *Pull, Commit, Push* your changes to your remote GitHub repository. I already have the link to your repository, so you don't even need to submit anything to finish this assignment!
+
+Stop by my office if you have any questions or need help.

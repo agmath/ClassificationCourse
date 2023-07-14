@@ -1,0 +1,17 @@
+---
+title: "MAT434: Homework 1"
+author: "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+1. Please complete the [Software Setup](https://agmath.github.io/ClassificationCourse/SoftwareSetup.html) for our course before our next class meeting. If you have any trouble, please drop by my office and I'll help you.
+
+**Note:** Having a completed setup prior to our next class meeting will be worth a *Homework Assignment* grade.

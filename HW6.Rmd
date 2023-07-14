@@ -1,0 +1,34 @@
+---
+title: "MAT434: Homework 6"
+author: "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+We've spent a couple of class meetings trying to understand which *Spaceship Titanic* passengers were transported to an alternate dimension. We've even built a couple of predictive models which we hope will pre-screen future space travelers to lower the risk of future dimensional transport hazards. I hope we were successful!
+
+Complete the following:
+
+1. Open RStudio and use `File -> Recent Projects...` to select the R Project which is managing your GitHub repository. Confirm that you want to open your project.
+
+2. Use `File -> Recent Files` and choose your *Spaceship Titanic* notebook to open it.
+
+3. Use the blue ball of yarn icon to *knit* your notebook to html.
+
+    + If you have any errors, you'll be forced to fix them before your document can be knitted. Drop by my office if you encounter any challenges and need help.
+
+4. Use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new notebook and changes out to your remote repository.
+
+5. Navigate to your GitHub pages repository on GitHub and update your pages site to include a description of the *Spaceship Titanic* work we've done and a link that will open the html file containing your work. Again, this is a file located in another repository, so you might need to revisit the instructions for [*Sharing Files from Another Repository*](https://agmath.github.io/ClassificationCourse/Day5_GitHubPages.html). 
+
+    + **Note:** Since you've done this before, you may just want to copy, paste, and edit the markdown used to link visitors to your *Tidy Analysis* notebook. This approach is nearly always the route I take when adding new file links to my site.
+
+
+Stop by my office if you have any questions or need help.
