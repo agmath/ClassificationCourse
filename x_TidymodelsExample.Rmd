@@ -14,33 +14,65 @@ library(tidymodels)
 library(kableExtra)
 ```
 
-**Objectives:** This notebook shows an example of a model being assessed and constructed using the framework proposed in notebook `x_ModelingFrameworkAndTidymodelsReview`. We'll use the `penguins` data from the `palmerpenguins` packages and try to predict penguin `species` using the other variables available in the dataset.
+**Objectives:** This notebook shows an example of a model being assessed and constructed using the framework proposed in notebook `x_ModelingFrameworkAndTidymodelsReview`. We'll use the batted balls and home runs data that many of you have been working with for the last several class meetings. If you chose to use the FAA BirdStrikes and Engine Damage data, you should follow along and implement models with your data set.
 
-## The `penguins` data
+## The Data
 
-The `penguins` data set contains measurements on `r penguins %>% nrow()` penguins from the Palmer Research Station in Antarctica. Measurements are mostly physiological, with some demographic information including `sex`, `year` observed, and `island` of observation.
+As a reminder, the MLB batted balls data set was also associated with the park dimensions dataset. We'll load both of those data sets below.
 
 ```{r}
-penguins <- palmerpenguins::penguins %>%
-  filter(!is.na(species))
+batted_balls <- read_csv("https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/battedballs.csv")
 
-penguins %>%
+park_dims <- read_csv("https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/park_dimensions.csv")
+```
+
+Now that the data sets have been read into our notebook, we can view the first few rows of each as a reminder of what we are working with. The first two rows of the `batted_balls` data frame is below.
+
+```{r}
+batted_balls %>%
   head(n = 2) %>%
   kable() %>%
   kable_styling(bootstrap_options = c("hover", "striped"))
 ```
 
-In this notebook, we'll show how to assess, fit and use a model to classify observed penguin `species` given physiological attributes. To keep things simple, we'll use `body_mass_g`, `island`, `sex`, and `flipper_length_mm` as predictors.
+Similarly, the first few rows of `park_dims` is displayed next.
+
+```{r}
+park_dims %>%
+  head(n = 2) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+We can see that the two data frames share the `park` column. This means that we can *join* the two data sets together -- adding information about the baseball stadium (including the field dimensions) to the `batted_balls` data frame. It is reasonable that knowing about the park dimensions will be helpful in identifying whether a batted ball is going to be a home run (hit over the outfield fence) or not.
+
+```{r}
+batted_balls_parks <- batted_balls %>%
+  left_join(park_dims,
+            by = c("park" = "park"))
+
+batted_balls_parks %>%
+  head(2) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+Success!
+
+In this notebook, we'll show how to assess, fit and use a model to classify whether a batted ball will result in a home run (`is_home_run`) given features of the scenario leading to the batted ball. To keep things simple, we'll use `pitch_mph`, `launch_speed`, `launch_angle`, and `Cover` as predictors. (**Note:** There are some really great predictors that we've left on the table here.)
 
 ## Splitting Data and Creating Folds
 
 We'll start by splitting our data into *training* and *test* sets and create folds using our *training* data.
 
 ```{r}
+batted_balls_parks <- batted_balls_parks %>%
+  mutate(is_home_run = ifelse(is_home_run == 0, "no", "yes"))
+
 set.seed(123)
-penguin_splits <- initial_split(penguins, prop = 0.75)
-train <- training(penguin_splits)
-test <- testing(penguin_splits)
+bb_splits <- initial_split(batted_balls_parks, prop = 0.75)
+train <- training(bb_splits)
+test <- testing(bb_splits)
 
 set.seed(456)
 train_folds <- vfold_cv(train, v = 3)
@@ -56,7 +88,7 @@ knn_spec <- nearest_neighbor() %>%
   set_engine("kknn") %>%
   set_mode("classification")
 
-knn_rec <- recipe(species ~ body_mass_g + island + sex + flipper_length_mm, data = train) %>%
+knn_rec <- recipe(is_home_run ~ pitch_mph + launch_speed + launch_angle + Cover, data = train) %>%
   step_impute_median(all_numeric_predictors()) %>%
   step_unknown(all_nominal_predictors()) %>%
   step_dummy(all_nominal_predictors())
@@ -70,7 +102,7 @@ dt_spec <- decision_tree() %>%
   set_engine("rpart") %>%
   set_mode("classification")
 
-dt_rec <- recipe(species ~ body_mass_g + island + sex + flipper_length_mm, data = train) %>%
+dt_rec <- recipe(is_home_run ~ pitch_mph + launch_speed + launch_angle + Cover, data = train) %>%
   step_impute_median(all_numeric_predictors()) %>%
   step_unknown(all_nominal_predictors()) %>%
   step_dummy(all_nominal_predictors())
@@ -102,9 +134,9 @@ dt_cv_results %>%
   kable_styling(bootstrap_options = c("hover", "striped"))
 ```
 
-It looks like the nearest neighbor model outperforms the decision tree using both *accuracy* and *ROC-AUC* as the performance metric. Let's fit the nearest neighbors model to the training data.
+It looks like the nearest neighbor model outperforms the decision tree using *ROC-AUC* as the performance metric but not using *accuracy*. We'll discuss more about model performance metrics at our next class meeting. For now, let's fit the nearest neighbor model since both models had comparable *accuracy* but *ROC-AUC* was quite a bite better for nearest neighbors.
 
-## Fit, Assess, and Utilize Our Best Model
+## Fit, Assess, and Utilize Our "Best" Model
 
 We'll start by fitting our best model to our training data.
 
@@ -118,28 +150,31 @@ Now that the model has been fitted, we'll use our model to make predictions on o
 ```{r}
 knn_fit %>%
   augment(test) %>%
-  accuracy(species, .pred_class)
+  mutate(is_home_run = as.factor(is_home_run)) %>%
+  accuracy(is_home_run, .pred_class)
 ```
 
-The model was even more accurate than expected given the cross-validation results. Since it doesn't look like our model is overfit, let's use it to make a prediction on the `species` of a newly observed penguin.
+The model was just about as accurate as expected given the cross-validation results. Since it doesn't look like our model is overfit, let's use it to make a prediction on whether a new batted ball would result in a home run.
 
 ```{r}
-new_penguin <- tibble(
-  body_mass_g = 4750,
-  island = "Dream",
-  sex = "male",
-  flipper_length_mm = 38
+new_hit <- tibble(
+  pitch_mph = 84,
+  launch_speed = 88,
+  launch_angle = 47,
+  Cover = "Outdoor"
 )
 
-new_penguin %>%
+new_hit %>%
   kable() %>%
   kable_styling(bootstrap_options = c("hover", "striped"))
 
 knn_fit %>%
-  augment(new_penguin) %>%
+  augment(new_hit) %>%
   kable() %>%
   kable_styling(bootstrap_options = c("hover", "striped"))
 ```
+
+Looks like our model is very certain that won't be a home run.
 
 ## Summary
 

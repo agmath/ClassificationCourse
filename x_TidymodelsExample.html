@@ -652,171 +652,772 @@ Model Construction`</h1>
 <p><strong>Objectives:</strong> This notebook shows an example of a
 model being assessed and constructed using the framework proposed in
 notebook <code>x_ModelingFrameworkAndTidymodelsReview</code>. We’ll use
-the <code>penguins</code> data from the <code>palmerpenguins</code>
-packages and try to predict penguin <code>species</code> using the other
-variables available in the dataset.</p>
-<div id="the-penguins-data" class="section level2">
-<h2>The <code>penguins</code> data</h2>
-<p>The <code>penguins</code> data set contains measurements on 344
-penguins from the Palmer Research Station in Antarctica. Measurements
-are mostly physiological, with some demographic information including
-<code>sex</code>, <code>year</code> observed, and <code>island</code> of
-observation.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="ot">&lt;-</span> palmerpenguins<span class="sc">::</span>penguins <span class="sc">%&gt;%</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(species))</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">%&gt;%</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
+the batted balls and home runs data that many of you have been working
+with for the last several class meetings. If you chose to use the FAA
+BirdStrikes and Engine Damage data, you should follow along and
+implement models with your data set.</p>
+<div id="the-data" class="section level2">
+<h2>The Data</h2>
+<p>As a reminder, the MLB batted balls data set was also associated with
+the park dimensions dataset. We’ll load both of those data sets
+below.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>batted_balls <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/battedballs.csv&quot;</span>)</span></code></pre></div>
+<pre><code>## Rows: 13000 Columns: 25
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr   (8): home_team, away_team, batter_team, batter_name, pitcher_name, bb_...
+## dbl  (16): bip_id, batter_id, pitcher_id, is_batter_lefty, is_pitcher_lefty,...
+## date  (1): game_date
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>park_dims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/park_dimensions.csv&quot;</span>)</span></code></pre></div>
+<pre><code>## Rows: 30 Columns: 9
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (2): NAME, Cover
+## dbl (7): park, LF_Dim, CF_Dim, RF_Dim, LF_W, CF_W, RF_W
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>Now that the data sets have been read into our notebook, we can view
+the first few rows of each as a reminder of what we are working with.
+The first two rows of the <code>batted_balls</code> data frame is
+below.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
 <table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
-<th style="text-align:left;">
-species
-</th>
-<th style="text-align:left;">
-island
-</th>
 <th style="text-align:right;">
-bill_length_mm
-</th>
-<th style="text-align:right;">
-bill_depth_mm
-</th>
-<th style="text-align:right;">
-flipper_length_mm
-</th>
-<th style="text-align:right;">
-body_mass_g
+bip_id
 </th>
 <th style="text-align:left;">
-sex
+game_date
+</th>
+<th style="text-align:left;">
+home_team
+</th>
+<th style="text-align:left;">
+away_team
+</th>
+<th style="text-align:left;">
+batter_team
+</th>
+<th style="text-align:left;">
+batter_name
+</th>
+<th style="text-align:left;">
+pitcher_name
 </th>
 <th style="text-align:right;">
-year
+batter_id
+</th>
+<th style="text-align:right;">
+pitcher_id
+</th>
+<th style="text-align:right;">
+is_batter_lefty
+</th>
+<th style="text-align:right;">
+is_pitcher_lefty
+</th>
+<th style="text-align:left;">
+bb_type
+</th>
+<th style="text-align:left;">
+bearing
+</th>
+<th style="text-align:left;">
+pitch_name
+</th>
+<th style="text-align:right;">
+park
+</th>
+<th style="text-align:right;">
+inning
+</th>
+<th style="text-align:right;">
+outs_when_up
+</th>
+<th style="text-align:right;">
+balls
+</th>
+<th style="text-align:right;">
+strikes
+</th>
+<th style="text-align:right;">
+plate_x
+</th>
+<th style="text-align:right;">
+plate_z
+</th>
+<th style="text-align:right;">
+pitch_mph
+</th>
+<th style="text-align:right;">
+launch_speed
+</th>
+<th style="text-align:right;">
+launch_angle
+</th>
+<th style="text-align:right;">
+is_home_run
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-Adelie
-</td>
-<td style="text-align:left;">
-Torgersen
-</td>
 <td style="text-align:right;">
-39.1
-</td>
-<td style="text-align:right;">
-18.7
-</td>
-<td style="text-align:right;">
-181
-</td>
-<td style="text-align:right;">
-3750
+61093
 </td>
 <td style="text-align:left;">
-male
+2020-09-11
+</td>
+<td style="text-align:left;">
+TB
+</td>
+<td style="text-align:left;">
+BOS
+</td>
+<td style="text-align:left;">
+BOS
+</td>
+<td style="text-align:left;">
+bogaerts, xander
+</td>
+<td style="text-align:left;">
+snell, blake
 </td>
 <td style="text-align:right;">
-2007
+593428
+</td>
+<td style="text-align:right;">
+605483
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+ground_ball
+</td>
+<td style="text-align:left;">
+center
+</td>
+<td style="text-align:left;">
+Changeup
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1.65
+</td>
+<td style="text-align:right;">
+2.83
+</td>
+<td style="text-align:right;">
+89.5
+</td>
+<td style="text-align:right;">
+58.5
+</td>
+<td style="text-align:right;">
+-47
+</td>
+<td style="text-align:right;">
+0
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-Adelie
-</td>
-<td style="text-align:left;">
-Torgersen
-</td>
 <td style="text-align:right;">
-39.5
-</td>
-<td style="text-align:right;">
-17.4
-</td>
-<td style="text-align:right;">
-186
-</td>
-<td style="text-align:right;">
-3800
+117924
 </td>
 <td style="text-align:left;">
-female
+2020-08-31
+</td>
+<td style="text-align:left;">
+CIN
+</td>
+<td style="text-align:left;">
+STL
+</td>
+<td style="text-align:left;">
+STL
+</td>
+<td style="text-align:left;">
+edman, tommy
+</td>
+<td style="text-align:left;">
+lorenzen, michael
 </td>
 <td style="text-align:right;">
-2007
+669242
+</td>
+<td style="text-align:right;">
+547179
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+ground_ball
+</td>
+<td style="text-align:left;">
+center
+</td>
+<td style="text-align:left;">
+Changeup
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+-0.97
+</td>
+<td style="text-align:right;">
+1.82
+</td>
+<td style="text-align:right;">
+86.4
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+-8
+</td>
+<td style="text-align:right;">
+0
 </td>
 </tr>
 </tbody>
 </table>
+<p>Similarly, the first few rows of <code>park_dims</code> is displayed
+next.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>park_dims <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
+<table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+park
+</th>
+<th style="text-align:left;">
+NAME
+</th>
+<th style="text-align:left;">
+Cover
+</th>
+<th style="text-align:right;">
+LF_Dim
+</th>
+<th style="text-align:right;">
+CF_Dim
+</th>
+<th style="text-align:right;">
+RF_Dim
+</th>
+<th style="text-align:right;">
+LF_W
+</th>
+<th style="text-align:right;">
+CF_W
+</th>
+<th style="text-align:right;">
+RF_W
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Chase Field
+</td>
+<td style="text-align:left;">
+Roof
+</td>
+<td style="text-align:right;">
+328
+</td>
+<td style="text-align:right;">
+407
+</td>
+<td style="text-align:right;">
+335
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+SunTrust Park
+</td>
+<td style="text-align:left;">
+Outdoor
+</td>
+<td style="text-align:right;">
+335
+</td>
+<td style="text-align:right;">
+400
+</td>
+<td style="text-align:right;">
+325
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+16
+</td>
+</tr>
+</tbody>
+</table>
+<p>We can see that the two data frames share the <code>park</code>
+column. This means that we can <em>join</em> the two data sets together
+– adding information about the baseball stadium (including the field
+dimensions) to the <code>batted_balls</code> data frame. It is
+reasonable that knowing about the park dimensions will be helpful in
+identifying whether a batted ball is going to be a home run (hit over
+the outfield fence) or not.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>batted_balls_parks <span class="ot">&lt;-</span> batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">left_join</span>(park_dims,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>            <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;park&quot;</span> <span class="ot">=</span> <span class="st">&quot;park&quot;</span>))</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>batted_balls_parks <span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
+<table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+bip_id
+</th>
+<th style="text-align:left;">
+game_date
+</th>
+<th style="text-align:left;">
+home_team
+</th>
+<th style="text-align:left;">
+away_team
+</th>
+<th style="text-align:left;">
+batter_team
+</th>
+<th style="text-align:left;">
+batter_name
+</th>
+<th style="text-align:left;">
+pitcher_name
+</th>
+<th style="text-align:right;">
+batter_id
+</th>
+<th style="text-align:right;">
+pitcher_id
+</th>
+<th style="text-align:right;">
+is_batter_lefty
+</th>
+<th style="text-align:right;">
+is_pitcher_lefty
+</th>
+<th style="text-align:left;">
+bb_type
+</th>
+<th style="text-align:left;">
+bearing
+</th>
+<th style="text-align:left;">
+pitch_name
+</th>
+<th style="text-align:right;">
+park
+</th>
+<th style="text-align:right;">
+inning
+</th>
+<th style="text-align:right;">
+outs_when_up
+</th>
+<th style="text-align:right;">
+balls
+</th>
+<th style="text-align:right;">
+strikes
+</th>
+<th style="text-align:right;">
+plate_x
+</th>
+<th style="text-align:right;">
+plate_z
+</th>
+<th style="text-align:right;">
+pitch_mph
+</th>
+<th style="text-align:right;">
+launch_speed
+</th>
+<th style="text-align:right;">
+launch_angle
+</th>
+<th style="text-align:right;">
+is_home_run
+</th>
+<th style="text-align:left;">
+NAME
+</th>
+<th style="text-align:left;">
+Cover
+</th>
+<th style="text-align:right;">
+LF_Dim
+</th>
+<th style="text-align:right;">
+CF_Dim
+</th>
+<th style="text-align:right;">
+RF_Dim
+</th>
+<th style="text-align:right;">
+LF_W
+</th>
+<th style="text-align:right;">
+CF_W
+</th>
+<th style="text-align:right;">
+RF_W
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+61093
+</td>
+<td style="text-align:left;">
+2020-09-11
+</td>
+<td style="text-align:left;">
+TB
+</td>
+<td style="text-align:left;">
+BOS
+</td>
+<td style="text-align:left;">
+BOS
+</td>
+<td style="text-align:left;">
+bogaerts, xander
+</td>
+<td style="text-align:left;">
+snell, blake
+</td>
+<td style="text-align:right;">
+593428
+</td>
+<td style="text-align:right;">
+605483
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+ground_ball
+</td>
+<td style="text-align:left;">
+center
+</td>
+<td style="text-align:left;">
+Changeup
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1.65
+</td>
+<td style="text-align:right;">
+2.83
+</td>
+<td style="text-align:right;">
+89.5
+</td>
+<td style="text-align:right;">
+58.5
+</td>
+<td style="text-align:right;">
+-47
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Tropicana Field
+</td>
+<td style="text-align:left;">
+Dome
+</td>
+<td style="text-align:right;">
+315
+</td>
+<td style="text-align:right;">
+404
+</td>
+<td style="text-align:right;">
+322
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+117924
+</td>
+<td style="text-align:left;">
+2020-08-31
+</td>
+<td style="text-align:left;">
+CIN
+</td>
+<td style="text-align:left;">
+STL
+</td>
+<td style="text-align:left;">
+STL
+</td>
+<td style="text-align:left;">
+edman, tommy
+</td>
+<td style="text-align:left;">
+lorenzen, michael
+</td>
+<td style="text-align:right;">
+669242
+</td>
+<td style="text-align:right;">
+547179
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+ground_ball
+</td>
+<td style="text-align:left;">
+center
+</td>
+<td style="text-align:left;">
+Changeup
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+-0.97
+</td>
+<td style="text-align:right;">
+1.82
+</td>
+<td style="text-align:right;">
+86.4
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+-8
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Great American Ballpark
+</td>
+<td style="text-align:left;">
+Outdoor
+</td>
+<td style="text-align:right;">
+328
+</td>
+<td style="text-align:right;">
+404
+</td>
+<td style="text-align:right;">
+325
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+</tbody>
+</table>
+<p>Success!</p>
 <p>In this notebook, we’ll show how to assess, fit and use a model to
-classify observed penguin <code>species</code> given physiological
-attributes. To keep things simple, we’ll use <code>body_mass_g</code>,
-<code>island</code>, <code>sex</code>, and
-<code>flipper_length_mm</code> as predictors.</p>
+classify whether a batted ball will result in a home run
+(<code>is_home_run</code>) given features of the scenario leading to the
+batted ball. To keep things simple, we’ll use <code>pitch_mph</code>,
+<code>launch_speed</code>, <code>launch_angle</code>, and
+<code>Cover</code> as predictors. (<strong>Note:</strong> There are some
+really great predictors that we’ve left on the table here.)</p>
 </div>
 <div id="splitting-data-and-creating-folds" class="section level2">
 <h2>Splitting Data and Creating Folds</h2>
 <p>We’ll start by splitting our data into <em>training</em> and
 <em>test</em> sets and create folds using our <em>training</em>
 data.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>penguin_splits <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(penguins, <span class="at">prop =</span> <span class="fl">0.75</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(penguin_splits)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">testing</span>(penguin_splits)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>train_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(train, <span class="at">v =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>batted_balls_parks <span class="ot">&lt;-</span> batted_balls_parks <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">is_home_run =</span> <span class="fu">ifelse</span>(is_home_run <span class="sc">==</span> <span class="dv">0</span>, <span class="st">&quot;no&quot;</span>, <span class="st">&quot;yes&quot;</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>bb_splits <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(batted_balls_parks, <span class="at">prop =</span> <span class="fl">0.75</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(bb_splits)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">testing</span>(bb_splits)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>train_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(train, <span class="at">v =</span> <span class="dv">3</span>)</span></code></pre></div>
 </div>
 <div id="building-model-workflows" class="section level2">
 <h2>Building Model Workflows</h2>
 <p>We’ll build workflows for a logistic regression model and a decision
 tree model.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#knn workflow</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>knn_spec <span class="ot">&lt;-</span> <span class="fu">nearest_neighbor</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;kknn&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>knn_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(species <span class="sc">~</span> body_mass_g <span class="sc">+</span> island <span class="sc">+</span> sex <span class="sc">+</span> flipper_length_mm, <span class="at">data =</span> train) <span class="sc">%&gt;%</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_unknown</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>())</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>knn_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(knn_spec) <span class="sc">%&gt;%</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(knn_rec)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#decision tree workflow</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>dt_spec <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;rpart&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>)</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>dt_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(species <span class="sc">~</span> body_mass_g <span class="sc">+</span> island <span class="sc">+</span> sex <span class="sc">+</span> flipper_length_mm, <span class="at">data =</span> train) <span class="sc">%&gt;%</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_unknown</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>())</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>dt_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(dt_spec) <span class="sc">%&gt;%</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(dt_rec)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co">#knn workflow</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>knn_spec <span class="ot">&lt;-</span> <span class="fu">nearest_neighbor</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;kknn&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>knn_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(is_home_run <span class="sc">~</span> pitch_mph <span class="sc">+</span> launch_speed <span class="sc">+</span> launch_angle <span class="sc">+</span> Cover, <span class="at">data =</span> train) <span class="sc">%&gt;%</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="fu">step_unknown</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>())</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>knn_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>  <span class="fu">add_model</span>(knn_spec) <span class="sc">%&gt;%</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  <span class="fu">add_recipe</span>(knn_rec)</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#decision tree workflow</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>dt_spec <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;rpart&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>dt_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(is_home_run <span class="sc">~</span> pitch_mph <span class="sc">+</span> launch_speed <span class="sc">+</span> launch_angle <span class="sc">+</span> Cover, <span class="at">data =</span> train) <span class="sc">%&gt;%</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a>  <span class="fu">step_unknown</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>())</span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a>dt_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a>  <span class="fu">add_model</span>(dt_spec) <span class="sc">%&gt;%</span></span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a>  <span class="fu">add_recipe</span>(dt_rec)</span></code></pre></div>
 </div>
 <div id="evaluating-models-using-cross-validation" class="section level2">
 <h2>Evaluating Models Using Cross-Validation</h2>
 <p>We’ll now use cross-validation to evaluate our two workflows.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>knn_cv_results <span class="ot">&lt;-</span> knn_wf <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(train_folds)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>dt_cv_results <span class="ot">&lt;-</span> dt_wf <span class="sc">%&gt;%</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(train_folds)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>knn_cv_results <span class="sc">%&gt;%</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>knn_cv_results <span class="ot">&lt;-</span> knn_wf <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(train_folds)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>dt_cv_results <span class="ot">&lt;-</span> dt_wf <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(train_folds)</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>knn_cv_results <span class="sc">%&gt;%</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>  <span class="fu">collect_metrics</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
 <table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -846,16 +1447,16 @@ std_err
 accuracy
 </td>
 <td style="text-align:left;">
-multiclass
+binary
 </td>
 <td style="text-align:right;">
-0.8488372
+0.9503590
 </td>
 <td style="text-align:right;">
 3
 </td>
 <td style="text-align:right;">
-0.0067134
+0.0026369
 </td>
 <td style="text-align:left;">
 Preprocessor1_Model1
@@ -866,16 +1467,16 @@ Preprocessor1_Model1
 roc_auc
 </td>
 <td style="text-align:left;">
-hand_till
+binary
 </td>
 <td style="text-align:right;">
-0.9546218
+0.8082316
 </td>
 <td style="text-align:right;">
 3
 </td>
 <td style="text-align:right;">
-0.0044320
+0.0128843
 </td>
 <td style="text-align:left;">
 Preprocessor1_Model1
@@ -883,10 +1484,10 @@ Preprocessor1_Model1
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dt_cv_results <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>dt_cv_results <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="fu">collect_metrics</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
 <table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -916,16 +1517,16 @@ std_err
 accuracy
 </td>
 <td style="text-align:left;">
-multiclass
+binary
 </td>
 <td style="text-align:right;">
-0.8372093
+0.9586667
 </td>
 <td style="text-align:right;">
 3
 </td>
 <td style="text-align:right;">
-0.0232558
+0.0017070
 </td>
 <td style="text-align:left;">
 Preprocessor1_Model1
@@ -936,16 +1537,16 @@ Preprocessor1_Model1
 roc_auc
 </td>
 <td style="text-align:left;">
-hand_till
+binary
 </td>
 <td style="text-align:right;">
-0.9221266
+0.7378341
 </td>
 <td style="text-align:right;">
 3
 </td>
 <td style="text-align:right;">
-0.0177824
+0.0414317
 </td>
 <td style="text-align:left;">
 Preprocessor1_Model1
@@ -954,130 +1555,127 @@ Preprocessor1_Model1
 </tbody>
 </table>
 <p>It looks like the nearest neighbor model outperforms the decision
-tree using both <em>accuracy</em> and <em>ROC-AUC</em> as the
-performance metric. Let’s fit the nearest neighbors model to the
-training data.</p>
+tree using <em>ROC-AUC</em> as the performance metric but not using
+<em>accuracy</em>. We’ll discuss more about model performance metrics at
+our next class meeting. For now, let’s fit the nearest neighbor model
+since both models had comparable <em>accuracy</em> but <em>ROC-AUC</em>
+was quite a bite better for nearest neighbors.</p>
 </div>
 <div id="fit-assess-and-utilize-our-best-model" class="section level2">
-<h2>Fit, Assess, and Utilize Our Best Model</h2>
+<h2>Fit, Assess, and Utilize Our “Best” Model</h2>
 <p>We’ll start by fitting our best model to our training data.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>knn_fit <span class="ot">&lt;-</span> knn_wf <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(train)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>knn_fit <span class="ot">&lt;-</span> knn_wf <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="fu">fit</span>(train)</span></code></pre></div>
 <p>Now that the model has been fitted, we’ll use our model to make
 predictions on our <code>test</code> observations. The performance
 metrics should align with our cross-validation estimate (if not, then
 we’ll have concerns which will prevent us from putting the model into
 production).</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>knn_fit <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(test) <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(species, .pred_class)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>knn_fit <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="fu">augment</span>(test) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">is_home_run =</span> <span class="fu">as.factor</span>(is_home_run)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="fu">accuracy</span>(is_home_run, .pred_class)</span></code></pre></div>
 <pre><code>## # A tibble: 1 × 3
 ##   .metric  .estimator .estimate
 ##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
-## 1 accuracy multiclass     0.872</code></pre>
-<p>The model was even more accurate than expected given the
+## 1 accuracy binary         0.946</code></pre>
+<p>The model was just about as accurate as expected given the
 cross-validation results. Since it doesn’t look like our model is
-overfit, let’s use it to make a prediction on the <code>species</code>
-of a newly observed penguin.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>new_penguin <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">body_mass_g =</span> <span class="dv">4750</span>,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">island =</span> <span class="st">&quot;Dream&quot;</span>,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sex =</span> <span class="st">&quot;male&quot;</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">flipper_length_mm =</span> <span class="dv">38</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>new_penguin <span class="sc">%&gt;%</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
+overfit, let’s use it to make a prediction on whether a new batted ball
+would result in a home run.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>new_hit <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="at">pitch_mph =</span> <span class="dv">84</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">launch_speed =</span> <span class="dv">88</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">launch_angle =</span> <span class="dv">47</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="at">Cover =</span> <span class="st">&quot;Outdoor&quot;</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>)</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>new_hit <span class="sc">%&gt;%</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
 <table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:right;">
-body_mass_g
-</th>
-<th style="text-align:left;">
-island
-</th>
-<th style="text-align:left;">
-sex
+pitch_mph
 </th>
 <th style="text-align:right;">
-flipper_length_mm
+launch_speed
+</th>
+<th style="text-align:right;">
+launch_angle
+</th>
+<th style="text-align:left;">
+Cover
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:right;">
-4750
-</td>
-<td style="text-align:left;">
-Dream
-</td>
-<td style="text-align:left;">
-male
+84
 </td>
 <td style="text-align:right;">
-38
+88
+</td>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:left;">
+Outdoor
 </td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>knn_fit <span class="sc">%&gt;%</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(new_penguin) <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>knn_fit <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="fu">augment</span>(new_hit) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
 <table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:right;">
-body_mass_g
-</th>
-<th style="text-align:left;">
-island
-</th>
-<th style="text-align:left;">
-sex
+pitch_mph
 </th>
 <th style="text-align:right;">
-flipper_length_mm
+launch_speed
+</th>
+<th style="text-align:right;">
+launch_angle
+</th>
+<th style="text-align:left;">
+Cover
 </th>
 <th style="text-align:left;">
 .pred_class
 </th>
 <th style="text-align:right;">
-.pred_Adelie
+.pred_no
 </th>
 <th style="text-align:right;">
-.pred_Chinstrap
-</th>
-<th style="text-align:right;">
-.pred_Gentoo
+.pred_yes
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:right;">
-4750
-</td>
-<td style="text-align:left;">
-Dream
-</td>
-<td style="text-align:left;">
-male
+84
 </td>
 <td style="text-align:right;">
-38
+88
+</td>
+<td style="text-align:right;">
+47
 </td>
 <td style="text-align:left;">
-Adelie
+Outdoor
+</td>
+<td style="text-align:left;">
+no
 </td>
 <td style="text-align:right;">
-0.9729432
-</td>
-<td style="text-align:right;">
-0.0270568
+1
 </td>
 <td style="text-align:right;">
 0
@@ -1085,6 +1683,7 @@ Adelie
 </tr>
 </tbody>
 </table>
+<p>Looks like our model is very certain that won’t be a home run.</p>
 </div>
 <div id="summary" class="section level2">
 <h2>Summary</h2>
