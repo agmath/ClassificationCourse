@@ -1,0 +1,31 @@
+---
+title: 'Deep Learning: Architectures'
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+  pdf_document: default
+---
+
+```{r global-options, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(tidyverse)
+library(tidymodels)
+library(kableExtra)
+```
+
+**Purpose:** This notebook covers several common deep learning architectures. In particular, we will see architectures for:
+
++ Linear Regression as a Neural Network
++ Logistic Regression as a Neural Network
++ Deep Learning Neural Networks
++ Recurrent Neural Network and Long Short-Term Memory Networks
++ Convolutional Neural Networks
++ Autoencoders
+
+We'll also discuss use-cases for each of these types of network.
+
+
+
+## Summary
+
