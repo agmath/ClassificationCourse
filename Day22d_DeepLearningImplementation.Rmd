@@ -7,54 +7,18 @@ output:
   pdf_document: default
 ---
 
-```{r global-options, include=FALSE}
-#knitr::opts_chunk$set(eval = FALSE)
+**Purpose:** The previous two notebooks have discussed theoretical and foundational aspects of deep learning models. In particular, what types of architectures and activation functions exist (and, to a lesser extent, how do I choose one). In this notebook our goal will be to actually build, assess, and utilize a deep learning network for image classification.
+
+## Data and Modeling
+
+Since you set up TensorFlow in an earlier notebook, let's load the `{tidyverse}`, `{tensorflow}`, `{keras}`, and `{reticulate}` libraries and get some data. We'll use the Fashion MNIST data set. You can learn more about that data set from [its official repository here](https://github.com/zalandoresearch/fashion-mnist).
+
+```{r}
 library(tidyverse)
-library(tidymodels)
-library(kableExtra)
 library(tensorflow)
 library(keras)
 library(reticulate)
 
-my_path_to_python <- "C:/users/agilb/AppData/Local/Programs/Python/Python310/python.exe"
-```
-
-**Purpose:** The previous two notebooks have discussed theoretical and foundational aspects of deep learning models. In particular, what types of architectures and activation functions exist (and, to a lesser extent, how do I choose one). In this notebook our goal will be to actually build, assess, and utilize a deep learning network for image classification.
-
-## Setup
-
-Follow the instructions to [install Keras and Tensorflow here](https://tensorflow.rstudio.com/install/). Note, the instructions seemed to be somewhat finicky. Here is what has worked for me.
-
-1. Install TensorFlow with `install.packages("tensorflow")`
-2. Run `library(reticulate)` -- install the `reticulate` package if you don't have it already. This will allow you to run Python and R together in a notebook and pass objects between environments.
-3. Open your *terminal* using the *terminal* tab in the bottom-left pane of RStudio and type `python` and run the command by hitting `Enter`/`Return`.
-
-  + If you get a Python interpreter -- indicated by `>>>` -- then you have python installed on your computer.
-  
-    + In this case, run `import sys` next to your python prompt.
-    + Next run `sys.executable` to discover the path to your python executable.
-    + Now, back in your R Console (click on the *Console* tab), define `path_to_python` as the path you've discovered. Don't forget to use quotes to surround the file path.
-  
-  + If you don't get the python prompt, then you'll need to install python.
-  
-    + Define `path_to_python <- install_python()` in your console and run it.
-
-4. In your *Console*, run `virtualenv_create("r-reticulate", python = path_to_python)`. This will create a python virtual environment and package container in your working directory.
-5. Install the `keras` package and then load the `keras` library.
-6. Install TensorFlow, SciPy, and several TensorFlow data sets using `install_keras(method = "virtualenv", envname = "r-reticulate", version = "cpu")`.
-7. Completely shut down and reopen RStudio. You might try clicking on *Session* and Restart R, but this only sometimes worked for me.
-8. Reopen RStudio and your R Markdown notebook.
-9. In the notebook, load the `tensorflow` and `reticulate` libraries.
-10. Type and run `use_virtualenv("r-reticulate")`.
-11. Run `tf$constant("Hello TensorFlow!")`
-
-  + In addition to a notification, you should see `tf.Tensor(b'Hello TensorFlow!', shape = (), dtype = string)`.
-
-## Data and Modeling
-
-Now that TensorFlow is all set up, let's get some data. We'll use the Fashion MNIST dataset. You can learn more about that data set from [its official repository here](https://github.com/zalandoresearch/fashion-mnist).
-
-```{r}
 c(c(x_train, y_train), c(x_test, y_test)) %<-% keras::dataset_fashion_mnist()
 
 x_train <- x_train/255
