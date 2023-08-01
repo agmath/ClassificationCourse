@@ -60,6 +60,7 @@ linear_reg_nn <- neuralnet(num_response ~ x1 + x2 + x3,
                            hidden = 0)
 plot(linear_reg_nn, rep = "best")
 ```
+
 Notice that the weightings on the edges of the network are the same as the learned coefficients for the corresponding linear regression model. Indeed, we'll fit the linear regressor using `{tidymodels}` and examine its coefficients.
 
 ```{r}
