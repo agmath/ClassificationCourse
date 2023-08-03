@@ -519,18 +519,18 @@ file.</li>
 </ul>
 <p>The following examples show how we can read a variety of files into
 an R Session.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Read the MAT241 sheet from the grades.xls file in </span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#the Spring 2021 folder on my computer&#39;s desktop</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>grades <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">&quot;C:/Users/agilb/Desktop/Spring 2021/grades.xls&quot;</span>, <span class="at">sheet =</span> <span class="st">&quot;MAT241&quot;</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Read in data from a csv file of Tate Gallery Artists housed </span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#in a public github repository on the web</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>tate_artists <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://github.com/tategallery/collection/raw/master/artist_data.csv&quot;</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Read in data from a csv file of Tate Gallery Artworks housed</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#in a public github repository on the web</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#*Note* that read_csv() would have worked just fine here too</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>tate_works <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-01-12/artwork.csv&quot;</span>, <span class="at">delim =</span> <span class="st">&quot;,&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co">#Read the MAT241 sheet from the grades.xls file in </span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co">#the Spring 2021 folder on my computer&#39;s desktop</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>grades <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">&quot;C:/Users/agilb/Desktop/Spring 2021/grades.xls&quot;</span>, <span class="at">sheet =</span> <span class="st">&quot;MAT241&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#Read in data from a csv file of Tate Gallery Artists housed </span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#in a public github repository on the web</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>tate_artists <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://github.com/tategallery/collection/raw/master/artist_data.csv&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#Read in data from a csv file of Tate Gallery Artworks housed</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#in a public github repository on the web</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#*Note* that read_csv() would have worked just fine here too</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>tate_works <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-01-12/artwork.csv&quot;</span>, <span class="at">delim =</span> <span class="st">&quot;,&quot;</span>)</span></code></pre></div>
 <p>Now it’s time for you to load in some data. We’ll work with two data
 sets in this notebook: <code>battedballs.csv</code> and
 <code>park_dimensions.csv</code>. You can find those data sets in one of
@@ -591,8 +591,8 @@ in our course. In the previous section we saw how to use R’s
 <code>head()</code> function to look at the first six rows of the
 dataset. Here’s how to achieve the same outcome with the use of the pipe
 (<code>%&gt;%</code>) operator.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
 <p>You can read the code above as saying “take the
 <code>batted_balls</code> data set, and plug it into the
 <code>head()</code> function”. Putting <code>head()</code> indented on a
@@ -620,17 +620,17 @@ example, maybe we only want to see <code>batted_balls</code> where the
 <code>pitch_name</code> is <code>&quot;Changeup&quot;</code>. The
 <code>filter()</code> function will allow us to get rid of all other
 classes of <code>pitch_type</code>.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span> </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(pitch_name <span class="sc">==</span> <span class="st">&quot;Changeup&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">filter</span>(pitch_name <span class="sc">==</span> <span class="st">&quot;Changeup&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
 <p>We can also use more complex conditions on which rows to see using
 <em>and</em> (<code>&amp;</code>) and <em>or</em> (<code>|</code>)
 statements. Maybe we want to see only those <code>batted_balls</code>
 whose <code>bearing</code> is <code>&quot;center&quot;</code> and whose
 <code>launch_speed</code> exceeds 100mph.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span> </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>((bearing <span class="sc">==</span> <span class="st">&quot;center&quot;</span>) <span class="sc">&amp;</span> (launch_speed <span class="sc">&gt;</span> <span class="dv">100</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span> </span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">filter</span>((bearing <span class="sc">==</span> <span class="st">&quot;center&quot;</span>) <span class="sc">&amp;</span> (launch_speed <span class="sc">&gt;</span> <span class="dv">100</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
 <ol start="7" style="list-style-type: decimal">
 <li><p>Add another new code cell and use it to write and execute the
 filtering operations above. Verify that they work as expected.</p></li>
@@ -651,19 +651,19 @@ filtering operation that you are interested in.</p></li>
 pass the names of the columns we are interested in to R’s
 <code>select()</code> function so that we only see those selected
 columns returned.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(batter_team, bb_type, bearing, inning, pitch_mph, launch_speed, launch_angle, is_home_run) <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">select</span>(batter_team, bb_type, bearing, inning, pitch_mph, launch_speed, launch_angle, is_home_run) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
 <p>We can also select all columns <em>except</em> certain ones by
 preceding the column name with a <code>-</code>.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>bip_id,<span class="sc">-</span>batter_id, <span class="sc">-</span>pitcher_id) <span class="sc">%&gt;%</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>bip_id,<span class="sc">-</span>batter_id, <span class="sc">-</span>pitcher_id) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
 <p>The <code>select()</code> function is also useful for changing the
 order of the columns.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(batter_name, pitcher_name, bb_type, is_home_run, <span class="fu">everything</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">select</span>(batter_name, pitcher_name, bb_type, is_home_run, <span class="fu">everything</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
 <p>In the code cell above, we used a helper function
 <code>everything()</code> inside of <code>select()</code> to indicate
 that we wanted all of the remaining columns in their original order.</p>
@@ -678,10 +678,10 @@ twice in a pipeline? Try it! What happens?</p></li>
 through the pipe as well. For any pipe, the result of the “upstream”
 code (the code before the pipe) is passed into the function that follows
 the pipe.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(home_team <span class="sc">==</span> <span class="st">&quot;BOS&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(away_team, batter_team, batter_name, pitcher_name, bb_type, bearing, pitch_name, is_home_run) <span class="sc">%&gt;%</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">filter</span>(home_team <span class="sc">==</span> <span class="st">&quot;BOS&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">select</span>(away_team, batter_team, batter_name, pitcher_name, bb_type, bearing, pitch_name, is_home_run) <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
 <p><strong>A Note on Pipes:</strong> The advantage to the pipe operator
 is probably pretty clear by now. The code we just wrote says <em>take
 the <code>batted_balls</code> data set, filter it so that we only see
@@ -689,7 +689,7 @@ batted balls when Boston is the home team, show me only the few columns
 I am interested in, and just let me see the first six rows for now</em>.
 The alternative to this would be writing code that looks a lot less
 readable:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">select</span>(<span class="fu">filter</span>(batted_balls, home_team <span class="sc">==</span> <span class="st">&quot;BOS&quot;</span>), away_team, batter_team, batter_name, pitcher_name, bb_type, bearing, pitch_name, is_home_run))</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">select</span>(<span class="fu">filter</span>(batted_balls, home_team <span class="sc">==</span> <span class="st">&quot;BOS&quot;</span>), away_team, batter_team, batter_name, pitcher_name, bb_type, bearing, pitch_name, is_home_run))</span></code></pre></div>
 </div>
 </div>
 <div id="summarizing-data" class="section level3">
@@ -704,9 +704,9 @@ from each team are contained in this data set?</em> To answer this, we
 simply pipe the <code>batted_balls</code> data frame into the
 <code>count()</code> function, identifying the <code>batter_team</code>
 column as the column we wish to count.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(batter_team) <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="fu">count</span>(batter_team) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div>
 <ol start="12" style="list-style-type: decimal">
 <li>Open another new code cell in your notebook and use it to run the
 code above.</li>
@@ -718,10 +718,10 @@ most <code>batted_balls</code>. We’ll do this with
 <code>-n</code> to say that we want to arrange by our new count column
 in descending order, and let’s ask for the top 10 rows instead of the
 top 6.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(batter_team) <span class="sc">%&gt;%</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>n) <span class="sc">%&gt;%</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="fu">count</span>(batter_team) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>n) <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code></pre></div>
 <ol start="13" style="list-style-type: decimal">
 <li>Verify that the code above works as described by editing the code in
 your most recent cell and running it.</li>
@@ -734,10 +734,10 @@ would first need to filter the data so that we are only considering
 batted balls, when the number of <code>outs_when_up</code> is 2. Then we
 would <code>count()</code> <code>home_team</code> and
 <code>pitch_name</code>.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>battedballs <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(outs_when_up <span class="sc">==</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(home_team, pitch_name) <span class="sc">%&gt;%</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>battedballs <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="fu">filter</span>(outs_when_up <span class="sc">==</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="fu">count</span>(home_team, pitch_name) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code></pre></div>
 <ol start="14" style="list-style-type: decimal">
 <li><p>Again, verify that the code above works as described using a new
 code cell. Note that adding <code>head(10)</code> to our pipeline
@@ -755,8 +755,8 @@ could even define our own metrics. Let’s say we wanted to know the
 median <code>launch_speed</code> across all of the batted balls in our
 data set. We’ll need the help of R’s <code>summarize()</code> function
 as well as the <code>median()</code> function for this.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">median_launch_speed =</span> <span class="fu">median</span>(launch_speed))</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">median_launch_speed =</span> <span class="fu">median</span>(launch_speed))</span></code></pre></div>
 <ol start="15" style="list-style-type: decimal">
 <li>Open another new code cell in your notebook and try the code above.
 What do you get for a median launch speed?</li>
@@ -770,12 +770,12 @@ behavior, we can either <code>filter()</code> out any rows containing
 missing values prior to using <code>summarize()</code>, or some
 functions have an <code>na.rm</code> argument which can be set to
 <code>TRUE</code> to omit missing values from the calculation.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(launch_speed)) <span class="sc">%&gt;%</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">median_launch_speed =</span> <span class="fu">median</span>(launch_speed))</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">median_launch_speed =</span> <span class="fu">median</span>(launch_speed, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(launch_speed)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">median_launch_speed =</span> <span class="fu">median</span>(launch_speed))</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">median_launch_speed =</span> <span class="fu">median</span>(launch_speed, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
 <ol start="16" style="list-style-type: decimal">
 <li><p>Add the code above to your existing code cell. Execute it to
 verify that both versions of the calculation for median launch speed
@@ -787,8 +787,11 @@ launch angle for a batted ball in the data set.</p></li>
 summaries at once. Let’s compute the mean and standard deviation for
 both the <code>pitch_mph</code> and <code>launch_speed</code> across all
 of the batted balls in our data set.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_pitch_mph =</span> <span class="fu">mean</span>(pitch_mph, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">std_deviation_pitch_mph =</span> <span class="fu">sd</span>(pitch_mph, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">mean_launch_speed =</span> <span class="fu">mean</span>(launch_speed, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">std_deviation_launch_speed =</span> <span class="fu">sd</span>(launch_speed, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_pitch_mph =</span> <span class="fu">mean</span>(pitch_mph, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>            <span class="at">std_deviation_pitch_mph =</span> <span class="fu">sd</span>(pitch_mph, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>            <span class="at">mean_launch_speed =</span> <span class="fu">mean</span>(launch_speed, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>            <span class="at">std_deviation_launch_speed =</span> <span class="fu">sd</span>(launch_speed, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
 <ol start="18" style="list-style-type: decimal">
 <li>As usual, open a code cell to compute the summary statistics using
 the code above.</li>
@@ -796,18 +799,24 @@ the code above.</li>
 <p>It might be useful if we could get grouped summary statistics. Let’s
 use <code>group_by()</code> to see how these measures vary across pitch
 type (<code>pitch_name</code>).</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span> </span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(pitch_name) <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_pitch_mph =</span> <span class="fu">mean</span>(pitch_mph, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">std_deviation_pitch_mph =</span> <span class="fu">sd</span>(pitch_mph, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">mean_launch_speed =</span> <span class="fu">mean</span>(launch_speed, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">std_deviation_launch_speed =</span> <span class="fu">sd</span>(launch_speed, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span> </span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="fu">group_by</span>(pitch_name) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_pitch_mph =</span> <span class="fu">mean</span>(pitch_mph, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>            <span class="at">std_deviation_pitch_mph =</span> <span class="fu">sd</span>(pitch_mph, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>            <span class="at">mean_launch_speed =</span> <span class="fu">mean</span>(launch_speed, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>            <span class="at">std_deviation_launch_speed =</span> <span class="fu">sd</span>(launch_speed, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
 <ol start="19" style="list-style-type: decimal">
 <li>Use a code cell to verify the results of the code above. Can you
 arrange the results in order of mean launch speed, from slowest to
 fastest?</li>
 </ol>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(pitch_name) <span class="sc">%&gt;%</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_pitch_mph =</span> <span class="fu">mean</span>(pitch_mph, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">std_deviation_pitch_mph =</span> <span class="fu">sd</span>(pitch_mph, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">mean_launch_speed =</span> <span class="fu">mean</span>(launch_speed, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">std_deviation_launch_speed =</span> <span class="fu">sd</span>(launch_speed, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(mean_launch_speed)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="fu">group_by</span>(pitch_name) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_pitch_mph =</span> <span class="fu">mean</span>(pitch_mph, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>            <span class="at">std_deviation_pitch_mph =</span> <span class="fu">sd</span>(pitch_mph, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>            <span class="at">mean_launch_speed =</span> <span class="fu">mean</span>(launch_speed, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>            <span class="at">std_deviation_launch_speed =</span> <span class="fu">sd</span>(launch_speed, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>  <span class="fu">arrange</span>(mean_launch_speed)</span></code></pre></div>
 <p>That’s pretty informative! Do you notice anything surprising in the
 output?</p>
 </div>
@@ -817,17 +826,16 @@ output?</p>
 <p>Often, you may be in a situation where you would like to create new
 columns, using the existing columns. This can be done using the
 <code>mutate()</code> command. The syntax is</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="sc">%&gt;%</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">new_column_name =</span> function_of_old_columns)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>batted_balls</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>dataset <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">new_column_name =</span> function_of_old_columns)</span></code></pre></div>
 <p>In the <code>batted_balls</code> data set, let’s add a computed
 column for the vertical launch velocity of the batted ball. The vertical
 launch velocity can be computed as <code>launch_speed</code> *
 <code>sin(launch_angle*(pi/180))</code>.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">vertical_launch_velocity =</span> launch_speed <span class="sc">*</span> <span class="fu">sin</span>(launch_angle<span class="sc">*</span>(pi<span class="sc">/</span><span class="dv">180</span>))</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>    <span class="at">vertical_launch_velocity =</span> launch_speed <span class="sc">*</span> <span class="fu">sin</span>(launch_angle<span class="sc">*</span>(pi<span class="sc">/</span><span class="dv">180</span>))</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>  )</span></code></pre></div>
 <ol start="20" style="list-style-type: decimal">
 <li><p>Again, add a code cell to verify that the code above works as
 described.</p></li>
@@ -843,15 +851,15 @@ column from a variable which was originally numeric. In order to do this
 we can use the <code>case_when()</code> function. The structure of this
 function is a collection of subsequent tests and their corresponding
 results if true. It will be easier to see in an example.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">launch_speed_categorical =</span> <span class="fu">case_when</span>(</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    (launch_speed <span class="sc">&gt;</span> <span class="dv">100</span>) <span class="sc">~</span> <span class="st">&quot;Very Fast&quot;</span>,</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    (launch_speed <span class="sc">&gt;</span> <span class="dv">80</span>) <span class="sc">~</span> <span class="st">&quot;Fast&quot;</span>,</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    (launch_speed <span class="sc">&gt;</span> <span class="dv">65</span>) <span class="sc">~</span> <span class="st">&quot;Meh&quot;</span>,</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    (launch_speed <span class="sc">&gt;</span> <span class="dv">40</span>) <span class="sc">~</span> <span class="st">&quot;Kinda Slow&quot;</span>,</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">is.na</span>(launch_speed)) <span class="sc">~</span> <span class="cn">NA</span>,</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;Was it even moving?&quot;</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  ))</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">launch_speed_categorical =</span> <span class="fu">case_when</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>    (launch_speed <span class="sc">&gt;</span> <span class="dv">100</span>) <span class="sc">~</span> <span class="st">&quot;Very Fast&quot;</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>    (launch_speed <span class="sc">&gt;</span> <span class="dv">80</span>) <span class="sc">~</span> <span class="st">&quot;Fast&quot;</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>    (launch_speed <span class="sc">&gt;</span> <span class="dv">65</span>) <span class="sc">~</span> <span class="st">&quot;Meh&quot;</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>    (launch_speed <span class="sc">&gt;</span> <span class="dv">40</span>) <span class="sc">~</span> <span class="st">&quot;Kinda Slow&quot;</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>    (<span class="fu">is.na</span>(launch_speed)) <span class="sc">~</span> <span class="cn">NA</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;Was it even moving?&quot;</span></span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>  ))</span></code></pre></div>
 <ol start="22" style="list-style-type: decimal">
 <li>Use another new code cell to try the code above. Before you execute
 the code, what do you think should happen? After executing the code, do
@@ -877,8 +885,8 @@ begins with a table (on the left) and adds columns from another table
 (the table on the right) by matching on a shared column(s).</p>
 <p>A left-join to add the <code>park_dimensions</code> variables onto
 the <code>batted_balls</code> data appears below.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(park_dimensions, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;park&quot;</span> <span class="ot">=</span> <span class="st">&quot;park&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>  <span class="fu">left_join</span>(park_dimensions, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;park&quot;</span> <span class="ot">=</span> <span class="st">&quot;park&quot;</span>))</span></code></pre></div>
 <p>The <code>by</code> argument is a list of column matches. The name of
 the column in the table on the left (the one before the pipe) appears to
 the left of the equals sign (=), and the name of the column in the table
@@ -907,19 +915,19 @@ with the arrow operator (<code>&lt;-</code>). We overwrite the original
 object if we use the same name, but can use a different name and keep
 the original object available in our Global Environment. For
 example,</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>bb_with_park_dims <span class="ot">&lt;-</span> batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(park_dimensions, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;park&quot;</span> <span class="ot">=</span> <span class="st">&quot;park&quot;</span>))</span></code></pre></div></li>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>bb_with_park_dims <span class="ot">&lt;-</span> batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>  <span class="fu">left_join</span>(park_dimensions, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;park&quot;</span> <span class="ot">=</span> <span class="st">&quot;park&quot;</span>))</span></code></pre></div></li>
 <li><p>The table outputs we’ve obtained while running our code look
 quite nice. If we <code>Knit</code> our document (using the blue ball of
 yarn icon), then the tables appearing in the HTML output are not nearly
 as readable. The <code>kableExtra</code> package provides functionality
 to convert our tables into visually pleasing components of our HTML
 document. For example,</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>bb_with_park_dims <span class="sc">%&gt;%</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div></li>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>bb_with_park_dims <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div></li>
 </ul>
 <p>The code in the block above will produce a nicely formatted table in
 which the rows are striped and if we hover over a row of our table then

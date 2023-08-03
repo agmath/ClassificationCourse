@@ -252,7 +252,10 @@ With the use of `summarize()` we can get multiple summaries at once. Let's compu
 
 ```{r echo = TRUE, eval = FALSE}
 batted_balls %>% 
-  summarize(mean_pitch_mph = mean(pitch_mph, na.rm = TRUE), std_deviation_pitch_mph = sd(pitch_mph, na.rm = TRUE), mean_launch_speed = mean(launch_speed, na.rm = TRUE), std_deviation_launch_speed = sd(launch_speed, na.rm = TRUE))
+  summarize(mean_pitch_mph = mean(pitch_mph, na.rm = TRUE), 
+            std_deviation_pitch_mph = sd(pitch_mph, na.rm = TRUE), 
+            mean_launch_speed = mean(launch_speed, na.rm = TRUE), 
+            std_deviation_launch_speed = sd(launch_speed, na.rm = TRUE))
 ```
 
 18. As usual, open a code cell to compute the summary statistics using the code above.
@@ -262,7 +265,10 @@ It might be useful if we could get grouped summary statistics. Let's use `group_
 ```{r echo = TRUE, eval = FALSE, message = FALSE}
 batted_balls %>% 
   group_by(pitch_name) %>%
-  summarize(mean_pitch_mph = mean(pitch_mph, na.rm = TRUE), std_deviation_pitch_mph = sd(pitch_mph, na.rm = TRUE), mean_launch_speed = mean(launch_speed, na.rm = TRUE), std_deviation_launch_speed = sd(launch_speed, na.rm = TRUE))
+  summarize(mean_pitch_mph = mean(pitch_mph, na.rm = TRUE), 
+            std_deviation_pitch_mph = sd(pitch_mph, na.rm = TRUE), 
+            mean_launch_speed = mean(launch_speed, na.rm = TRUE), 
+            std_deviation_launch_speed = sd(launch_speed, na.rm = TRUE))
 ```
 
 19. Use a code cell to verify the results of the code above. Can you arrange the results in order of mean launch speed, from slowest to fastest?
@@ -270,7 +276,10 @@ batted_balls %>%
 ```{r echo = TRUE, eval = FALSE}
 batted_balls %>%
   group_by(pitch_name) %>%
-  summarize(mean_pitch_mph = mean(pitch_mph, na.rm = TRUE), std_deviation_pitch_mph = sd(pitch_mph, na.rm = TRUE), mean_launch_speed = mean(launch_speed, na.rm = TRUE), std_deviation_launch_speed = sd(launch_speed, na.rm = TRUE)) %>%
+  summarize(mean_pitch_mph = mean(pitch_mph, na.rm = TRUE), 
+            std_deviation_pitch_mph = sd(pitch_mph, na.rm = TRUE), 
+            mean_launch_speed = mean(launch_speed, na.rm = TRUE), 
+            std_deviation_launch_speed = sd(launch_speed, na.rm = TRUE)) %>%
   arrange(mean_launch_speed)
 ```
 
@@ -283,7 +292,6 @@ Often, you may be in a situation where you would like to create new columns, usi
 ```{r echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
 dataset %>%
   mutate(new_column_name = function_of_old_columns)
-batted_balls
 ```
 
 In the `batted_balls` data set, let's add a computed column for the vertical launch velocity of the batted ball. The vertical launch velocity can be computed as `launch_speed` * `sin(launch_angle*(pi/180))`.
