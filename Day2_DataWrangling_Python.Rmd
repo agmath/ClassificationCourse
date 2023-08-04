@@ -1,0 +1,307 @@
+---
+title: 'An Introduction to Data Wrangling in Python'
+author: "Dr. Gilbert"
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+---
+
+```{r global-options, include=FALSE}
+library(reticulate)
+```
+
+```{python, include = FALSE}
+import pandas as pd
+```
+
+**Purpose:** This notebook addresses how to wrangle data in Python. This notebook assumes that you already have a Python installation that can be accessed from within RStudio, you know how to install and load Python modules, you know how to read data from a remote location using a web URL, and you know how to create Python code chunks from an RMarkdown notebook in RStudio.
+
+
+**Note:** Below, you'll be asked to build an Markdown notebook which includes many code cells to accomplish tasks. In addition to the code cells (grey background), be sure to leave yourself short notes in text cells (white background) which describe what you are doing with the code. Having a notebook that consists of 25 code cells with no additional context at the end of this discussion won't be very useful. You'll also be adding to this notebook later, so including some limited discussions now will be helpful!
+
+## Setup
+
+1. Open RStudio and ensure that you are working in the project which is managing your GitHub repository for our course. Use `File -> New File -> R Markdown...` to create a new R Markdown file. Fill in the title field with `Data Wrangling for MLB Batted Balls`, update the author field with your name if it is not already there. You can check the box to use the current date when rendering your document, and leave the default output format as HTML.
+
+You can see several items in this sample markdown file. We'll cover them in detail later, but for now 
+
++ the top of the document contains a header with information about the notebook.
++ any text over a grey background is executable code.
++ any text over a white background is free-form text.
+
+You can remove all the *boilerplate* from line 12 down. In the initial R code chunk, add and run the following two lines.
+
+```{r eval = FALSE}
+library(reticulate)
+use_virtualenv("mat434")
+```
+
+2. Add another new code chunk, but using Python this time. Write and run `import pandas as pd`.
+
+## Loading Data
+
+Now that you have `{pandas}` loaded, the next thing we'll need is actual data to manipulate. We'll be much more interested in working with our own data which we'll either find locally (stored on our own computers) or remotely (accessed via a web URL). `{pandas}` includes several functions for reading data in a variety of formats:
+
+  + `pd.read_csv("PATH_TO_FILE")` can be used to read data from a comma separated values (csv) file. If you have a file which uses another delimeter, you can pass that as a string to `pd.read_csv()` using the `delimeter` argument.
+  + There are lots of other `pd.read_***()` functions for reading special files (excel, fixed width, html, json, parquet, etc.). Note that if you are reading an excel file, you'll need to pass the `sheet_name` as either a string or integer (sheet number) since excel files are not "flat" files.
+
+The following examples show how we can read a variety of files into a Python session in RStudio.
+
+```{python echo = TRUE, eval = FALSE}
+#Read the MAT241 sheet from the grades.xls file in 
+#the Spring 2021 folder on my computer's desktop
+grades <- pd.read_excel("C:/Users/agilb/Desktop/Spring 2021/grades.xls", sheet_name = "MAT241")
+
+#Read in data from a csv file of Tate Gallery Artists housed 
+#in a public github repository on the web
+tate_artists <- pd.read_csv("https://github.com/tategallery/collection/raw/master/artist_data.csv")
+```
+  
+Now it's time for you to load in some data. We'll work with two data sets in this notebook: `battedballs.csv` and `park_dimensions.csv`. You can find those data sets in one of my GitHub repositories [here](https://github.com/agmath/agmath.github.io/tree/master/data/classification). In order to read these into Python, we'll need a link to the raw data sources.
+
+3. Complete the following to read in the `battedballs.csv` file.
+
+  + Click on `battedballs.csv` in the file listing in the GitHub repository.
+  + Look for the button labeled `Raw` appearing above the data, and click it. The button is in the grey banner.
+  + Copy the URL that appears in your web browser.
+  + Return to your R Markdown notebook in RStudio, and add a line to your Python code chunk to read in the file from the URL you've copied. You should use `pd.read_csv()` and don't forget to store the result into a named object: `batted_balls`.
+  + Run your code using either `ctrl+Enter` or `cmd+Return`, and then check the `Environment` tab of your top-right pane in RStudio to confirm that you have a new Data object called `batted_balls`.
+
+4. Repeat Step 3, but read in `park_dimensions.csv` instead.
+
+## Viewing Data
+
+Now that we've got data, the first thing we should do is look at it. There are a few really handy R methods for *getting a feel* for the data you have access to. The `.info()`, `.describe()`, `.head()`, `.tail()` methods are four that are really commonly used.
+
+5. Open a new code cell in your R Markdown notebook by using the `+C` button at the top of the top-left pane in RStudio and choosing Python as the language for the code cell. Use the functions mentioned above to explore your `batted_balls` and `park_dimensions` data frames.
+
+## Manipulating Data
+
+Now that we know how to load and view our data, let's talk about manipulating it. We can restrict the data we are working with, produce summaries of the data, transform the data, and more.
+
+### Dot Notation and Chaining Commands Together
+
+Python methods can be chained together using "dot" notation. The object to the left of the "dot" will be passed as the first argument to the method on the right of the "dot". As long as we are careful and pay attention to the state of a transformed object, we can chain multiple transformations together. We'll with code that we've already seen.
+
+```{python echo = TRUE, eval = FALSE}
+batted_balls.head()
+```
+
+You can read the code above as saying "take the `batted_balls` data set, and plug it into the `head()` function".
+
+### Restricting Data
+
+The most common methods for restricting data deal with filtering out rows or columns so that we are only working with a subset of our original data set.
+
+#### Filtering Rows with `.loc[]`
+
+Sometimes we are not interested in all of the observations in a particular data set, but only those satisfying certain criteria. For example, maybe we only want to see `batted_balls` where the `pitch_name` is `"Changeup"`. The `filter()` function will allow us to get rid of all other classes of `pitch_type`.
+
+```{python echo = TRUE, eval = FALSE}
+batted_balls.loc[batted_balls["pitch_name"] == "Changeup"]
+```
+
+We can also use more complex conditions on which rows to see using *and* (`&`) and *or* (`|`) statements. Maybe we want to see only those `batted_balls` whose `bearing` is `"center"` and whose `launch_speed` exceeds 100mph.
+
+```{python echo = TRUE, eval = FALSE}
+batted_balls.loc[(batted_balls["bearing"] == "center") & (batted_balls["launch_speed"] > 100)]
+```
+
+7. Add another new code cell and use it to write and execute the filtering operations above. Verify that they work as expected.
+
+8. Create a copy of the code to show `batted_balls` whose `bearing` is `"center"` **and** whose `launch_speed` exceeds 100mph, and change it so that you obtain all `batted_balls` whose `bearing` is `"center"` **or** whose `launch_speed` exceeds 100mph.
+
+9. Add another new code cell and perform at least one additional filtering operation that you are interested in.
+
+#### Selecting Columns
+
+Similarly to the way we can filter rows, we are able to select only the columns we are interested in. We can use `.loc[]` for this as well, but if we are just subsetting columns then it is more common to pass a list of column names which we are interested in. Both of the options below have the same behavior.
+
+```{python echo = TRUE, eval = FALSE}
+batted_balls.loc[:, ["batter_team", "bb_type", "bearing", "inning", "pitch_mph", "launch_speed", "launch_angle", "is_home_run"]]
+batted_balls[["batter_team", "bb_type", "bearing", "inning", "pitch_mph", "launch_speed", "launch_angle", "is_home_run"]]
+```
+
+We can also select all columns *except* certain ones by using the `.drop()` method and setting the drop `axis = 1` to indicate that we want to drop columns rather than rows.
+
+```{python echo = TRUE, eval = FALSE}
+batted_balls.drop(["bip_id", "batter_id", "pitcher_id"], axis = 1)
+```
+
+10. Open another new code cell to confirm that the code from the blocks above work as expected.
+
+11. In an additional new code cell, try subsetting several columns on your own. Can you subset columns and then subset columns again? Try it! What happens? When does it work and when does it not?
+
+We can combine filtering and selection operations using `.loc[]`.
+
+```{python echo = TRUE, eval = FALSE}
+batted_balls.loc[(batted_balls["home_team"] == "BOS"), ["away_team", "batter_team", "batter_name", "pitcher_name", "bb_type", "bearing", "pitch_name", "is_home_run"]]
+```
+
+### Summarizing Data
+
+There are lots of ways we can summarize our data. We can provide simple counts, compute averages, even build out our own summary functions.
+
+#### Computing Counts
+
+We can start with a simple question like, *how many batted balls from each team are contained in this data set?* To answer this, we simply use the "dot" to pass the `batted_balls` data frame into the `value_counts()` function, identifying the `batter_team` column as the column we wish to count.
+
+```{python echo = TRUE, eval = FALSE}
+batted_balls.value_counts("batter_team")
+```
+
+12. Open another new code cell in your notebook and use it to run the code above.
+
+The counts are displayed in alphabetical order by `batter_team`. We might be interested in the teams with the most `batted_balls`. We'll do this by chaining the `.sort_values()` method at the end of the previous command.
+
+```{python echo = TRUE, eval = FALSE}
+batted_balls.value_counts("batter_team").sort_values()
+```
+
+It's probably more likely that we want to see teams with lots of batted balls at the top of our list. We can set the `ascending` argument of `sort_values()` to `False` to achieve this.
+
+```{python echo = TRUE, eval = FALSE}
+batted_balls.value_counts("batter_team").sort_values(ascending = False)
+```
+
+13. Verify that the code above works as described by editing the code in your most recent cell and running it.
+
+Let's say we wanted to know how the distribution of `pitch_name` against each of the different teams (`batter_team`) when there are 2 outs (`outs_when_up`). This is a more complicated question. We would first need to filter the data so that we are only considering batted balls when the number of `outs_when_up` is 2. Then we would obtain `value_counts()` on the list of columns we care about `["home_team", pitch_name"]`.
+
+```{python echo = TRUE, eval = FALSE}
+batted_balls.loc[batted_balls["outs_when_up"] == 2].value_counts(["home_team", "pitch_name"])
+```
+
+14. Again, verify that the code above works as described using a new code cell.
+
+15. Add another new code cell and compute summaries of categorical variables that you find interesting.
+
+#### Summarizing Numerical Data
+
+Summarizing categorical data is most often done with counts, but we've got many more choices when we are working with numerical data. We have several measures of center or spread that we could choose from -- we could even define our own metrics. Let's say we wanted to know the median `launch_speed` across all of the batted balls in our data set. We can use `.median()` for this.
+
+```{python echo = TRUE, eval = FALSE}
+batted_balls["launch_speed"].median()
+```
+
+15. Open another new code cell in your notebook and try the code above. What do you get for a median launch speed?
+
+R and Python behave differently here. In Python you get a numeric value, but in R you would get `NA` back. R lets its users know that missing data is present and calculations must manually override this behavior by telling functions that `NA` values should be removed from the calculation.
+
+16. Using a new code cell, compute the maximum (`max()`) launch angle for a batted ball in the data set.
+
+If we want summaries of multiple columns at once, we can do this with the `.agg()` method.
+
+```{python echo = TRUE, eval = FALSE}
+batted_balls.agg(mean_pitch_mph = ("pitch_mph", "mean"),
+                 std_pitch_mph = ("pitch_mph", "std"),
+                 mean_launch_speed = ("launch_speed", "mean"),
+                 std_launch_speed = ("launch_speed", "std")
+                 )
+```
+
+18. As usual, open a code cell to compute the summary statistics using the code above.
+
+It might be useful if we could get grouped summary statistics. Let's use `.group_by()` to see how these measures vary across pitch type (`pitch_name`).
+
+```{python echo = TRUE, eval = FALSE, message = FALSE}
+batted_balls.groupby("pitch_name").agg(mean_pitch_mph = ("pitch_mph", "mean"),
+                                       std_pitch_mph = ("pitch_mph", "std"),
+                                       mean_launch_speed = ("launch_speed", "mean"),
+                                       std_launch_speed = ("launch_speed", "std")
+                                       )
+```
+
+19. Use a code cell to verify the results of the code above. Can you arrange the results in order of mean launch speed, from slowest to fastest? This is harder in Python than in R because in Python we're switching between data structures when we make these transformations. In R, we maintain data frames at each step of the way.
+
+```{python echo = TRUE, eval = FALSE}
+batted_balls.groupby("pitch_name").agg(mean_pitch_mph = ("pitch_mph", "mean"),
+                 std_pitch_mph = ("pitch_mph", "std"),
+                 mean_launch_speed = ("launch_speed", "mean"),
+                 std_launch_speed = ("launch_speed", "std")
+                 ).sort_values("mean_launch_speed")
+```
+
+### Transforming Data
+
+Often, you may be in a situation where you would like to create new columns, using the existing columns. This can be done using the familiar bracket notation (`[]`).
+
+```{python echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+dataset["newColumnName"] = ...
+```
+
+In the `batted_balls` data set, let's add a computed column for the vertical launch velocity of the batted ball. The vertical launch velocity can be computed as `launch_speed` * `sin(launch_angle*(pi/180))`. We'll need the `numpy` library for this. Install and load it, then you'll have access to `np.sin()` for computing the sine function for an angle.
+
+```{python echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+batted_balls["vertical_launch_velocity"] = batted_balls["launch_speed"]*np.sin(batted_balls["launch_angle"]*(np.pi/180))
+```
+
+20. Again, add a code cell to verify that the code above works as described.
+
+21. Update your code to add another column for the `horizontal_launch_velocity`. It is computed the same way, but uses `cos()` instead of `sin()`.
+
+Note that what we've done has permanently altered our `batted_balls` data frame. We've added two new columns to it.
+
+One pretty common step in an analysis is to create a categorical column from a variable which was originally numeric. I haven't found a very elegant way to do this in Python, but perhaps this is a great use-case for `{reticulate}`. In order to do this we can use the `case_when()` function in R. The structure of this function is a collection of subsequent tests and their corresponding results if true. It will be easier to see in an example.
+
+```{r echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+batted_balls_r <- py$batted_balls
+batted_balls_r <- batted_balls_r %>%
+  mutate(launch_speed_categorical = case_when(
+    (launch_speed > 100) ~ "Very Fast",
+    (launch_speed > 80) ~ "Fast",
+    (launch_speed > 65) ~ "Meh",
+    (launch_speed > 40) ~ "Kinda Slow",
+    (is.na(launch_speed)) ~ NA,
+    TRUE ~ "Was it even moving?"
+  ))
+```
+
+Notice that, if you want these changes made permanent in R, you'll need to explicitly save the changes to the `batted_balls_r` data frame. Once this is done, you can pass the results back to python via `r.batted_balls_r` in a Python code chunk.
+
+22. Use a few new code cells to try the code above. Remember that at least one of your cells will be an R code chunk. Before you execute the code, what do you think should happen? After executing the code, do your expectations match the output?
+
+### Joining Data
+
+It's not always the case that our data all lives neatly in a single table. Most often our data is split across multiple tables. This is the case in our baseball scenario. Useful information is stored away in the `park_dimensions()` data set. Storing this data separately reduces redundancy, reduces storage size, and improves reliability. If we want to use `park_dimensions` information in understanding our `batted_balls` data, then we can *join* the `park_dimensions` data onto our `batted_balls` data. A *join* matches two tables using at least one shared column -- the resulting table includes columns from both of the individual tables.
+
+There are several different types of join, but we'll almost always be able to get away with a *left-join*. This particular type of join begins with a table (on the left) and adds columns from another table (the table on the right) by matching on a shared column(s).
+
+A left-join to add the `park_dimensions` variables onto the `batted_balls` data appears below. In `pandas`, we perform *joins* with the `.merge()` method.
+
+```{python echo = TRUE, eval = FALSE, message = FALSE}
+batted_balls.merge(park_dimension, how = "left", left_on = "park", right_on = "park")
+```
+
+The `left_on` and `right_on` arguments are the column matches. If matching on multiple columns, you can pass lists of column names here -- those lists should be the same length and the matching columns should appear in the same positions within the lists.
+
+23. Include another additional code cell and verify that the resulting data frame includes all of the original columns from `batted_balls` as well as the columns from `park_dimensions`. You can spot-check a few rows to ensure that the correct park dimension data has been appended to each row.
+
+## Misc Additional Items
+
+There is much that we haven't covered, but a few things definitely worth a quick mention are:
+
++ Many of the changes we've made to the `batted_balls` data frame here are temporary. If we want to make any permanent changes, we'll need to make explicit use of the equals (`=`) operator. Some functions have an additional `inplace` argument which can be set to `True` to make permanent changes, but not every function has this. We overwrite the original object if we use the same name (or if we use `inplace = True`), but can use a different name and keep the original object available in our Global Environment. For example,
+
+    ```{python echo = TRUE, eval = FALSE}
+    bb_with_park_dims = batted_balls.merge(parks, how = "left", left_on = "park", right_on = "park")
+    ```
+
++ The table outputs we've obtained while running our code don't look excellent. There is an R package called `{kableExtra}` which provides functionality to convert our tables into visually pleasing components of our HTML document. Since this is an R package, you would need `{reticulate}` within an R code chunk to use it. For example, 
+
+    ```{r echo = TRUE, eval = FALSE}
+    library(kableExtra)
+    py$bb_with_park_dims %>%
+      head() %>%
+      kable() %>%
+      kable_styling(bootstrap_options = c("hover", "striped"))
+    ```
+
+The code in the block above will produce a nicely formatted table in which the rows are striped and if we hover over a row of our table then it will be highlighted in the HTML document. Try adding a code cell as above and then re-knitting your document. See how nice this table looks? You might copy and paste these lines to the end of each of our code cells in this notebook that output tables. The document resulting from your knitting will be much more visually pleasing.
+
+## Final Thoughts
+
+There is a lot more to learn about data manipulation and Python in general. I like R much better for data wrangling than Python because of the `{tidyverse}` and the other package groups within the *tidy*-ecosystem (ie. `{tidytext}`, `{tidymodels}`, etc.). All of these packages are all built on common syntax and programmatic principles, always working with *data frames*. You can read more about this in the [TidyTools Manifesto](https://tidyverse.tidyverse.org/articles/manifesto.html). That being said, you can certainly complete all of your data wrangling tasks in Python if you like.
+
+You won't be an expert after working through this document, but it should provide you with a solid start. Please feel free to continue adding notes to your markdown file as we encounter more advanced functionality.

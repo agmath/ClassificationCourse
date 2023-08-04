@@ -11,7 +11,7 @@
 
 
 
-<title>Data Visualization using ggplot()</title>
+<title>Data Visualization using {plotnine}</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -421,7 +421,7 @@ display: none;
 
 
 <h1 class="title toc-ignore">Data Visualization using
-<code>ggplot()</code></h1>
+<code>{plotnine}</code></h1>
 
 </div>
 
@@ -430,13 +430,19 @@ display: none;
 <h2>Getting Started and Basics</h2>
 <p>The goal of any exploratory data analysis (EDA) is to learn about and
 from our data. You did some of that in Days 2 and 3, where you looked at
-techniques for <em>tidy</em> data analyses in R and also inline
-reporting within R Markdown documents. While summary statistics are
-great, sometimes visuals are even more effective at helping us (and our
-readers) understand the data we are working with. This notebook will
-focus on data visualization using <code>ggplot()</code>.</p>
+techniques for data wrangling in Python and also inline reporting within
+R Markdown documents with the help of <code>{reticulate}</code>. While
+summary statistics are great, sometimes visuals are even more effective
+at helping us (and our readers) understand the data we are working with.
+This notebook will focus on data visualization using
+<code>{plotnine}</code>, a python module built to mirror the performance
+of R’s <code>{ggplot2}</code> package. Both <code>{plotnine}</code> and
+<code>{ggplot2}</code> are build using a <em>layered grammar of
+graphics</em> which allows for the convenient construction of plots by
+adding layers one after the other.</p>
 <p>Open RStudio and the notebook you’ve been working on over the past
-two class meetings.</p>
+two class meetings. Make sure you are working inside of the R Project
+which is managing your GitHub repository associated with MAT434.</p>
 <div id="training-and-validation-data" class="section level3">
 <h3>Training and Validation Data</h3>
 <p>If you’ve already split your data into <em>training</em> and
@@ -460,52 +466,81 @@ hidden data as <em>validation</em> data.</p>
 <p>At the beginning of any analysis, if one of our goals is a model to
 be used for <em>predictions</em>, then we should split our data into
 <em>training</em> and <em>test</em> sets. We can do this with the
-<code>initial_split()</code> function from the <code>{rsample}</code>
-package, which is loaded when <code>{tidymodels}</code> is loaded.</p>
+<code>train_test_split()</code> function from the
+<code>sklearn.model_selection</code> submodule. We’ll need to
+<code>import</code> this before we can use it.</p>
 <ol style="list-style-type: decimal">
-<li>Add code to the <code>setup</code> chunk of your notebook to load
-the <code>{tidymodels}</code> library. Run each of the lines of code in
-your setup chunk using either <code>ctrl+Enter</code> or
-<code>cmd+Return</code>.</li>
+<li><p>Add code to the <code>setup</code> chunk of your notebook to load
+the <code>{reticulate}</code> package and to use the <code>mat434</code>
+virtual environment you’ve built.</p></li>
+<li><p>If you haven’t installed <code>sklearn</code> into your virtual
+environment, you can do so by opening a Python code cell and running
+<code>!pip install scikit-learn</code>. Remember to delete this line of
+code after you’ve run it.</p></li>
 </ol>
 <p>Now we’ll split our data into <code>train</code>ing and
 <code>test</code> sets.</p>
 <ol start="2" style="list-style-type: decimal">
-<li>Open a new code cell and type/run the following commands.</li>
+<li>Open a new Python code cell and type/run the following
+commands.</li>
 </ol>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">434</span>)</span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>my_data_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(<span class="sc">&lt;</span>name_of_your_dataframe<span class="sc">&gt;</span>, <span class="at">prop =</span> <span class="fl">0.8</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>train, test <span class="op">=</span> train_test_split(<span class="op">&lt;</span>name_of_your_dataframe<span class="op">&gt;</span>, train_size <span class="op">=</span> <span class="fl">0.75</span>, random_state <span class="op">=</span> <span class="dv">434</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(my_data_split)</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">testing</span>(my_data_split)</span></code></pre></div>
-<p>The first line sets a seed for our random number generator so that
-our same results are reproduced each time we (or our collaborators) run
-the notebook. The second line marks each observation as belonging to
-training data or test data, with 80% of observations going to training.
-The third and fourth lines collect the <em>training</em> and
-<em>test</em> sets into their own data frames.</p>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>train.head()</span></code></pre></div>
+<p>The first line imports the <code>train_test_splot()</code> function
+from the <code>sklearn.model_selection</code> submodule. The next line
+splits your data frame into two random subsets (by rows), where the
+<code>train</code>ing set contains 75% of observations and the
+<code>test</code> set contains the remaining 25%. Setting the
+<code>random_state</code> parameter ensures that we’ll get the same
+random <code>train</code>ing and <code>test</code> sets regardless of
+when, where, or who runs the code.</p>
 <p>In general, we’ll do this near the beginning of any analysis. If you
 completed your tidy analysis work on your full data set, you can add
 this to the bottom of your notebook and just make note that we’ll split
 into <em>training</em> and <em>test</em> sets at the beginning of our
 analyses from here on out.</p>
 </div>
-<div id="about-ggplot-for-data-viz" class="section level3">
-<h3>About <code>ggplot</code> for Data Viz</h3>
+<div id="about-plotnine-for-data-viz" class="section level3">
+<h3>About <code>{plotnine}</code> for Data Viz</h3>
+<p>As mentioned in the opening, the <code>{plotnine}</code> module was
+built to mirror the functionality of R’s <code>{ggplot2}</code> data
+visualization package. This means that, regardless of whether you are
+using R or Python, much of our plotting code will looks similar.</p>
+<p>In order to use <code>{plotnine}</code> we’ll need to import it.
+Rather than importing the entire module, it is more common to import
+only the functionality that we’ll need. This also prevents the need to
+namespace every function call and makes our plotting code look even more
+similar to the <code>{ggplot2}</code> functionality.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>Either open a new Python code chunk or (preferrably), go back to
+your initial Python code chunk and <code>import</code> the following
+functions from <code>{plotnine}</code>: <code>ggplot</code>,
+<code>geom_point</code>, <code>geom_boxplot</code>,
+<code>geom_bar</code>, <code>aes</code>, <code>labs</code>. There’s lots
+more <code>{plotnine}</code> functionality – you can <a href="https://plotnine.readthedocs.io/en/stable/">see the
+<code>{plotnine}</code> documentation here</a>.</li>
+</ol>
 <p>The <code>ggplot()</code> function provides us with a layered
 plotting syntax based off of the <em>grammar of graphics</em>. Plotting
 layers can include plot types (<code>geom</code>etries), labels, themes,
 and more. Layers of a <code>ggplot()</code> object are separated by
-<code>+</code> signs rather than the pipe, although the behavior is
-similar.</p>
+<code>+</code> signs rather than the dot notation, although the behavior
+is similar.</p>
 <p>A basic <code>ggplot()</code> might look like the following:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>train <span class="sc">%&gt;%</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pitch_mph)) <span class="sc">+</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Pitch Speed (mph)&quot;</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;&quot;</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Distribution of Pitch Speed in Miles per Hour&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>ggplot(data <span class="op">=</span> train) <span class="op">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  geom_boxplot(aes(x <span class="op">=</span> <span class="dv">0</span>, y <span class="op">=</span> <span class="st">&quot;pitch_mph&quot;</span>)) <span class="op">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  labs(x <span class="op">=</span> <span class="st">&quot;Pitch Speed (mph)&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>       y <span class="op">=</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>       title <span class="op">=</span> <span class="st">&quot;Distribution of Pitch Speed in Miles per Hour&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>)</span></code></pre></div>
+<p>Notice that the entire plotting code is wrapped in parentheses
+<code>()</code> to indicate to Python that all of this code should be
+executed at once, rather than a single line at a time, as is usually the
+case with Python.</p>
 <ol start="3" style="list-style-type: decimal">
 <li>Add a new code cell to your notebook, type the code above into the
 cell, run it, and discuss the resulting plot.</li>
@@ -516,29 +551,27 @@ numerical variable from that data set that you are interested in
 building a boxplot for and replace <code>pitch_mph</code> with that
 variable in the plotting code.</li>
 </ul>
-<p>As you can see above, we can pipe data into a <code>ggplot()</code>.
-This means that we can transform our data using a pipeline, perhaps
-engineering new features using <code>mutate()</code>, prior to
-plotting.</p>
 </div>
 </div>
 <div id="basic-plotting" class="section level2">
 <h2>Basic Plotting</h2>
-<p>At a minimum, every plot will need <code>data</code>. The most
-convenient way to pass data to a plot is to pipe (<code>%&gt;%</code>)
-it into <code>ggplot()</code>. Every plot also needs to include a
-geometry layer (<code>geom_*()</code>), which will include
-<em>aesthetics</em> – variables from <code>data</code> which determine
-features of the plot. If you want to override an attribute of the visual
-across the entire plot (say, set the <code>fill</code> color of a
-boxplot to <em>purple</em>, then you can set that parameter outside of
-<code>aes()</code> but still inside of the geometry layer). That is,</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>train <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pitch_mph), <span class="at">fill =</span> <span class="st">&quot;purple&quot;</span>) <span class="sc">+</span></span>
+<p>At a minimum, every plot will need <code>data</code>. The way to pass
+data to a plot is using the <code>data</code> argument to
+<code>ggplot()</code>. Every plot also needs to include a geometry layer
+(<code>geom_*()</code>), which will include
+<code>aes</code><em>thetics</em> – variables from <code>data</code>
+which determine features of the plot. If you want to override an
+attribute of the visual across the entire plot (say, set the
+<code>fill</code> color of a boxplot to <em>purple</em>, then you can
+set that parameter outside of <code>aes()</code> but still inside of the
+geometry layer). That is,</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> train) <span class="sc">+</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="st">&quot;pitch_mph&quot;</span>), <span class="at">fill =</span> <span class="st">&quot;purple&quot;</span>) <span class="sc">+</span></span>
 <span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Pitch Speed (mph)&quot;</span>,</span>
 <span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;&quot;</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Distribution of Pitch Speed in Miles per Hour&quot;</span>)</span></code></pre></div>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Distribution of Pitch Speed in Miles per Hour&quot;</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>)</span></code></pre></div>
 <p>In general, plot aspects determined by variables in the data set must
 be defined inside of <code>aes()</code>, while aspects which are
 globally defined for the plot layer should be defined outside of
@@ -558,23 +591,23 @@ utilized.</p>
 <ul>
 <li><p>Univariate geometries for a <em>numerical</em> variable:</p>
 <ul>
-<li>Histograms (<a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html"><code>geom_histogram()</code></a>)</li>
-<li>Boxplots (<a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html"><code>geom_boxplot()</code></a>)</li>
-<li>Densities (<a href="https://ggplot2.tidyverse.org/reference/geom_density.html"><code>geom_density()</code></a>)</li>
+<li>Histograms (<a href="https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_histogram.html#plotnine.geoms.geom_histogram"><code>geom_histogram()</code></a>)</li>
+<li>Boxplots (<a href="https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_boxplot.html#plotnine.geoms.geom_boxplot"><code>geom_boxplot()</code></a>)</li>
+<li>Densities (<a href="https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_density.html#plotnine.geoms.geom_density"><code>geom_density()</code></a>)</li>
 </ul></li>
 <li><p>Univariate geometries for a <em>categorical</em> variable:</p>
 <ul>
-<li>Barplots (<a href="https://ggplot2.tidyverse.org/reference/geom_bar.html"><code>geom_bar()</code></a>)</li>
+<li>Barplots (<a href="https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_bar.html#plotnine.geoms.geom_bar"><code>geom_bar()</code></a>)
+or Column plots (<a href="https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_col.html#plotnine.geoms.geom_col"><code>geom_col()</code></a>)</li>
 </ul></li>
 </ul></li>
 <li><p>Multivariate plots are plots involving multiple variables:</p>
 <ul>
 <li><p>Bivariate plots between <em>two numerical</em> variables:</p>
 <ul>
-<li>Scatterplots (<a href="https://ggplot2.tidyverse.org/reference/geom_point.html"><code>geom_point()</code></a>
-or <a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html"><code>geom_jitter()</code></a>)</li>
-<li>Heatmaps (<a href="https://ggplot2.tidyverse.org/reference/geom_bin_2d.html"><code>geom_bin_2d()</code></a>
-or <a href="https://ggplot2.tidyverse.org/reference/geom_hex.html"><code>geom_hex()</code></a>)</li>
+<li>Scatterplots (<a href="https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_point.html#plotnine.geoms.geom_point"><code>geom_point()</code></a>
+or <a href="https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_jitter.html#plotnine.geoms.geom_jitter"><code>geom_jitter()</code></a>)</li>
+<li>Heatmaps (<a href="https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_bin_2d.html#plotnine.geoms.geom_bin_2d"><code>geom_bin_2d()</code></a></li>
 </ul></li>
 <li><p>Bivariate plots between <em>one numerical</em> and <em>one
 categorical</em> variable:</p>
@@ -584,8 +617,7 @@ with the categorical variable as a <code>fill</code> color.</p>
 <ul>
 <li>Often this results in overplotting, which can obscure the visual.
 You can use an <code>alpha</code> parameter to control transparency. You
-can also <em>facet</em> with <a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html"><code>facet_wrap()</code></a>
-or <a href="https://ggplot2.tidyverse.org/reference/facet_grid.html"><code>facet_grid()</code></a>
+can also <em>facet</em> with <a href="https://plotnine.readthedocs.io/en/stable/generated/plotnine.facets.facet_wrap.html#plotnine.facets.facet_wrap"><code>facet_wrap()</code></a>
 to obtain a different plot for each class of the categorical
 variable.</li>
 </ul></li>
@@ -595,9 +627,6 @@ variable.</li>
 <li>Barplots with Fill (<code>geom_bar()</code> using <code>fill</code>
 argument for second categorical variable – <code>position</code>
 argument is also helpful for organizing bars)</li>
-<li>Mosaic plots (<a href="https://haleyjeppson.github.io/ggmosaic/reference/geom_mosaic.html"><code>geom_mosaic()</code></a>,
-which requires the <code>{ggmosaic}</code> package to be installed and
-loaded)</li>
 </ul></li>
 <li><p>Multivariate plots with three or more variables:</p>
 <ul>

@@ -1,5 +1,5 @@
 ---
-title: 'Data Visualization using `ggplot()`'
+title: 'Data Visualization using `{plotnine}`'
 output:
   html_document:
     theme: cerulean
@@ -14,9 +14,9 @@ library(tidyverse)
 
 ## Getting Started and Basics
 
-The goal of any exploratory data analysis (EDA) is to learn about and from our data. You did some of that in Days 2 and 3, where you looked at techniques for *tidy* data analyses in R and also inline reporting within R Markdown documents. While summary statistics are great, sometimes visuals are even more effective at helping us (and our readers) understand the data we are working with. This notebook will focus on data visualization using `ggplot()`.
+The goal of any exploratory data analysis (EDA) is to learn about and from our data. You did some of that in Days 2 and 3, where you looked at techniques for data wrangling in Python and also inline reporting within R Markdown documents with the help of `{reticulate}`. While summary statistics are great, sometimes visuals are even more effective at helping us (and our readers) understand the data we are working with. This notebook will focus on data visualization using `{plotnine}`, a python module built to mirror the performance of R's `{ggplot2}` package. Both `{plotnine}` and `{ggplot2}` are build using a *layered grammar of graphics* which allows for the convenient construction of plots by adding layers one after the other.
 
-Open RStudio and the notebook you've been working on over the past two class meetings.
+Open RStudio and the notebook you've been working on over the past two class meetings. Make sure you are working inside of the R Project which is managing your GitHub repository associated with MAT434.
 
 ### Training and Validation Data
 
@@ -29,59 +29,68 @@ Our goal in MAT434 is to build models which help us classify observations as bel
 
 If we (and our model) get to see all of our available data during the learning/training process, then we can't hope to know how well our model generalizes to new observations until it is too late! For this reason, we'll hide some data from ourselves and our models -- we'll refer to this hidden data as *validation* data. 
 
-At the beginning of any analysis, if one of our goals is a model to be used for *predictions*, then we should split our data into *training* and *test* sets. We can do this with the `initial_split()` function from the `{rsample}` package, which is loaded when `{tidymodels}` is loaded.
+At the beginning of any analysis, if one of our goals is a model to be used for *predictions*, then we should split our data into *training* and *test* sets. We can do this with the `train_test_split()` function from the `sklearn.model_selection` submodule. We'll need to `import` this before we can use it.
 
-1. Add code to the `setup` chunk of your notebook to load the `{tidymodels}` library. Run each of the lines of code in your setup chunk using either `ctrl+Enter` or `cmd+Return`.
+1. Add code to the `setup` chunk of your notebook to load the `{reticulate}` package and to use the `mat434` virtual environment you've built.
+
+2. If you haven't installed `sklearn` into your virtual environment, you can do so by opening a Python code cell and running `!pip install scikit-learn`. Remember to delete this line of code after you've run it.
 
 Now we'll split our data into `train`ing and `test` sets. 
 
-2. Open a new code cell and type/run the following commands.
+2. Open a new Python code cell and type/run the following commands.
 
-```{r echo = TRUE, eval = FALSE}
-set.seed(434)
+```{python echo = TRUE, eval = FALSE}
+from sklearn.model_selection import train_test_split
 
-my_data_split <- initial_split(<name_of_your_dataframe>, prop = 0.8)
+train, test = train_test_split(<name_of_your_dataframe>, train_size = 0.75, random_state = 434)
 
-train <- training(my_data_split)
-test <- testing(my_data_split)
+train.head()
 ```
 
-The first line sets a seed for our random number generator so that our same results are reproduced each time we (or our collaborators) run the notebook. The second line marks each observation as belonging to training data or test data, with 80% of observations going to training. The third and fourth lines collect the *training* and *test* sets into their own data frames.
+The first line imports the `train_test_splot()` function from the `sklearn.model_selection` submodule. The next line splits your data frame into two random subsets (by rows), where the `train`ing set contains 75% of observations and the `test` set contains the remaining 25%. Setting the `random_state` parameter ensures that we'll get the same random `train`ing and `test` sets regardless of when, where, or who runs the code.
 
 In general, we'll do this near the beginning of any analysis. If you completed your tidy analysis work on your full data set, you can add this to the bottom of your notebook and just make note that we'll split into *training* and *test* sets at the beginning of our analyses from here on out.
 
-### About `ggplot` for Data Viz
+### About `{plotnine}` for Data Viz
 
-The `ggplot()` function provides us with a layered plotting syntax based off of the *grammar of graphics*. Plotting layers can include plot types (`geom`etries), labels, themes, and more. Layers of a `ggplot()` object are separated by `+` signs rather than the pipe, although the behavior is similar.
+As mentioned in the opening, the `{plotnine}` module was built to mirror the functionality of R's `{ggplot2}` data visualization package. This means that, regardless of whether you are using R or Python, much of our plotting code will looks similar.
+
+In order to use `{plotnine}` we'll need to import it. Rather than importing the entire module, it is more common to import only the functionality that we'll need. This also prevents the need to namespace every function call and makes our plotting code look even more similar to the `{ggplot2}` functionality.
+
+3. Either open a new Python code chunk or (preferrably), go back to your initial Python code chunk and `import` the following functions from `{plotnine}`: `ggplot`, `geom_point`, `geom_boxplot`, `geom_bar`, `aes`, `labs`. There's lots more `{plotnine}` functionality -- you can [see the `{plotnine}` documentation here](https://plotnine.readthedocs.io/en/stable/).
+
+The `ggplot()` function provides us with a layered plotting syntax based off of the *grammar of graphics*. Plotting layers can include plot types (`geom`etries), labels, themes, and more. Layers of a `ggplot()` object are separated by `+` signs rather than the dot notation, although the behavior is similar.
 
 A basic `ggplot()` might look like the following:
 
-```{r ehco = TRUE, eval = FALSE}
-train %>%
-  ggplot() +
-  geom_boxplot(aes(x = pitch_mph)) +
+```{python ehco = TRUE, eval = FALSE}
+(
+ggplot(data = train) +
+  geom_boxplot(aes(x = 0, y = "pitch_mph")) +
   labs(x = "Pitch Speed (mph)",
        y = "",
        title = "Distribution of Pitch Speed in Miles per Hour")
+)
 ```
+
+Notice that the entire plotting code is wrapped in parentheses `()` to indicate to Python that all of this code should be executed at once, rather than a single line at a time, as is usually the case with Python.
 
 3. Add a new code cell to your notebook, type the code above into the cell, run it, and discuss the resulting plot. 
 
   + If you are working with the FAA Birdstrikes data, then choose a numerical variable from that data set that you are interested in building a boxplot for and replace `pitch_mph` with that variable in the plotting code.
 
-As you can see above, we can pipe data into a `ggplot()`. This means that we can transform our data using a pipeline, perhaps engineering new features using `mutate()`, prior to plotting.
-
 ## Basic Plotting 
 
-At a minimum, every plot will need `data`. The most convenient way to pass data to a plot is to pipe (`%>%`) it into `ggplot()`. Every plot also needs to include a geometry layer (`geom_*()`), which will include *aesthetics* -- variables from `data` which determine features of the plot. If you want to override an attribute of the visual across the entire plot (say, set the `fill` color of a boxplot to *purple*, then you can set that parameter outside of `aes()` but still inside of the geometry layer). That is, 
+At a minimum, every plot will need `data`. The way to pass data to a plot is using the `data` argument to `ggplot()`. Every plot also needs to include a geometry layer (`geom_*()`), which will include `aes`*thetics* -- variables from `data` which determine features of the plot. If you want to override an attribute of the visual across the entire plot (say, set the `fill` color of a boxplot to *purple*, then you can set that parameter outside of `aes()` but still inside of the geometry layer). That is, 
 
 ```{r echo = TRUE, eval = FALSE}
-train %>%
-  ggplot() +
-  geom_boxplot(aes(x = pitch_mph), fill = "purple") +
+(
+  ggplot(data = train) +
+  geom_boxplot(aes(x = 0, y = "pitch_mph"), fill = "purple") +
   labs(x = "Pitch Speed (mph)",
        y = "",
        title = "Distribution of Pitch Speed in Miles per Hour")
+)
 ```
 
 In general, plot aspects determined by variables in the data set must be defined inside of `aes()`, while aspects which are globally defined for the plot layer should be defined outside of `aes()`. 
@@ -96,32 +105,31 @@ For now, having some basic rules of thumb for plot geometries might be helpful:
   
   + Univariate geometries for a *numerical* variable:
     
-    + Histograms ([`geom_histogram()`](https://ggplot2.tidyverse.org/reference/geom_histogram.html))
-    + Boxplots ([`geom_boxplot()`](https://ggplot2.tidyverse.org/reference/geom_boxplot.html))
-    + Densities ([`geom_density()`](https://ggplot2.tidyverse.org/reference/geom_density.html))
+    + Histograms ([`geom_histogram()`](https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_histogram.html#plotnine.geoms.geom_histogram))
+    + Boxplots ([`geom_boxplot()`](https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_boxplot.html#plotnine.geoms.geom_boxplot))
+    + Densities ([`geom_density()`](https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_density.html#plotnine.geoms.geom_density))
   
   + Univariate geometries for a *categorical* variable:
   
-    + Barplots ([`geom_bar()`](https://ggplot2.tidyverse.org/reference/geom_bar.html))
+    + Barplots ([`geom_bar()`](https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_bar.html#plotnine.geoms.geom_bar)) or Column plots ([`geom_col()`](https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_col.html#plotnine.geoms.geom_col))
 
 + Multivariate plots are plots involving multiple variables:
 
   + Bivariate plots between *two numerical* variables:
   
-    + Scatterplots ([`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html) or [`geom_jitter()`](https://ggplot2.tidyverse.org/reference/geom_jitter.html))
-    + Heatmaps ([`geom_bin_2d()`](https://ggplot2.tidyverse.org/reference/geom_bin_2d.html) or [`geom_hex()`](https://ggplot2.tidyverse.org/reference/geom_hex.html))
+    + Scatterplots ([`geom_point()`](https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_point.html#plotnine.geoms.geom_point) or [`geom_jitter()`](https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_jitter.html#plotnine.geoms.geom_jitter))
+    + Heatmaps ([`geom_bin_2d()`](https://plotnine.readthedocs.io/en/stable/generated/plotnine.geoms.geom_bin_2d.html#plotnine.geoms.geom_bin_2d)
   
   + Bivariate plots between *one numerical* and *one categorical* variable:
     
     + Any of the univariate geometries for a single numerical variable with the categorical variable as a `fill` color.
       
-      + Often this results in overplotting, which can obscure the visual. You can use an `alpha` parameter to control transparency. You can also *facet* with [`facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html) or [`facet_grid()`](https://ggplot2.tidyverse.org/reference/facet_grid.html) to obtain a different plot for each class of the categorical variable.
+      + Often this results in overplotting, which can obscure the visual. You can use an `alpha` parameter to control transparency. You can also *facet* with [`facet_wrap()`](https://plotnine.readthedocs.io/en/stable/generated/plotnine.facets.facet_wrap.html#plotnine.facets.facet_wrap) to obtain a different plot for each class of the categorical variable.
   
   + Bivariate plots between *two categorical* variables:
   
     + Barplots with Fill (`geom_bar()` using `fill` argument for second categorical variable -- `position` argument is also helpful for organizing bars)
-    + Mosaic plots ([`geom_mosaic()`](https://haleyjeppson.github.io/ggmosaic/reference/geom_mosaic.html), which requires the `{ggmosaic}` package to be installed and loaded)
-    
+
   + Multivariate plots with three or more variables:
   
     + Be careful not to include *too much* information in your plots -- *more* is not always *better*. 

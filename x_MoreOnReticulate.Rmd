@@ -1,0 +1,52 @@
+---
+title: 'Using Python from RStudio and RMarkdown'
+author: "Dr. Gilbert"
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+reticulate::use_virtualenv("mat434")
+```
+
+**Purpose:** In this notebook, we'll see that `{reticulate}` is more than just a package that allows you to work with Python inside of RStudio. This package allows for users and teams to mix Python and R code in a single document, passing objects back and forth between environments.
+
+## Dual-Weilding Languages
+
+As mentioned, the `{reticulate}` package supports a single document accessing multiple environments. This is great for teams with developers who prefer different languages or for individuals who like one language for some purposes and another language for other purposes.
+
+1. Open up RStudio and open the R project which is managing your GitHub repository for this class.
+2. Use `File -> New File -> R Markdown...` to open a new RMarkdown notebook. Fill in the fields and create the document.
+3. In the initial R code chunk, add a line to `reticulate::use_virtualenv("mat434")` and run it.
+4. Delete all of the boilerplate from line 12 down.
+5. In the R console (`>` rather than `>>>`), run `install.packages("tidyverse")` to install the `{tidyverse}` ecosystem of packages for R.
+
+  + If your console is running python (`>>>`), then you can revert back to R by typing `exit` in the console and running it.
+6. In that first R code chunk, add a line `library(tidyverse)` to load the `{tidyverse}` and run it. Add and run a line `library(reticulate)` as well, since we'll be using `{reticulate}` functionality here.
+7. Open a new code cell, but this time make it a Python chunk. You can either build the code chunk manually or by using the `+C` icon at the top of the script editor.
+8. Use python code to read in the [FAA airstrikes data](https://github.com/agmath/agmath.github.io/blob/master/data/classification/faa_birdstrikes.csv) as `FAAdata`. Don't forget to `import pandas as pd` first.
+9. Print out the `.head()` of the data frame using python syntax.
+10. Look in the *Environment* tab in your top-right pane. You should see `FAAdata` there in addition to a couple of other items. Click the dropdown menu next to `Python` and switch to `R`. Your R environment is empty -- only Python knows about `FAAdata`!
+11. To convince ourselves that this is the case, open a new R code chunk and try running `FAAdata %>% head()`. You'll receive an error saying that `FAAdata` is not found.
+
+Having two completely separate environments is not all that useful, but `{reticulate}` provides us powers to pass objects between our two environments. We can access items in the Python environment from R code chunks using `py$OBJECT_NAME`, and items the R environment from Python code chunks using `r.OBJECT_NAME`.
+
+12. Access the `FAAdata` from an R code cell and store it into an R object called `FAAdata_R`. Print out the `head()` of the `FAAdata_R` data frame using `FAAdata_R %>% head()`.
+13. Open a new R code chunk and run the following code to `group_by()` and `summarize()` our data to obtain counts of incidents by month at each airport. We're interested in the most active months and airports, so we'll `arrange()` the data frame in order of decreasing count.
+
+```{r eval = FALSE}
+FAAdata_month_airport <- FAAdata_R %>%
+  group_by(incident_month) %>%
+  count(airport_id) %>%
+  arrange(-n)
+```
+
+14. Pass this summarized data frame back to your python environment.
+15. Write a bit about what you've done in a text cell. Feel free to do more work, passing objects back and forth between your R and Python environments.
+
+## Summary
+
+In this notebook, you were exposed to the power of `{reticulate}` to pass objects back and forth between your R and Python environments. This allows for multilingual teams to collaborate on projects without having to submit to one language or another. The work we did here was basic, but this can be quite useful if you (or collaborators) prefer different languages for different tasks.
