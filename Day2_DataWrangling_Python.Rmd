@@ -51,11 +51,11 @@ The following examples show how we can read a variety of files into a Python ses
 ```{python echo = TRUE, eval = FALSE}
 #Read the MAT241 sheet from the grades.xls file in 
 #the Spring 2021 folder on my computer's desktop
-grades <- pd.read_excel("C:/Users/agilb/Desktop/Spring 2021/grades.xls", sheet_name = "MAT241")
+grades = pd.read_excel("C:/Users/agilb/Desktop/Spring 2021/grades.xls", sheet_name = "MAT241")
 
 #Read in data from a csv file of Tate Gallery Artists housed 
 #in a public github repository on the web
-tate_artists <- pd.read_csv("https://github.com/tategallery/collection/raw/master/artist_data.csv")
+tate_artists = pd.read_csv("https://github.com/tategallery/collection/raw/master/artist_data.csv")
 ```
   
 Now it's time for you to load in some data. We'll work with two data sets in this notebook: `battedballs.csv` and `park_dimensions.csv`. You can find those data sets in one of my GitHub repositories [here](https://github.com/agmath/agmath.github.io/tree/master/data/classification). In order to read these into Python, we'll need a link to the raw data sources.

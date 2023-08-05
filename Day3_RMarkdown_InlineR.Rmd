@@ -150,6 +150,10 @@ This would now allow us to rewrite the sentence with inline R code from above as
 
 > The fitted coefficient on `flipper_length` in our model is `` ` r coef_list["flipper_length"]` ``.
 
+### Inline R for Python Users
+
+Unfortunately, using Python inline won't work in an RMarkdown notebook. That being said, you can use `{reticulate}` to pass your object to R via `py$OBJECT_NAME` within an inline R call. If you are comfortable in R, then you can use R to obtain values like `` ` r py$site_traffic %>% nrow()` `` or you can pre-compute the quantity in Python by storing the number of rows of your `{pandas}` data frame as a Python variable (`site_rows = site_traffic.shape[0]`) and then calling this object from Python into R using inline R via `` ` r py$site_rows` ``.
+
 ***
 
 ## Next Steps
