@@ -3,7 +3,6 @@ title: '`{sklearn}` Framework Example Model Construction`'
 output:
   html_document:
     theme: cerulean
-    highlight: pygments
   pdf_document: default
 ---
 
