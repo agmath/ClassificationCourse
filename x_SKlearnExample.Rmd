@@ -1,0 +1,200 @@
+---
+title: '`{sklearn}` Framework Example Model Construction`'
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+  pdf_document: default
+---
+
+```{r global-options, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(reticulate)
+library(tidyverse)
+library(kableExtra)
+```
+
+**Objectives:** This notebook shows an example of a model being assessed and constructed using the framework proposed in notebook `x_ModelingFrameworkAndSKlearnReview`. We'll use the batted balls and home runs data that many of you have been working with for the last several class meetings. If you chose to use the FAA BirdStrikes and Engine Damage data, you should follow along and implement models with your data set.
+
+```{python}
+import pandas as pd
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score, roc_auc_score
+```
+
+## The Data
+
+As a reminder, the MLB batted balls data set was also associated with the park dimensions dataset. We'll load both of those data sets below.
+
+```{python}
+batted_balls = pd.read_csv("https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/battedballs.csv")
+
+park_dims = pd.read_csv("https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/park_dimensions.csv")
+```
+
+Now that the data sets have been read into our notebook, we can view the first few rows of each as a reminder of what we are working with. The first two rows of the `batted_balls` data frame is below.
+
+```{r}
+py$batted_balls %>%
+  head(n = 2) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+Similarly, the first few rows of `park_dims` is displayed next.
+
+```{r}
+py$park_dims %>%
+  head(n = 2) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+We can see that the two data frames share the `park` column. This means that we can *join* the two data sets together -- adding information about the baseball stadium (including the field dimensions) to the `batted_balls` data frame. It is reasonable that knowing about the park dimensions will be helpful in identifying whether a batted ball is going to be a home run (hit over the outfield fence) or not.
+
+```{python}
+batted_balls_parks = batted_balls.merge(park_dims, how = "left", left_on = "park", right_on = "park")
+```
+
+```{r}
+py$batted_balls_parks %>%
+  head(2) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+Success!
+
+In this notebook, we'll show how to assess, fit and use a model to classify whether a batted ball will result in a home run (`is_home_run`) given features of the scenario leading to the batted ball. To keep things simple, we'll use `pitch_mph`, `launch_speed`, `launch_angle`, and `Cover` as predictors. 
+
+```{python}
+model_data = batted_balls_parks[["pitch_mph", "launch_speed", "launch_angle", "Cover", "is_home_run"]]
+```
+
+```{r}
+py$model_data %>%
+  head() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+**Note:** There are some really great predictors that we've left on the table here.
+
+## Splitting Data
+
+We'll start by splitting our data into *training* and *test* sets. We'll then break apart our features and response variable for each set.
+
+```{python}
+train, test = train_test_split(model_data, train_size = 0.75, random_state = 434)
+
+X_train = train.drop("is_home_run", axis = 1)
+y_train = train["is_home_run"]
+X_test = test.drop("is_home_run", axis = 1)
+y_test = test["is_home_run"]
+```
+
+## Building Modeling Pipelines
+
+We'll build pipelines for a nearest neighbor model and a decision tree model. Let's start by just defining the model constructors.
+
+```{python}
+knn_clf = KNeighborsClassifier()
+dt_clf = DecisionTreeClassifier()
+```
+
+Now that we have those, let's build a data transformation `Pipeline()`. The nearest neighbors classifier is distance-based, so we'll need to scale any numeric features using either `StandardScaler()`, `MinMaxScaler()`, or some other scaling transformation. The decision tree classifier does not need to have scaled numeric features. We'll need to one-hot encode the categorical features for each though.
+
+```{python}
+#knn workflow
+num_cols = ["pitch_mph", "launch_speed", "launch_angle"]
+cat_cols = ["Cover"]
+
+num_pipe_knn = Pipeline([
+  ("num_imputer", SimpleImputer(strategy = "median")),
+  ("norm", StandardScaler())
+])
+num_pipe_dt = Pipeline([
+  ("num_imputer", SimpleImputer(strategy = "median"))
+])
+cat_pipe = Pipeline([
+  ("cat_imputer", SimpleImputer(strategy = "most_frequent")),
+  ("one-hot", OneHotEncoder())
+])
+
+preprocessor_knn = ColumnTransformer([
+  ("num_cols", num_pipe_knn, num_cols),
+  ("cat_cols", cat_pipe, cat_cols)
+])
+preprocessor_dt = ColumnTransformer([
+  ("num_cols", num_pipe_dt, num_cols),
+  ("cat_cols", cat_pipe, cat_cols)
+])
+
+pipe_knn = Pipeline([
+  ("preprocessor", preprocessor_knn),
+  ("model", knn_clf)
+])
+pipe_dt = Pipeline([
+  ("preprocessor", preprocessor_dt),
+  ("model", dt_clf)
+])
+```
+
+Now that we've got our pipelines set up, we are ready to score them using cross validation.
+
+## Evaluating Models Using Cross-Validation
+
+We'll now use cross-validation to evaluate our two modeling pipelines.
+
+```{python}
+cv_accuracy_knn = cross_val_score(pipe_knn, X_train, y_train, cv = 10, scoring = "accuracy")
+cv_accuracy_dt = cross_val_score(pipe_dt, X_train, y_train, cv = 10, scoring = "accuracy")
+cv_rocauc_knn = cross_val_score(pipe_knn, X_train, y_train, cv = 10, scoring = "roc_auc")
+cv_rocauc_dt = cross_val_score(pipe_dt, X_train, y_train, cv = 10, scoring = "roc_auc")
+
+print("CV Accuracy (knn): ", cv_accuracy_knn.mean(), " CV ROC_AUC (knn): ", cv_rocauc_knn.mean())
+print("CV Accuracy (dt): ", cv_accuracy_dt.mean(), " CV ROC_AUC (dt): ", cv_rocauc_dt.mean())
+```
+
+It looks like the nearest neighbor model outperforms the decision tree using both of our performance metrics. We'll discuss more about model performance metrics at our next class meeting. For now, let's fit the nearest neighbor model since it seems superior.
+
+## Fit, Assess, and Utilize Our "Best" Model
+
+We'll start by fitting our best model to our training data.
+
+```{python}
+pipe_knn.fit(X_train, y_train)
+```
+
+Now that the model has been fitted, we'll use our model to make predictions on our `test` observations. The performance metrics should align with our cross-validation estimate (if not, then we'll have concerns which will prevent us from putting the model into production).
+
+```{python}
+test_preds = pipe_knn.predict(X_test)
+accuracy_score(y_test, test_preds)
+```
+
+The model was just about as accurate as expected given the cross-validation results. Since it doesn't look like our model is overfit, let's use it to make a prediction on whether a new batted ball would result in a home run.
+
+```{python}
+new_hit = pd.DataFrame({
+  "pitch_mph" : 84,
+  "launch_speed" : 88,
+  "launch_angle" : 47,
+  "Cover" : "Outdoor"
+}, index = [0])
+
+pipe_knn.predict(new_hit)
+pipe_knn.predict_proba(new_hit)
+```
+
+Looks like our model is very certain that won't be a home run.
+
+## Summary
+
+There it is -- we've walked through a basic modeling process using the `{sklearn}` framework. We'll discuss this in greater detail and introduce more advanced techniques throughout MAT434.
