@@ -12,7 +12,7 @@
 <meta name="author" content="Dr. Gilbert" />
 
 
-<title>Modeling Framework and {tidymodels} Workflow Review</title>
+<title>Modeling Framework and {sklearn} Workflow Overview</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -350,14 +350,20 @@ display: none;
 
 
 <h1 class="title toc-ignore">Modeling Framework and
-<code>{tidymodels}</code> Workflow Review</h1>
+<code>{sklearn}</code> Workflow Overview</h1>
 <h4 class="author">Dr. Gilbert</h4>
 
 </div>
 
 
-<pre class="r"><code>library(tidyverse)
-library(tidymodels)</code></pre>
+<pre class="python"><code>import pandas as pd
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score</code></pre>
 <p><strong>Typical Steps:</strong> In this notebook, our goals are to
 identify a standard modeling framework and workflow which can be applied
 across many scenarios. The main steps are below, but more detailed
@@ -365,8 +371,12 @@ discussions of each follow.</p>
 <ul>
 <li>Split data into <em>training</em> and <em>test</em> sets.</li>
 <li>Perform exploratory analyses on <em>training</em> data.</li>
-<li>Split training data into <em>cross-validation</em> folds.</li>
-<li>Use <em>cross-validation</em> to estimate model performance.</li>
+<li>Separate <em>features</em> (predictor variables) from
+<em>response</em>.</li>
+<li>Create an instance of a <em>model class</em>.</li>
+<li>Create a corresponding data transformation <em>pipeline</em>.</li>
+<li>Use <em>cross-validation</em> to estimate model and pipeline
+performance.</li>
 <li>Identify a best model or suite of models to move forward with.</li>
 <li>Fit your best model(s) to your <em>training</em> set.</li>
 <li>Confirm model performance expectations using your <em>test</em>
@@ -385,10 +395,7 @@ play the role of future observations and ensure that our model performs
 as expected when applied to observations it hasn’t seen before.</p>
 <p>The functionality for splitting data into training and test sets
 appears below.</p>
-<pre class="r"><code>set.seed(123) #set a seed to get same training/test data every time
-data_splits &lt;- initial_split(my_data) #mark observations as training or test
-train &lt;- training(data_splits) #obtain training data
-test &lt;- testing(data_splits) #obtain test data</code></pre>
+<pre class="python"><code>train, test = train_test_split(myData, train_size = 0.75, random_state = 434)</code></pre>
 </div>
 <div id="exploratory-analyses-on-training-data" class="section level2">
 <h2>Exploratory Analyses on Training Data</h2>
@@ -402,87 +409,140 @@ estimate of model performance – we, and therefore our model, know
 information about the observations in the test set that we should not
 know.</p>
 <p>More on exploratory data analyses and data visualization are covered
-in the <code>x_TidyAnalysesReview</code> and
-<code>x_DataVizReview</code> notebooks.</p>
+in the <a href="https://agmath.github.io/ClassificationCourse/Day2_DataWrangling_Python.html">Day
+2</a> and <a href="https://agmath.github.io/ClassificationCourse/Day4_EDA_and_Viz_Primer_Python.html">Day
+4</a> notebooks. While written in R, since the <code>{plotnine}</code>
+module is a port of R’s <code>{ggplot2}</code> package, you might also
+be interested in <a href="https://agmath.github.io/ClassificationCourse/x_DataViz_Primer.html">this
+review notebook on data visualization</a>.</p>
 </div>
-<div id="split-training-data-into-cross-validation-folds" class="section level2">
-<h2>Split Training Data Into Cross-Validation Folds</h2>
-<p>The <em>training</em> and <em>test</em> set approach alone isn’t
-enough to reliably estimate model performance. For instance, if we
-simply train our models on our <em>training</em> data and evaluate them
-on a single <em>test</em> set, how do we know that we didn’t give our
-model a “test” which was easier than average (underestimating error
-rates) or more difficult than average (overestimating error rates)? We
-put a lot of faith in a single random split of our data when we do this
-and we risk untrustworthy performance estimates.</p>
-<p>Cross-validation seeks to solve the issue outlined above by training
-and testing a model on multiple <em>validation-folds</em>, which act
-like test sets early in the modeling process. The idea is to take the
-<em>training</em> data and break it up into approximately equally sized
-folds. Each fold takes one turn being left out of the model training
-process and is used as a validation set for a model training on the
-remaining folds. That is, if we use 10-fold cross-validation for a
-logistic regression classifier, we obtain 10 estimated models and 10
-estimates of model performance. We can average these performance
-estimates together to obtain a <em>cross-validation</em> performance
-estimate and we can even compute a standard deviation in the individual
-performance estimates on each fold so that we can construct a confidence
-interval for the expected performance of our model. In doing this, those
-“easy” and “difficult” validation sets that we encounter by chance,
-balance eachother out and we obtain a more reliable estimate of future
-model performance through the cross-validation process.</p>
-<p>The code required to break our training data into cross validation
-folds is as follows:</p>
-<pre class="r"><code>set.seed(456) #Set seed for reproducibility
-train_folds &lt;- vfold_cv(train, v = 10) #Create 10 cross-validation folds</code></pre>
+<div id="separating-features-and-response" class="section level2">
+<h2>Separating Features and Response</h2>
+<p>Our models are going to <em>learn</em> from their
+<code>train</code>ing data. If we allow the models to see the response
+variable that they are trying to predict, they’ll quickly learn just to
+look at that column and report back its value. Unfortunately, such a
+model is only useful if we already know the value of the outcome
+variable – that is, such a model is not useful at all. For this reason,
+we’ll need to separate our <em>response</em> variable from the available
+<em>features</em> (predictors). We do that below.</p>
+<pre class="python"><code>X_train = train.drop(&quot;response&quot;, axis = 1)
+y_train = train[&quot;response&quot;]
+X_test = test.drop(&quot;response&quot;, axis = 1)
+y_test = test[&quot;response&quot;]</code></pre>
+<p>Now we are ready to start thinking about models.</p>
 </div>
-<div id="estimate-model-performance-with-cross-validation" class="section level2">
-<h2>Estimate Model Performance with Cross-Validation</h2>
-<p>As mentioned above, cross-validation helps us obtain more reliable
-estimates of future model performance. It does this by averaging
-performance estimates computed on each individual fold.</p>
-<div id="building-a-model-workflow" class="section level3">
-<h3>Building a Model Workflow</h3>
-<p>Building a model workflow comes in three stages. We need,</p>
-<ul>
-<li>A model <em>specification</em> (an instance of the class of model
-we’d like to build)</li>
-<li>A model <em>recipe</em> (a description of the response and predictor
-variables our model will use)</li>
-<li>A <em>workflow</em> will contain our <em>specification</em> and
-<em>recipe</em>.</li>
-</ul>
-<p>The setup will always look something like the following:</p>
-<pre class="r"><code>dt_spec &lt;- decision_tree(max_depth = 6) %&gt;% #build a decision tree with  max_depth fixed at 6
-  set_engine(&quot;rpart&quot;) %&gt;% #use the rpart package in R to build the tree
-  set_mode(&quot;classification&quot;) #set mode to &quot;classification&quot; or &quot;regression&quot;
+<div id="defining-a-model-constructor" class="section level2">
+<h2>Defining a Model Constructor</h2>
+<p>Notice that we imported the <code>DecisionTreeClassifier</code> from
+<code>sklearn.tree</code> earlier. We’ll always need to import any model
+constructors we wish to use. In order to <em>create an instance</em> of
+a model constructor which can be fit to data, we’ll define an object
+which is equal to this model constructor class. We can pass parameter
+values to the model class which will override the default parameters.
+Get in the habit of looking at the <code>sklearn</code> documentation
+for your model class to identify which parameters are available for your
+model. You can find the documentation by searching for
+<code>sklearn &lt;model_class&gt;</code>. Let’s create two separate
+instances of decision tree classifiers below.</p>
+<pre class="python"><code>#An unconstrained decision tree
+dt_clf = DecisionTreeClassifier()
 
-dt_rec &lt;- recipe(response ~ ., data = train) %&gt;% #use all available predictors to predict the response variable
-  step_xxyy() %&gt;% #add a feature engineering step
-  step_yyzz() #add another feature engineering step...
-
-dt_wf &lt;- workflow() %&gt;%
-  add_model(dt_spec) %&gt;%
-  add_recipe(dt_rec)</code></pre>
-<div id="estimating-model-performance-with-cross-validation" class="section level4">
-<h4>Estimating Model Performance with Cross-Validation</h4>
-<p>To run <em>cross-validation</em> on a model workflow, we can pipe our
-model workflow into the <code>fit_resamples()</code> function and
-passing our cross-validation folds as the argument to it.</p>
-<pre class="r"><code>dt_cv_results &lt;- dt_wf %&gt;%
-  fit_resamples(train_folds)</code></pre>
-<p>Once we have run cross-validation we can collect (and summarize) our
-performance metrics using the <code>collect_metrics()</code>
-function.</p>
-<pre class="r"><code>#Overall Cross-Validation Results (Summarized)
-dt_cv_results %&gt;%
-  collect_metrics()
-
-#Results by Fold
-dt_cv_results %&gt;%
-  collect_metrics(summarize = FALSE)</code></pre>
+#A decision tree with maximum depth 4
+dt_4_clf = DecisionTreeClassifier(max_depth = 4)</code></pre>
+<p>Although we’ve defined these model constructors, they aren’t actually
+fit to our data. They are instances which are waiting to learn.</p>
 </div>
+<div id="creating-a-transformation-pipeline" class="section level2">
+<h2>Creating a Transformation Pipeline</h2>
+<p>Making use of <code>Pipeline()</code>s and
+<code>ColumnTransformer()</code>s is an important aspect of improving
+your modeling workflow. The difference between a <code>Pipeline()</code>
+and <code>ColumnTransformer()</code> is that column transformers can be
+applied to specific columns, while a pipeline will be applied to all
+columns of a data frame. Making use of these structures will ensure that
+your <code>train</code>ing data, <code>test</code> data, and any new
+data go through the same transformations before being introduced to the
+model. They’ll also cut down on the amount of work you need to do, and
+will reduce the likelihood of errors. You should definitely use
+<code>Pipeline()</code>s in your workflow. The construction of a
+modeling <code>Pipeline()</code> appears below.</p>
+<pre class="python"><code>cat_cols = [&quot;list&quot;, &quot;categorical&quot;, &quot;columns&quot;, &quot;here&quot;]
+num_cols = [&quot;list&quot;, &quot;numeric&quot;, &quot;columns&quot;, &quot;here&quot;]
+
+cat_pipe = Pipeline([
+    (&quot;cat_imputer&quot;, SimpleImputer(strategy = &quot;most_frequent&quot;)),
+    (&quot;one_hot&quot;, OneHotEncoder())
+])
+num_pipe = Pipeline([
+    (&quot;num_imputer&quot;, SimpleImputer(strategy = &quot;median&quot;)),
+    (&quot;norm&quot;, StandardScaler())
+])
+
+preprocessor = ColumnTransformer([
+  (&quot;num&quot;, num_pipe, num_cols),
+  (&quot;cat&quot;, cat_pipe, cat_cols)
+  ])
+
+pipe = Pipeline([
+    (&quot;preprocessing&quot;, preprocessor),
+    (&quot;model&quot;, dt_clf)
+])</code></pre>
+<p>There’s a lot to unpack here! We began by defining
+<code>cat_cols</code> and <code>num_cols</code>, list of categorical
+columns and numerical columns respectively. We did this because we’d
+like to apply different transformations to those columns. We created a
+multi-step <code>Pipeline()</code> for the transformation of categorical
+variables and a similar one for the transformation of our numerical
+variables. Both <code>Pipeline()</code>s consisted of an
+<em>imputer</em> to fill in any missing values and another transformer.
+The <code>OneHotEncoder()</code> takes categorical columns and breaks
+them out into a series of binary indicator columns – one for each level
+of the categorical variable. The <code>StandardScaler()</code> takes a
+numerical variable and <em>standardizes</em> it by subtracting its mean
+and dividing by its standard deviation.</p>
+<p>With those two separate <code>Pipeline()s</code> built, we combined
+them into a preprocessing <code>ColumnTransformer()</code> so that we
+could apply to <code>Pipeline()</code>s only to the columns for which
+they make sense. Finally, we constructed an overarching
+<code>Pipeline()</code> which contains all of our <em>preprocessing</em>
+as well as our <em>model</em>. Since the preprocessing steps and model
+are now all contained in a <code>Pipeline()</code>, they are a single
+unit which can be tuned, fit, and assessed.</p>
+<p><strong>Note:</strong> If we want to see what our training data will
+look like after preprocessing, we are able to do so by <em>fitting</em>
+the <code>preprocessor</code> and temporarily <em>transforming</em> that
+set. The columns in the training set will change during this process
+though, so we’ll need to extract the new column names from the
+<code>preprocessor</code> if we want to make sense of the resulting data
+frame. The following code will achieve all of this.</p>
+<pre class="python"><code>preprocessor.fit(X_train)
+
+cat_columns = preprocessor.named_transformers_[&quot;cat&quot;][&quot;one_hot&quot;].get_feature_names_out(cat_cols)
+num_columns = preprocessor.named_transformers_[&quot;num&quot;][&quot;norm&quot;].get_feature_names_out(num_cols)
+columns = np.concatenate([num_columns, cat_columns])
+
+display(X_train)
+display(pd.DataFrame(preprocessor.transform(X_train), columns = columns))</code></pre>
 </div>
+<div id="model-evaluation-using-cross-validation-scoring" class="section level2">
+<h2>Model Evaluation Using Cross-Validation Scoring</h2>
+<p>Okay, the good news is that the majority of our hard work is done.
+We’ll now want to assess our model’s performance using
+<em>cross-validation</em>. This is the work of the
+<code>cross_val_score()</code> function. That function will</p>
+<pre><code>+ create several cross validation folds
++ train our pipeline on all but one of the folds
++ assess the pipeline&#39;s performance on that left-out fold
++ continue until all folds have had a chance at being the validation set</code></pre>
+<p>Let’s see this in action, below.</p>
+<pre class="python"><code>cv_results = cross_val_score(pipe, X_train, y_train, cv = 5, scoring = &quot;accuracy&quot;)
+
+cv_results
+(cv_results).mean()</code></pre>
+<p>There it is, we’ll have obtained a cross-validation estimate for the
+accuracy resulting from this particular preprocessing pipeline and model
+combination!</p>
 </div>
 <div id="identify-a-best-models" class="section level2">
 <h2>Identify a Best Model(s)</h2>
@@ -495,102 +555,109 @@ cross-validation error, or maximizing a type of accuracy metric.</p>
 <p>The problem with the cross-validation we’ve done above is that it
 doesn’t leave us with a fitted model. We’ll need to go back and fit the
 model to our <em>training</em> data before we can use it. We can
-<em>fit</em> our model by piping it into the <code>fit()</code> function
-with our training data (<code>train</code>) as the argument.</p>
-<p>If the best model we’ve built is contained in a workflow called
-<code>best_model_wf</code>, then we can fit that model as follows:</p>
-<pre class="r"><code>best_model_fit &lt;- best_model_wf %&gt;%
-  fit(train)</code></pre>
+<em>fit</em> our modeling pipeline by using the <code>.fit()</code>
+method with our training data (<code>X_train</code> and
+<code>y_train</code>) as the arguments.</p>
+<pre class="r"><code>pipe.fit(X_train, y_train)</code></pre>
 </div>
 <div id="verify-model-performance-on-test-data" class="section level2">
 <h2>Verify Model Performance on Test Data</h2>
-<p>We can use our model to make predictions on <em>new data</em> by
-piping our fitted model into the <code>augment()</code> function with
-the new data as the sole argument to <code>augment()</code>. The result
-of using the <code>augment()</code> function is a new column attached to
-the data set called <code>.pred</code>. Since the <code>test</code> set
-has a column for our response variable and now our model’s predictions,
-we can compare those using a performance metric or set of performance
-metrics. With the <code>test</code> data, we do this like so:</p>
-<pre class="r"><code>my_metrics &lt;- metric_set(accuracy, precision, recall)
-
-best_model_fit %&gt;%
-  augment(test) %&gt;%
-  my_metrics(response_column, .pred)</code></pre>
+<p>We can use our entire modeling pipeline to make predictions on
+<em>new data</em> by using the <code>.predict()</code> method with the
+new data as the only argument. The new data, however, must have the
+exact same columns as <code>X_train</code> (and in the exact same
+order).</p>
+<pre class="python"><code>pipe.predict(X_test)</code></pre>
+<p>In order to verify our model’s performance, however, we’ll need to
+compare these predictions to the known responses. The best way to do
+this is to store the model predictions and then to use your desired
+performance metric to compare the <em>truth</em> and your
+<em>predictions</em>.</p>
+<pre class="python"><code>test_preds = pipe.predict(X_test)
+model_accuracy = accuracy_score(y_test, test_preds)
+model_accuracy</code></pre>
+<p>Now we can compare our model’s accuracy on the truly unseen test data
+to our results from cross validation. Comparing this result to the
+accuracy achieved on the individual folds can help us determine whether
+accidental overfitting has occurred. If your metric measured on the test
+data is much poorer than the measurement on the individual folds then
+something has gone wrong. You’ve <em>leaked</em> information to the
+model somehow and you’ll need to go back and fix that issue. If the
+metric measured on the test set seems in line with the measurements on
+the individual cross-validation folds, then we have confidence that we
+aren’t overfitting and we can move forward with using this model on new
+data.</p>
 </div>
 <div id="making-predictions-with-a-fitted-model" class="section level2">
 <h2>Making Predictions with a Fitted Model</h2>
-<p>Once you have a fitted model, you can use it to make predictions
-about the responses associated with new observations. As long as the new
-data has the same features as the model was trained/fitted on, then we
-can use the <code>augment()</code> function to make those
-predictions.</p>
-<pre class="r"><code>best_model_fit %&gt;%
-  augment(new_data)</code></pre>
-<p>As a reminder, the use of the <code>augment()</code> function adds a
-new column to the <code>new_data</code> data frame, called
-<code>.pred</code> which contains the model’s predictions.</p>
+<p>Making predictions on new data is done in exactly the same way as
+making predictions on the test data was. Again, your new data must have
+exactly the same columns, in exactly the same order as
+<code>X_train</code>. Otherwise you’ll be met with an error.</p>
+<pre class="python"><code>new_preds = pipe.predict(new_data)</code></pre>
 </div>
 <div id="summary" class="section level2">
 <h2>Summary</h2>
 <p>The detailed discussions above have broken up the
-<code>tidymodels</code> workflow and perhaps made it seem daunting. Here
+<code>{sklearn}</code> workflow and perhaps made it seem daunting. Here
 is a condensed version:</p>
-<pre class="r"><code>#training and test sets
-set.seed(123)
-data_splits &lt;- initial_split(my_data)
-train &lt;- training(data_splits)
-test &lt;- testing(data_splits)
+<pre class="python"><code>#training and test sets
+train, test = train_test_split(my_data, train_size = 0.75, random_state = 434)
 
-#build cross-validation folds
-set.seed(456)
-train_folds &lt;- vfold_cv(train, v = 10)
+#Split features and response
+X_train = train.drop(&quot;response&quot;, axis = 1)
+y_train = train[&quot;response&quot;]
+X_test = test.drop(&quot;response&quot;, axis = 1)
+y_test = test[&quot;response&quot;]
 
-#Create a model specification
-dt_spec &lt;- decision_tree(max_depth = 6) %&gt;%
-  set_engine(&quot;rpart&quot;) %&gt;%
-  set_mode(&quot;classification&quot;)
+#Create an instance of a model constructor
+dt_clf &lt;- DecisionTreeClassifier()
 
-#Create a recipe
-dt_rec &lt;- recipe(response ~ ., data = train) %&gt;%
-  step_dummy(all_nominal_predictors()) #add recipe steps as needed
+#Create a Data Transformation and Model Pipeline
+cat_cols = [&quot;list&quot;, &quot;categorical&quot;, &quot;columns&quot;, &quot;here&quot;]
+num_cols = [&quot;list&quot;, &quot;numeric&quot;, &quot;columns&quot;, &quot;here&quot;]
 
-#Create a workflow
-dt_wf &lt;- workflow() %&gt;%
-  add_model(dt_spec) %&gt;%
-  add_recipe(dt_rec)
+cat_pipe = Pipeline([
+    (&quot;cat_imputer&quot;, SimpleImputer(strategy = &quot;most_frequent&quot;)),
+    (&quot;one_hot&quot;, OneHotEncoder())
+])
+num_pipe = Pipeline([
+    (&quot;num_imputer&quot;, SimpleImputer(strategy = &quot;median&quot;)),
+    (&quot;norm&quot;, StandardScaler())
+])
+
+preprocessor = ColumnTransformer([
+  (&quot;num&quot;, num_pipe, num_cols),
+  (&quot;cat&quot;, cat_pipe, cat_cols)
+  ])
+
+pipe = Pipeline([
+    (&quot;preprocessing&quot;, preprocessor),
+    (&quot;model&quot;, dt_clf)
+])
 
 #Run cross-validation to obtain cross-validation performance estimate
-dt_cv_results &lt;- dt_wf %&gt;%
-  fit_resamples(train_folds)
+cv_results = cross_val_score(pipe, X_train, y_train, cv = 5, scoring = &quot;accuracy&quot;)
 
 #Collect cross-validation results
-dt_cv_results %&gt;%
-  collect_metrics()
+cv_results
+cv_results.mean()
 
 #Fit model to training data
-dt_fit &lt;- dt_wf %&gt;%
-  fit(train)
+pipe.fit(X_train, y_train)
 
 #Assess model on test data
-my_metrics &lt;- metric_set(accuracy, precision, recall)
-dt_fit %&gt;%
-  augment(test) %&gt;%
-  my_metrics(response, .pred)
+test_preds = pipe.predict(X_test)
+accuracy_score(y_test, test_preds)
 
 #Use model to predict for new data
-dt_fit %&gt;%
-  augment(new_data)</code></pre>
+pipe.predict(new_data)</code></pre>
 <p>The steps in the code block above can be copied/pasted/adapted while
 you continue to build familiarity with the modeling process and also
-with the <code>tidymodels</code> framework. Generally, you’ll build
-several model workflows and assess those models using cross-validation.
-That is, you’ll work through the blocks of code to create a
-<em>specification</em>, a <em>recipe</em>, and a <em>workflow</em>
-multiple times for different models/recipes. You’ll also <em>run
-cross-validation</em> and <em>collect performance metrics</em> for each
-of the model workflows you are constructing. From that point on, only
-the best model(s) are kept.</p>
+with the <code>{sklearn}</code> framework. Generally, you’ll build
+several modeling pipelines and assess those models using
+cross-validation. Doing this allows you to identify your best performing
+models.</p>
 </div>
 
 
