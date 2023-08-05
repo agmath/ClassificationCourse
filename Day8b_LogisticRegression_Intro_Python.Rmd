@@ -1,0 +1,241 @@
+---
+title: "Introduction to Logistic Regression"
+author: 
+  - "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  html_document:
+    theme: cerulean
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+library(marginaleffects)
+library(kableExtra)
+```
+
+**Purpose:** In this notebook, we introduce the class of model known as logistic regression. In particular, we note the following.
+
++ Polynomial regression models cannot be used for classification since they are unbounded. 
++ Logistic regression models take the form $\displaystyle{\mathbb{P}\left[y = 1\right] = \frac{e^{\beta_0 + \beta_1x_1 + \cdots + \beta_kx_k}}{1 + e^{\beta_0 + \beta_1x_1 + \cdots + \beta_kx_k}}}$
++ The output of a logistic regression model $\mathbb{P}\left[y = 1\right]$ is the predicted probability that the corresponding observation belongs to the class labeled by 1.
++ The output of a logistic regression model is bounded between $0$ and $1$.
+
+
+## Toy Data
+
+In order to have an example to work with, we'll develop a *toy* dataset. Let's say that we are able to weights of two species of frog, and that the weights are normally distributed in each population. The weights in `Species A` follow $W_A \sim N\left(\mu = 40, \sigma = 3\right)$ and the weights in `Species B` follow $W_B \sim N\left(\mu = 55, \sigma = 7\right)$. 
+
+We'll simulate drawing $100$ frogs from each population and recording their weights. The results appear below. Note that in the plot on the left, the vertical position of the observed data points is meaningless -- some noise has been added so that the observed frog weights are discernible from one another.
+
+```{r echo = FALSE}
+num_frogs <- 100
+num_frogs_A <- num_frogs
+num_frogs_B <- num_frogs
+
+weights_A <- rnorm(num_frogs_A, mean = 40, sd = 3)
+weights_B <- rnorm(num_frogs_B, mean = 55, sd = 7)
+
+frogs_df <- tibble(weight = c(weights_A, weights_B),
+                   species = c(rep("A", num_frogs_A), rep("B", num_frogs_B))
+)
+
+p1 <- frogs_df %>%
+  ggplot() +
+  geom_density(aes(x = weight, fill = species), alpha = 0.25) + 
+  geom_jitter(aes(x = weight, y = -.025, color = species), height = 0.02) + 
+  labs(x = "Simulated Frog Weights",
+       y = "",
+       title = "Distribution of Simulated \nFrog Weight Data") +
+  theme(legend.position = "none")
+
+p2 <- frogs_df %>%
+  mutate(species_num = ifelse(species == "B", 1, 0)) %>%
+  ggplot() + 
+  geom_point(aes(x = weight, y = species_num, color = species)) +
+  labs(x = "Simulated Frog Weights",
+       y = "Species",
+       title = "Simulated Frog Weights and Species")
+
+p1 + p2
+```
+
+Our goal then is to fit a model that will help us determine whether a frog with a given weight is most likely to belong to Species A or Species B.
+
+## Why Not Linear Regression?
+
+Linear regression techniques are problematic here because of the nature of polynomial functions. They are [nearly] all unbounded -- that is, eventually, any non-constant polynomial will escape the interval $\left[0, 1\right]$ and predicted values will run off towards positive or negative infinity. You can see this below where we are fitting and plotting several linear regression models to the simulated frog weight data.
+
+```{r echo = FALSE}
+frogs_df <- frogs_df %>%
+  mutate(species_num = ifelse(species == "B", 1, 0))
+
+frog_weight_space_df <- tibble(weight = seq(25, 80, length.out = 500))
+
+for(deg in 1:5){
+  lr_spec <- linear_reg()
+  lr_rec <- recipe(species_num ~ weight, data = frogs_df) %>%
+    step_poly(weight, degree = deg, options = list(raw = TRUE))
+  lr_wf <- workflow() %>%
+    add_model(lr_spec) %>%
+    add_recipe(lr_rec)
+  lr_fit <- lr_wf %>%
+    fit(frogs_df)
+  frog_weight_space_df <- lr_fit %>%
+    augment(frog_weight_space_df) %>%
+    rename(!!paste0("degree_", deg) := .pred)
+}
+
+frog_weight_space_df <- frog_weight_space_df %>%
+  pivot_longer(starts_with("degree"), names_to = "model", values_to = "pred_proba") 
+
+ggplot() + 
+  geom_point(data = frogs_df,
+             aes(x = weight, y = species_num)) +
+  geom_line(data = frog_weight_space_df,
+            aes(x = weight, y = pred_proba, color = model)) +
+  labs(x = "Simulated Weights",
+       y = "Predicted 'Probability' of Species B",
+       title = "Failure of Polynomial Models")
+```
+
+Note that these polynomial-form linear regression models all eventually escape the $\left[0, 1\right]$ interval. The outputs from these models cannot be interpreted as probabilities.
+
+## Logistic Regression
+
+A *logistic regression* model takes the form $\displaystyle{\mathbb{P}\left[y = 1\right] = \frac{e^{\beta_0 + \beta_1x_1 + \cdots + \beta_kx_k}}{1 + e^{\beta_0 + \beta_1x_1 + \cdots + \beta_kx_k}}}$. The outputs from such a model are bounded to the interval $\left[0, 1\right]$. As a result, we can interpret the outputs from such a model as the probability that an observation belongs to the class labeled by 1.
+
+Below we fit and plot a logistic regression model.
+
+```{r echo = FALSE}
+log_reg_clf <- logistic_reg() %>%
+  set_engine("glm")
+log_reg_rec <- recipe(species ~ weight, data = frogs_df)
+log_reg_wf <- workflow() %>%
+  add_model(log_reg_clf) %>%
+  add_recipe(log_reg_rec)
+log_reg_fit <- log_reg_wf %>%
+  fit(frogs_df)
+
+log_reg_fit %>%
+  augment(frogs_df) %>%
+  ggplot() + 
+  geom_point(aes(x = weight, y = species_num)) + 
+  geom_line(aes(x = weight, y = .pred_B), color = "purple") +
+  labs(x = "Simulated Frog Weights",
+       y = "Predicted Probability of Species B",
+       title = "A Logistic Regression Classifier")
+```
+
+### Properties
+
+Logistic regression models are *linear* models since we can show that an equivalent form for the model is
+$$\log\left(\frac{p}{1 - p}\right) = \beta_0 + \beta_1x_1 + \cdots + \beta_kx_k$$
+
+This means that the decision boundary for a logistic regression model corresponds to the situation where $p = 1 - p$ (or $p = 0.5$). This would result in the equation $\beta_0 + \beta_1x_1 + \cdots + \beta_kx_k = 0$, a line/plane/hyperplane.
+
+### Interpretations and Marginal Effects
+
+Since the linear form of a logistic regression model outputs the *log-odds* of belonging to the class labeled by 1 and not the probability of belonging to that class, it can be difficult to interpret logistic regression models. In particular,
+
++ If $x_i$ is a numeric predictor, then $\beta_i$ is the expected impact on the log-odds of an observation belonging to the class labeled by 1 due to a unit increase in $x_i$.
+
+  + Note that this is ***not*** the same as the effect on the probability of an observation belonging to the class labeled by 1.
+  
++ In order to obtain the expected effect of a unit increase in $x_i$ on the probability of an observation belonging to the class labeled by 1, we would need to compute the partial derivative of the original form of our logistic regression model with respect to $x_i$. Multivariable calculus helps with this, but so does the `{marginaleffects}` package.
+
+```{r echo = FALSE}
+log_reg_fit %>%
+  extract_fit_engine() %>%
+  tidy() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+The estimate attached to `weight` in the table above is the estimated increase in *log-odds* of belonging to Species B. This is difficult to interpret other than to say that heavier frogs are more likely to belong to Species B because the coefficient on `weight` is positive. We can use the `slopes()` function from the `{marginaleffects}` to compute the partial derivative of the logistic regression model with respect to `weight` at various levels of the `weight` variable. 
+
+```{r echo = FALSE}
+mfx <- slopes(log_reg_fit %>% extract_fit_engine(),
+              newdata = tibble(weight = seq(25, 85, length.out = 60))) %>%
+  tibble()
+
+mfx %>%
+  select(term, weight, estimate, conf.low, conf.high, std.error) %>%
+  filter(weight > 40, weight < 50) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+
+mfx %>%
+  select(weight, estimate, conf.low, conf.high) %>%
+  ggplot() +
+  geom_line(aes(x = weight, y = estimate), color = "purple", lty = "dashed", lwd = 1.5) +
+  geom_ribbon(aes(x = weight, ymin = conf.low, ymax = conf.high),
+              fill = "grey", alpha = 0.5) +
+  labs(x = "Weight",
+       y = "Marginal Effect",
+       title = "Marginal Effects of Unit Increase in Weight")
+```
+
+The output above shows estimates for the marginal effects of a unit increase in `weight`. We can see that the marginal effect is largest near a weight of about 45 units. For weights less than 35 units and more than 55 units, there is little change in probability that the corresponding observation belongs to Species B. Plots like the one above can be really helpful in understanding what our model suggests is the association between our predictor(s) and response.
+
+## How to Implement in `{tidymodels}`
+
+A logistic regressor is a model class (that is, a model `spec`*ification*). We define our intention to build a logistic regressor using
+
+```{r echo = TRUE, eval = FALSE}
+log_reg_spec <- logistic_reg() %>%
+  set_engine("glm") %>%
+  set_mode("classification")
+```
+
+#### Hyperparameters and Other Extras
+
+The lines to `set_engine()` and `set_mode()` are unnecessary since these are the defaults. I include them here just so that we continue to be reminded that setting an engine and setting a mode are typically things that we will need to do.
+
+Depending on the fitting *engine* chosen, logistic regression models have two (2) tunable hyperparameters. They are
+
++ `penalty`, which is a model constraint penalizing the inclusion of multiple model terms and large coefficients.
+
+  + Typical penalty values are powers of 10 -- for example `1e-3, 0.01, 0.1, 1, 10`.
+  + Remember to *scale* all of your numerical predictors if you use this parameter. Otherwise some predictors are artificially *cheap* or *expensive* depending on the magnitude of their raw values.
+
++ `mixture` is a number between $0$ and $1$ which determines the type of regularization to use. Basically, this governs how our "spent coefficient budget is computed". 
+
+  + `mixture = 0` results in `L1` regularization (Ridge Regression)
+  + `mixture = 1` results in `L2` regularization (LASSO)
+  + `mixture` values between $0$ and $1$ are a *mixture* of Ridge and LASSO, where the value provided represents the proportion of the budget calculation corresponding to the LASSO.
+  + As a reminder, you can read more about Ridge Regression, the LASSO, and how these approaches work [here](https://agmath.github.io/RegressionCourse/17d_VariableSelectionMethods.html).
+
+You can see the full `{parsnip}` documentation for `logistic_reg()` [here](https://parsnip.tidymodels.org/reference/logistic_reg.html).
+
+## How to Implement in `{sklearn}`
+
+A logistic regressor is a model class. We define our intention to build a logistic regressor by first importing it from `sklearn.linear_model` and then creating an object of that class.
+
+```{python echo = TRUE, eval = FALSE}
+from sklearn.linear_model import LogisticRegression()
+
+lr_clf = LogisticRegression()
+```
+
+#### Hyperparameters and Other Extras
+
+Logistic Regression models have several tunable hyperparameters. The most common are
+
++ `penalty` is set to one of `l1`, `l2`, `elasticnet`, or `None`. The default is `l2`.
+
+  + This parameter determines how "spent coefficient budget" is calculated. 
++ `C`, which is a model constraint penalizing the inclusion of multiple model terms and large coefficients.
+
+  + Typical values for the `C` are powers of 10 -- for example `1e-3, 0.01, 0.1, 1, 10`.
+  + Remember to *scale* all of your numerical predictors if you use this parameter. Otherwise some predictors are artificially *cheap* or *expensive* depending on the magnitude of their raw values.
+
+You can see the full `{sklearn}` documentation for `LogisticRegression()` [here](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html).
+
+***
+
+## Summary
+
+In this notebook, we were introduced to the class of logistic regression models for classification. Logistic regressors are a sort of hybrid regression/classification model because they output a numerical values -- interpreted as the probability that an observation belongs to the class labeled by 1. We saw two different forms for logistic regression models and we saw how we can interpret logistic regression models. R has a `{marginaleffects}` package to help us understand what our model tells us about the association between predictor(s) and our response. I know that a similar Python module is in development, but I'm not sure if it will interface with `{sklearn}` or another Python modeling module called `{statsmodels}`.
