@@ -1,5 +1,5 @@
 ---
-title: 'Using Python from RStudio and RMarkdown'
+title: 'Dual-Weilding Languages with `{reticulate}`'
 author: "Dr. Gilbert"
 output:
   html_document:
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 reticulate::use_virtualenv("mat434")
 ```
 
-**Purpose:** In this notebook, we'll see that `{reticulate}` is more than just a package that allows you to work with Python inside of RStudio. This package allows for users and teams to mix Python and R code in a single document, passing objects back and forth between environments.
+**Purpose:** In this notebook, we'll see that `{reticulate}` is more than just a package that allows you to work with Python inside of RStudio. This package allows for users and teams to mix Python and R code in a single document, passing objects back and forth between environments. Even if you are planning to use only R for this course, walking through this short notebook will be helpful since it will allow you to collaborate with Python users.
 
 ## Dual-Weilding Languages
 
