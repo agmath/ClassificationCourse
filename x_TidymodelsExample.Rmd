@@ -1,5 +1,5 @@
 ---
-title: '`tidymodels` Framework Example Model Construction`'
+title: '`{tidymodels}` Framework Example Model Construction`'
 output:
   html_document:
     theme: cerulean
@@ -80,7 +80,7 @@ train_folds <- vfold_cv(train, v = 3)
 
 ## Building Model Workflows
 
-We'll build workflows for a logistic regression model and a decision tree model.
+We'll build workflows for a nearest neighbor model and a decision tree model.
 
 ```{r}
 #knn workflow
@@ -178,4 +178,4 @@ Looks like our model is very certain that won't be a home run.
 
 ## Summary
 
-There it is -- we've walked through a basic modeling process using the `tidymodels` framework. We'll discuss this in greater detail and introduce more advanced techniques throughout MAT434.
+There it is -- we've walked through a basic modeling process using the `{tidymodels}` framework. We'll discuss this in greater detail and introduce more advanced techniques throughout MAT434.
