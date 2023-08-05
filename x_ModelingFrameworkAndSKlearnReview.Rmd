@@ -36,6 +36,8 @@ from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, reca
 + Confirm model performance expectations using your *test* set.
 + Deploy model and use it to make predictions on/for new observations.
 
+While code will be exhibited in this notebook, no code will actually be run.
+
 ## Splitting Data into Training and Test Sets
 
 We *always* need to split our data into training and test sets. As a reminder, we can think of *training* data as observations that our models can practice on and learn from (say a practice exam) and *test* observations as "new" observations that our model(s) were unable to study from. These *test* observations play the role of future observations and ensure that our model performs as expected when applied to observations it hasn't seen before.
@@ -54,7 +56,7 @@ More on exploratory data analyses and data visualization are covered in the [Day
 
 ## Separating Features and Response
 
-Our models are going to *learn* from their `train`ing data. If we allow the models to see the response variable that they are trying to predict, they'll quickly learn just to look at that column and report back its value. Unfortunately, such a model is only useful if we already know the value of the outcome variable -- that is, such a model is not useful at all. For this reason, we'll need to separate our *response* variable from the available *features* (predictors). We do that below.
+Our models are going to *learn* from their `train`ing data. If we allow the models to see the response variable that they are trying to predict, they'll quickly learn just to look at that column and report back its value. Unfortunately, such a model is only useful if we already know the value of the outcome variable -- that is, such a model is not useful at all. For this reason, we'll need to separate our *response* variable from the available *features* (predictors). The code to do this is below.
 
 ```{python eval = FALSE}
 X_train = train.drop("response", axis = 1)
@@ -67,7 +69,7 @@ Now we are ready to start thinking about models.
 
 ## Defining a Model Constructor
 
-Notice that we imported the `DecisionTreeClassifier` from `sklearn.tree` earlier. We'll always need to import any model constructors we wish to use. In order to *create an instance* of a model constructor which can be fit to data, we'll define an object which is equal to this model constructor class. We can pass parameter values to the model class which will override the default parameters. Get in the habit of looking at the `sklearn` documentation for your model class to identify which parameters are available for your model. You can find the documentation by searching for `sklearn <model_class>`. Let's create two separate instances of decision tree classifiers below.
+Notice that the code to import the `DecisionTreeClassifier` from `sklearn.tree` is included at the top of this notebook. It is polite to keep all of your import statements at the beginning of a nodebook or script. We'll always need to import any model constructors we wish to use. In order to *create an instance* of a model constructor which can be fit to data, we'll define an object of this model constructor class. We can pass parameter values to the model class which will override the default settings. Get in the habit of looking at the `sklearn` documentation for your model class to identify which parameters are available for your model. You can typically find the documentation by searching for `sklearn <model_class>`. The code below creates two separate instances of decision tree classifiers -- one tree is unconstrained while the other is limited to a maximum depth of 4. (We'll be talking more about tree-based models later in our course, so don't worry if you aren't quite sure what having a maximum depth of 4 means.)
 
 ```{python eval = FALSE}
 #An unconstrained decision tree
@@ -77,11 +79,11 @@ dt_clf = DecisionTreeClassifier()
 dt_4_clf = DecisionTreeClassifier(max_depth = 4)
 ```
 
-Although we've defined these model constructors, they aren't actually fit to our data. They are instances which are waiting to learn.
+The result of the code above will be two model constructors, but they won't actually be fit to our data. They'll just be instances which are waiting to learn.
 
 ## Creating a Transformation Pipeline
 
-Making use of `Pipeline()`s and `ColumnTransformer()`s is an important aspect of improving your modeling workflow. The difference between a `Pipeline()` and `ColumnTransformer()` is that column transformers can be applied to specific columns, while a pipeline will be applied to all columns of a data frame. Making use of these structures will ensure that your `train`ing data, `test` data, and any new data go through the same transformations before being introduced to the model. They'll also cut down on the amount of work you need to do, and will reduce the likelihood of errors. You should definitely use `Pipeline()`s in your workflow. The construction of a modeling `Pipeline()` appears below.
+Making use of `Pipeline()`s and `ColumnTransformer()`s is an important aspect of improving your modeling workflow. The difference between a `Pipeline()` and `ColumnTransformer()` is that column transformers can be applied to specific columns, while a pipeline will be applied to all columns passed to it. Making use of these structures will ensure that your `train`ing data, `test` data, and any new data go through the same transformations before being introduced to the model. They'll also cut down on the amount of work you need to do, and will reduce the likelihood of errors. You should definitely use `Pipeline()`s in your workflow. The code required to construct an example `Pipeline()` appears below and will be explained directly afterwards.
 
 ```{python eval = FALSE}
 cat_cols = ["list", "categorical", "columns", "here"]
@@ -109,9 +111,9 @@ pipe = Pipeline([
 
 There's a lot to unpack here! We began by defining `cat_cols` and `num_cols`, list of categorical columns and numerical columns respectively. We did this because we'd like to apply different transformations to those columns. We created a multi-step `Pipeline()` for the transformation of categorical variables and a similar one for the transformation of our numerical variables. Both `Pipeline()`s consisted of an *imputer* to fill in any missing values and another transformer. The `OneHotEncoder()` takes categorical columns and breaks them out into a series of binary indicator columns -- one for each level of the categorical variable. The `StandardScaler()` takes a numerical variable and *standardizes* it by subtracting its mean and dividing by its standard deviation.
 
-With those two separate `Pipeline()s` built, we combined them into a preprocessing `ColumnTransformer()` so that we could apply to `Pipeline()`s only to the columns for which they make sense. Finally, we constructed an overarching `Pipeline()` which contains all of our *preprocessing* as well as our *model*. Since the preprocessing steps and model are now all contained in a `Pipeline()`, they are a single unit which can be tuned, fit, and assessed. 
+With those two separate `Pipeline()`s built, we combined them into a preprocessing `ColumnTransformer()` so that we could apply to `Pipeline()`s only to the columns for which they make sense. Finally, we constructed an overarching `Pipeline()` which contains all of our *preprocessing* steps as well as our *model*. Since the preprocessing steps and model are now all contained in a `Pipeline()`, they are a single unit which can be tuned, fit, and assessed. 
 
-**Note:** If we want to see what our training data will look like after preprocessing, we are able to do so by *fitting* the `preprocessor` and temporarily *transforming* that set. The columns in the training set will change during this process though, so we'll need to extract the new column names from the `preprocessor` if we want to make sense of the resulting data frame. The following code will achieve all of this.
+**Note:** If we want to see what our training data will look like after preprocessing, we are able to do so by *fitting* the `preprocessor` and temporarily *transforming* that set. The columns in the training set will change during preprocessing though, so we'll need to extract the new column names from the `preprocessor` if we want to make sense of the resulting data frame. The following code will achieve all of this.
 
 ```{python eval = FALSE}
 preprocessor.fit(X_train)
@@ -126,14 +128,14 @@ display(pd.DataFrame(preprocessor.transform(X_train), columns = columns))
 
 ## Model Evaluation Using Cross-Validation Scoring
 
-Okay, the good news is that the majority of our hard work is done. We'll now want to assess our model's performance using *cross-validation*. This is the work of the `cross_val_score()` function. That function will 
+Okay, the good news is that the majority of the hard work is done. We'll now want to assess our model's performance using *cross-validation*. This is the work of the `cross_val_score()` function. That function will 
 
-    + create several cross validation folds
-    + train our pipeline on all but one of the folds
-    + assess the pipeline's performance on that left-out fold
-    + continue until all folds have had a chance at being the validation set
+  + create several cross validation folds
+  + train our pipeline on all but one of the folds
+  + assess the pipeline's performance on that left-out fold
+  + continue until all folds have had a chance at being the validation set
 
-Let's see this in action, below.
+As has been the case in this notebook, the code for that appears below.
 
 ```{python eval = FALSE}
 cv_results = cross_val_score(pipe, X_train, y_train, cv = 5, scoring = "accuracy")
@@ -142,15 +144,17 @@ cv_results
 (cv_results).mean()
 ```
 
-There it is, we'll have obtained a cross-validation estimate for the accuracy resulting from this particular preprocessing pipeline and model combination!
+The first line in the code chunk above would run cross validation on five folds, recording the *accuracy* of each fitted model on the hold-out fold. The next line would print out the accuracies on the individual folds -- we would have five accuracies printed out, one for each fold. The last line would compute the "cross validation accuracy" by averaging the accuracies across the five folds. 
+
+**Note:** One of the problems that cross-validation seeks to solve is that models assessments conducted on a single validation are not stable because the validation set could be "too easy" or "too hard", just by random chance. This averaging over fold performances results in a more stable performance estimate.
 
 ## Identify a Best Model(s)
 
-Generally, your best model will be the model that optimizes your cross-validation performance metric. That may be minimizing cross-validation error, or maximizing a type of accuracy metric.
+Generally, your best model will be the model that optimizes your cross-validation performance metric. That may be minimizing cross-validation error, or maximizing a type of accuracy metric. You'll cross-validate lots of modeling pipelines and identify your best one(s).
 
 ## Fit Best Model to Training Data
 
-The problem with the cross-validation we've done above is that it doesn't leave us with a fitted model. We'll need to go back and fit the model to our *training* data before we can use it. We can *fit* our modeling pipeline by using the `.fit()` method with our training data (`X_train` and `y_train`) as the arguments. 
+The problem with the cross-validation I've shown you above is that won't leave you with a fitted model. You'll need to go back and fit the model to your *training* data before you can use it. You can *fit* your modeling pipeline by using the `.fit()` method with your training data (`X_train` and `y_train`) as the arguments. This is done using the code below. 
 
 ```{r}
 pipe.fit(X_train, y_train)
@@ -158,13 +162,15 @@ pipe.fit(X_train, y_train)
 
 ## Verify Model Performance on Test Data
 
-We can use our entire modeling pipeline to make predictions on *new data* by using the `.predict()` method with the new data as the only argument. The new data, however, must have the exact same columns as `X_train` (and in the exact same order).
+We can use our entire modeling pipeline to make predictions on *new data* by using the `.predict()` method with the new data as the only argument. The new data, however, must have the exact same columns as `X_train` (and in the exact same order), otherwise errors are thrown. The code below is used to make predictions on your test set by allowing your modeling pipeline. 
+
+> *Aside.* It is important to note that your test data will go through exactly the same transformations as the training data did. One small, but very important, aspect of this is that any preprocessing transformations will be made using parameters learned from the training set. For example, numeric columns will be *normalized* using the mean and standard deviations learned from the training set.
 
 ```{python eval = FALSE}
 pipe.predict(X_test)
 ```
 
-In order to verify our model's performance, however, we'll need to compare these predictions to the known responses. The best way to do this is to store the model predictions and then to use your desired performance metric to compare the *truth* and your *predictions*.
+In order to verify our model's performance, however, we'll need to compare these predictions to the known responses. The best way to do this is to store the model predictions and then to use your desired performance metric to compare the *truth* and your *predictions*. Again, the necessary code is below.
 
 ```{python eval = FALSE}
 test_preds = pipe.predict(X_test)
@@ -172,11 +178,11 @@ model_accuracy = accuracy_score(y_test, test_preds)
 model_accuracy
 ```
 
-Now we can compare our model's accuracy on the truly unseen test data to our results from cross validation. Comparing this result to the accuracy achieved on the individual folds can help us determine whether accidental overfitting has occurred. If your metric measured on the test data is much poorer than the measurement on the individual folds then something has gone wrong. You've *leaked* information to the model somehow and you'll need to go back and fix that issue. If the metric measured on the test set seems in line with the measurements on the individual cross-validation folds, then we have confidence that we aren't overfitting and we can move forward with using this model on new data.
+Now we can compare our model's accuracy on the truly unseen test data to our results from cross validation. Comparing this result to the accuracy achieved on the individual folds can help us determine whether accidental overfitting has occurred. If your metric measured on the test data is much poorer than the measurement on the individual folds then something has gone wrong. You've *leaked* information to the model somehow and you'll need to go back and fix that issue. If the metric measured on the test set seems in line with the measurements on the individual cross-validation folds, then we can have confidence that we aren't overfitting and we can move forward with using this model on new data.
 
 ## Making Predictions with a Fitted Model
 
-Making predictions on new data is done in exactly the same way as making predictions on the test data was. Again, your new data must have exactly the same columns, in exactly the same order as `X_train`. Otherwise you'll be met with an error.
+Making predictions on new data is done in exactly the same way as making predictions on the test data was. Again, your new data must have exactly the same columns, in exactly the same order as `X_train`. Otherwise you'll be met with an error. Example code is below again; you can compare it to the code used to make predictions on the test set to see that it is the same.
 
 ```{python eval = FALSE}
 new_preds = pipe.predict(new_data)

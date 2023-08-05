@@ -298,17 +298,23 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+content: "";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "\e258";
-font-family: 'Glyphicons Halflings';
+content: "";
 border: none;
+}
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "";
+font-family: 'Glyphicons Halflings';
+display: inline-block;
+padding: 10px;
+border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -374,6 +380,8 @@ set.</li>
 <li>Deploy model and use it to make predictions on/for new
 observations.</li>
 </ul>
+<p>While code will be exhibited in this notebook, no code will actually
+be run.</p>
 <div id="splitting-data-into-training-and-test-sets" class="section level2">
 <h2>Splitting Data into Training and Test Sets</h2>
 <p>We <em>always</em> need to split our data into training and test
@@ -467,7 +475,7 @@ dt_wf &lt;- workflow() %&gt;%
 <div id="estimating-model-performance-with-cross-validation" class="section level4">
 <h4>Estimating Model Performance with Cross-Validation</h4>
 <p>To run <em>cross-validation</em> on a model workflow, we can pipe our
-model workflow into the <code>fit_resamples()</code> function and
+model workflow into the <code>fit_resamples()</code> function and by
 passing our cross-validation folds as the argument to it.</p>
 <pre class="r"><code>dt_cv_results &lt;- dt_wf %&gt;%
   fit_resamples(train_folds)</code></pre>
@@ -534,8 +542,8 @@ new column to the <code>new_data</code> data frame, called
 <div id="summary" class="section level2">
 <h2>Summary</h2>
 <p>The detailed discussions above have broken up the
-<code>tidymodels</code> workflow and perhaps made it seem daunting. Here
-is a condensed version:</p>
+<code>{tidymodels}</code> workflow and perhaps made it seem daunting.
+Here is a condensed version:</p>
 <pre class="r"><code>#training and test sets
 set.seed(123)
 data_splits &lt;- initial_split(my_data)
@@ -583,7 +591,7 @@ dt_fit %&gt;%
   augment(new_data)</code></pre>
 <p>The steps in the code block above can be copied/pasted/adapted while
 you continue to build familiarity with the modeling process and also
-with the <code>tidymodels</code> framework. Generally, you’ll build
+with the <code>{tidymodels}</code> framework. Generally, you’ll build
 several model workflows and assess those models using cross-validation.
 That is, you’ll work through the blocks of code to create a
 <em>specification</em>, a <em>recipe</em>, and a <em>workflow</em>

@@ -298,17 +298,23 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+content: "";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "\e258";
-font-family: 'Glyphicons Halflings';
+content: "";
 border: none;
+}
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "";
+font-family: 'Glyphicons Halflings';
+display: inline-block;
+padding: 10px;
+border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -384,6 +390,8 @@ set.</li>
 <li>Deploy model and use it to make predictions on/for new
 observations.</li>
 </ul>
+<p>While code will be exhibited in this notebook, no code will actually
+be run.</p>
 <div id="splitting-data-into-training-and-test-sets" class="section level2">
 <h2>Splitting Data into Training and Test Sets</h2>
 <p>We <em>always</em> need to split our data into training and test
@@ -425,7 +433,7 @@ look at that column and report back its value. Unfortunately, such a
 model is only useful if we already know the value of the outcome
 variable – that is, such a model is not useful at all. For this reason,
 we’ll need to separate our <em>response</em> variable from the available
-<em>features</em> (predictors). We do that below.</p>
+<em>features</em> (predictors). The code to do this is below.</p>
 <pre class="python"><code>X_train = train.drop(&quot;response&quot;, axis = 1)
 y_train = train[&quot;response&quot;]
 X_test = test.drop(&quot;response&quot;, axis = 1)
@@ -434,24 +442,31 @@ y_test = test[&quot;response&quot;]</code></pre>
 </div>
 <div id="defining-a-model-constructor" class="section level2">
 <h2>Defining a Model Constructor</h2>
-<p>Notice that we imported the <code>DecisionTreeClassifier</code> from
-<code>sklearn.tree</code> earlier. We’ll always need to import any model
-constructors we wish to use. In order to <em>create an instance</em> of
-a model constructor which can be fit to data, we’ll define an object
-which is equal to this model constructor class. We can pass parameter
-values to the model class which will override the default parameters.
-Get in the habit of looking at the <code>sklearn</code> documentation
-for your model class to identify which parameters are available for your
-model. You can find the documentation by searching for
-<code>sklearn &lt;model_class&gt;</code>. Let’s create two separate
-instances of decision tree classifiers below.</p>
+<p>Notice that the code to import the
+<code>DecisionTreeClassifier</code> from <code>sklearn.tree</code> is
+included at the top of this notebook. It is polite to keep all of your
+import statements at the beginning of a nodebook or script. We’ll always
+need to import any model constructors we wish to use. In order to
+<em>create an instance</em> of a model constructor which can be fit to
+data, we’ll define an object of this model constructor class. We can
+pass parameter values to the model class which will override the default
+settings. Get in the habit of looking at the <code>sklearn</code>
+documentation for your model class to identify which parameters are
+available for your model. You can typically find the documentation by
+searching for <code>sklearn &lt;model_class&gt;</code>. The code below
+creates two separate instances of decision tree classifiers – one tree
+is unconstrained while the other is limited to a maximum depth of 4.
+(We’ll be talking more about tree-based models later in our course, so
+don’t worry if you aren’t quite sure what having a maximum depth of 4
+means.)</p>
 <pre class="python"><code>#An unconstrained decision tree
 dt_clf = DecisionTreeClassifier()
 
 #A decision tree with maximum depth 4
 dt_4_clf = DecisionTreeClassifier(max_depth = 4)</code></pre>
-<p>Although we’ve defined these model constructors, they aren’t actually
-fit to our data. They are instances which are waiting to learn.</p>
+<p>The result of the code above will be two model constructors, but they
+won’t actually be fit to our data. They’ll just be instances which are
+waiting to learn.</p>
 </div>
 <div id="creating-a-transformation-pipeline" class="section level2">
 <h2>Creating a Transformation Pipeline</h2>
@@ -460,13 +475,14 @@ fit to our data. They are instances which are waiting to learn.</p>
 your modeling workflow. The difference between a <code>Pipeline()</code>
 and <code>ColumnTransformer()</code> is that column transformers can be
 applied to specific columns, while a pipeline will be applied to all
-columns of a data frame. Making use of these structures will ensure that
+columns passed to it. Making use of these structures will ensure that
 your <code>train</code>ing data, <code>test</code> data, and any new
 data go through the same transformations before being introduced to the
 model. They’ll also cut down on the amount of work you need to do, and
 will reduce the likelihood of errors. You should definitely use
-<code>Pipeline()</code>s in your workflow. The construction of a
-modeling <code>Pipeline()</code> appears below.</p>
+<code>Pipeline()</code>s in your workflow. The code required to
+construct an example <code>Pipeline()</code> appears below and will be
+explained directly afterwards.</p>
 <pre class="python"><code>cat_cols = [&quot;list&quot;, &quot;categorical&quot;, &quot;columns&quot;, &quot;here&quot;]
 num_cols = [&quot;list&quot;, &quot;numeric&quot;, &quot;columns&quot;, &quot;here&quot;]
 
@@ -501,18 +517,18 @@ them out into a series of binary indicator columns – one for each level
 of the categorical variable. The <code>StandardScaler()</code> takes a
 numerical variable and <em>standardizes</em> it by subtracting its mean
 and dividing by its standard deviation.</p>
-<p>With those two separate <code>Pipeline()s</code> built, we combined
+<p>With those two separate <code>Pipeline()</code>s built, we combined
 them into a preprocessing <code>ColumnTransformer()</code> so that we
 could apply to <code>Pipeline()</code>s only to the columns for which
 they make sense. Finally, we constructed an overarching
 <code>Pipeline()</code> which contains all of our <em>preprocessing</em>
-as well as our <em>model</em>. Since the preprocessing steps and model
-are now all contained in a <code>Pipeline()</code>, they are a single
-unit which can be tuned, fit, and assessed.</p>
+steps as well as our <em>model</em>. Since the preprocessing steps and
+model are now all contained in a <code>Pipeline()</code>, they are a
+single unit which can be tuned, fit, and assessed.</p>
 <p><strong>Note:</strong> If we want to see what our training data will
 look like after preprocessing, we are able to do so by <em>fitting</em>
 the <code>preprocessor</code> and temporarily <em>transforming</em> that
-set. The columns in the training set will change during this process
+set. The columns in the training set will change during preprocessing
 though, so we’ll need to extract the new column names from the
 <code>preprocessor</code> if we want to make sense of the resulting data
 frame. The following code will achieve all of this.</p>
@@ -527,37 +543,52 @@ display(pd.DataFrame(preprocessor.transform(X_train), columns = columns))</code>
 </div>
 <div id="model-evaluation-using-cross-validation-scoring" class="section level2">
 <h2>Model Evaluation Using Cross-Validation Scoring</h2>
-<p>Okay, the good news is that the majority of our hard work is done.
+<p>Okay, the good news is that the majority of the hard work is done.
 We’ll now want to assess our model’s performance using
 <em>cross-validation</em>. This is the work of the
 <code>cross_val_score()</code> function. That function will</p>
-<pre><code>+ create several cross validation folds
-+ train our pipeline on all but one of the folds
-+ assess the pipeline&#39;s performance on that left-out fold
-+ continue until all folds have had a chance at being the validation set</code></pre>
-<p>Let’s see this in action, below.</p>
+<ul>
+<li>create several cross validation folds</li>
+<li>train our pipeline on all but one of the folds</li>
+<li>assess the pipeline’s performance on that left-out fold</li>
+<li>continue until all folds have had a chance at being the validation
+set</li>
+</ul>
+<p>As has been the case in this notebook, the code for that appears
+below.</p>
 <pre class="python"><code>cv_results = cross_val_score(pipe, X_train, y_train, cv = 5, scoring = &quot;accuracy&quot;)
 
 cv_results
 (cv_results).mean()</code></pre>
-<p>There it is, we’ll have obtained a cross-validation estimate for the
-accuracy resulting from this particular preprocessing pipeline and model
-combination!</p>
+<p>The first line in the code chunk above would run cross validation on
+five folds, recording the <em>accuracy</em> of each fitted model on the
+hold-out fold. The next line would print out the accuracies on the
+individual folds – we would have five accuracies printed out, one for
+each fold. The last line would compute the “cross validation accuracy”
+by averaging the accuracies across the five folds.</p>
+<p><strong>Note:</strong> One of the problems that cross-validation
+seeks to solve is that models assessments conducted on a single
+validation are not stable because the validation set could be “too easy”
+or “too hard”, just by random chance. This averaging over fold
+performances results in a more stable performance estimate.</p>
 </div>
 <div id="identify-a-best-models" class="section level2">
 <h2>Identify a Best Model(s)</h2>
 <p>Generally, your best model will be the model that optimizes your
 cross-validation performance metric. That may be minimizing
-cross-validation error, or maximizing a type of accuracy metric.</p>
+cross-validation error, or maximizing a type of accuracy metric. You’ll
+cross-validate lots of modeling pipelines and identify your best
+one(s).</p>
 </div>
 <div id="fit-best-model-to-training-data" class="section level2">
 <h2>Fit Best Model to Training Data</h2>
-<p>The problem with the cross-validation we’ve done above is that it
-doesn’t leave us with a fitted model. We’ll need to go back and fit the
-model to our <em>training</em> data before we can use it. We can
-<em>fit</em> our modeling pipeline by using the <code>.fit()</code>
-method with our training data (<code>X_train</code> and
-<code>y_train</code>) as the arguments.</p>
+<p>The problem with the cross-validation I’ve shown you above is that
+won’t leave you with a fitted model. You’ll need to go back and fit the
+model to your <em>training</em> data before you can use it. You can
+<em>fit</em> your modeling pipeline by using the <code>.fit()</code>
+method with your training data (<code>X_train</code> and
+<code>y_train</code>) as the arguments. This is done using the code
+below.</p>
 <pre class="r"><code>pipe.fit(X_train, y_train)</code></pre>
 </div>
 <div id="verify-model-performance-on-test-data" class="section level2">
@@ -566,13 +597,22 @@ method with our training data (<code>X_train</code> and
 <em>new data</em> by using the <code>.predict()</code> method with the
 new data as the only argument. The new data, however, must have the
 exact same columns as <code>X_train</code> (and in the exact same
-order).</p>
+order), otherwise errors are thrown. The code below is used to make
+predictions on your test set by allowing your modeling pipeline.</p>
+<blockquote>
+<p><em>Aside.</em> It is important to note that your test data will go
+through exactly the same transformations as the training data did. One
+small, but very important, aspect of this is that any preprocessing
+transformations will be made using parameters learned from the training
+set. For example, numeric columns will be <em>normalized</em> using the
+mean and standard deviations learned from the training set.</p>
+</blockquote>
 <pre class="python"><code>pipe.predict(X_test)</code></pre>
 <p>In order to verify our model’s performance, however, we’ll need to
 compare these predictions to the known responses. The best way to do
 this is to store the model predictions and then to use your desired
 performance metric to compare the <em>truth</em> and your
-<em>predictions</em>.</p>
+<em>predictions</em>. Again, the necessary code is below.</p>
 <pre class="python"><code>test_preds = pipe.predict(X_test)
 model_accuracy = accuracy_score(y_test, test_preds)
 model_accuracy</code></pre>
@@ -584,16 +624,18 @@ data is much poorer than the measurement on the individual folds then
 something has gone wrong. You’ve <em>leaked</em> information to the
 model somehow and you’ll need to go back and fix that issue. If the
 metric measured on the test set seems in line with the measurements on
-the individual cross-validation folds, then we have confidence that we
-aren’t overfitting and we can move forward with using this model on new
-data.</p>
+the individual cross-validation folds, then we can have confidence that
+we aren’t overfitting and we can move forward with using this model on
+new data.</p>
 </div>
 <div id="making-predictions-with-a-fitted-model" class="section level2">
 <h2>Making Predictions with a Fitted Model</h2>
 <p>Making predictions on new data is done in exactly the same way as
 making predictions on the test data was. Again, your new data must have
 exactly the same columns, in exactly the same order as
-<code>X_train</code>. Otherwise you’ll be met with an error.</p>
+<code>X_train</code>. Otherwise you’ll be met with an error. Example
+code is below again; you can compare it to the code used to make
+predictions on the test set to see that it is the same.</p>
 <pre class="python"><code>new_preds = pipe.predict(new_data)</code></pre>
 </div>
 <div id="summary" class="section level2">

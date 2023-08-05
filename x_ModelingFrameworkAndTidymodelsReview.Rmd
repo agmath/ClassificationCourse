@@ -27,6 +27,8 @@ library(tidymodels)
 + Confirm model performance expectations using your *test* set.
 + Deploy model and use it to make predictions on/for new observations.
 
+While code will be exhibited in this notebook, no code will actually be run.
+
 ## Splitting Data into Training and Test Sets
 
 We *always* need to split our data into training and test sets. As a reminder, we can think of *training* data as observations that our models can practice on and learn from (say a practice exam) and *test* observations as "new" observations that our model(s) were unable to study from. These *test* observations play the role of future observations and ensure that our model performs as expected when applied to observations it hasn't seen before.
@@ -89,7 +91,7 @@ dt_wf <- workflow() %>%
 
 #### Estimating Model Performance with Cross-Validation
 
-To run *cross-validation* on a model workflow, we can pipe our model workflow into the `fit_resamples()` function and passing our cross-validation folds as the argument to it. 
+To run *cross-validation* on a model workflow, we can pipe our model workflow into the `fit_resamples()` function and by passing our cross-validation folds as the argument to it. 
 
 ```{r}
 dt_cv_results <- dt_wf %>%
@@ -148,7 +150,7 @@ As a reminder, the use of the `augment()` function adds a new column to the `new
 
 ## Summary
 
-The detailed discussions above have broken up the `tidymodels` workflow and perhaps made it seem daunting. Here is a condensed version:
+The detailed discussions above have broken up the `{tidymodels}` workflow and perhaps made it seem daunting. Here is a condensed version:
 
 ```{r}
 #training and test sets
@@ -198,4 +200,4 @@ dt_fit %>%
   augment(new_data)
 ```
 
-The steps in the code block above can be copied/pasted/adapted while you continue to build familiarity with the modeling process and also with the `tidymodels` framework. Generally, you'll build several model workflows and assess those models using cross-validation. That is, you'll work through the blocks of code to create a *specification*, a *recipe*, and a *workflow* multiple times for different models/recipes. You'll also *run cross-validation* and *collect performance metrics* for each of the model workflows you are constructing. From that point on, only the best model(s) are kept. 
+The steps in the code block above can be copied/pasted/adapted while you continue to build familiarity with the modeling process and also with the `{tidymodels}` framework. Generally, you'll build several model workflows and assess those models using cross-validation. That is, you'll work through the blocks of code to create a *specification*, a *recipe*, and a *workflow* multiple times for different models/recipes. You'll also *run cross-validation* and *collect performance metrics* for each of the model workflows you are constructing. From that point on, only the best model(s) are kept. 
