@@ -1,0 +1,166 @@
+---
+title: "Introduction to K Nearest Neighbors (KNN)"
+author: 
+  - "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(tidyverse)
+library(tidymodels)
+library(kableExtra)
+
+```
+
+**Purpose:** In this notebook we introduce the *$k$ nearest neighbors* classifier. In particular, we note that
+
++ the $k$ in the name of the classifier indicates the number of *voting* neighbors when a prediction is made.
++ *nearest neighbors* is a distance-based model.
+
+  + Numerical predictors should be scaled in order to use this class of model.
+  + Categorical predictors are not supported by *nearest neighbor* models without significant assumptions made regarding relationships between their levels.
+  + *Nearest neighbor* models suffer greatly from *the curse of dimensionality*.
+
+## The Big Idea
+
+A *nearest neighbor* model assumes that observations are most like those nearest to them. The nearest neighbor model makes predictions on a new observation in the following way:
+
+1. Identify the $k$ observations which are *closest* to the new observation. (**Note:** It is possible to use a variety of distance metrics, not just the Euclidean metric.)
+
+2. Allow those $k$ "nearest neighbors" to vote on the response for the new observation.
+
+The following visual may be helpful.
+
+```{r echo = FALSE}
+num_obs <- 50
+num_nbrs <- 5
+new_obs <- tibble(X1 = 6,
+                  X2 = 5)
+
+x1 <- runif(num_obs, 0, 10)
+x2 <- runif(num_obs, 0, 10)
+class <- rep(0, num_obs)
+
+for(i in 1:num_obs){
+  class[i] <- sample(c("orange", "purple"), size = 1, prob = c((x1[i] + x2[i])/20, 1 - (x1[i] + x2[i])/20))
+}
+
+toy_data <- tibble(X1 = x1,
+                   X2 = x2,
+                   Class = class)
+
+closest_obs <- toy_data %>%
+  mutate(distance = sqrt((X1 - new_obs$X1)^2 + (X2 - new_obs$X2)^2)) %>%
+  slice_min(distance, n = num_nbrs)
+
+voted_class <- closest_obs %>%
+  count(Class) %>%
+  slice_max(n, n = 1) %>%
+  pull(Class)
+
+ggplot() + 
+  geom_point(data = toy_data,
+             aes(x = X1,
+                 y = X2,
+                 color = Class),
+             size = 2) +
+  geom_point(aes(x = new_obs$X1,
+                 y = new_obs$X2),
+             color = "black",
+             size = 5) +
+  geom_segment(data = closest_obs,
+               aes(x = new_obs$X1, y = new_obs$X2,
+                   xend = X1, yend = X2),
+               lty = "dashed") +
+  coord_equal() +
+  scale_color_manual(values = c("orange", "purple")) +
+  theme(legend.position = "none") +
+  labs(x = "X1",
+       x = "X2",
+       title = paste0("Nearest Neighbors with k=", num_nbrs),
+       subtitle = paste0("The voted class is ", voted_class))
+```
+
+## About KNN
+  
+Given the two stage process, you might note that a *nearest neighbor* model isn't actually *trained*. The "locations" and responses for the training data are simply stored, and when a prediction is to be made, the algorithm is run. This has several implications.
+
++ The *nearest neighbor* approach is not a *model*, it is really an algorithm to obtain predictions.
++ The *nearest neighbor* approach is expensive in terms of memory requirements because the entire "training" set must be stored in perpetuity.
++ The *nearest neighbor* approach is expensive in terms of compute time because the algorithm must be run in full every time a new prediction is to be made.
++ The *nearest neighbors* algorithm is non-parametric and no functional form is estimated.
+
+  + This means that *nearest neighbors* does not result in an interpretable model like linear regression, logistic regression, decision trees, or others do.
+
+Where *nearest neighbor* approaches have the drawbacks cited above, they do have some significant advantages. In particular, they can approximate very complex decision boundaries. We can also *tune* the parameter $k$ in order to obtain an appropriately flexible boundary.
+
+## Regression and Classification
+
+It is worth noting that $k$ *nearest neighbors* can be used in both the *classification* and *regression* settings.
+
++ For *classification*, each neighbor provides a vote for the class of the new observation and the plurality wins. 
++ For *regression*, the value of the response for each of the nearest neighbors are averaged to obtain the predicted response for the new observation.
+
+## How to Implement in `{tidymodels}`
+
+A KNN classifier is a model class (that is, a model `spec`*ification*). We define our intention to build a KNN classifier using
+
+```{r echo = TRUE, eval = FALSE}
+knn_clf_spec <- nearest_neighbor() %>%
+  set_engine("kknn") %>%
+  set_mode("classification")
+```
+
+K Nearest Neighbors can be used for *both* regression and classification. For this reason, the line to `set_mode()` is required when declaring the model specification. The line to `set_engine()` above is unnecessary since `kknn` is the default engine. There are other available engines though.
+
+#### Hyperparameters and Other Extras
+
+Like other model classes, nearest neighbors have *tunable hyperparameters*. They are
+
++ `neighbors`, which determines the number of *voting neighbors* to determine the model's ultimate prediction on a new observation.
+
+  + Remember, the fewer voting neighbors, the more flexible the model is.
+
++ `weight_func` determines how we'll compute distances between observations. More than just Euclidean distance (`"rectangular"`) are available. 
+
+You can see the full `{parsnip}` documentation for `nearest_neighbor()` [here](https://parsnip.tidymodels.org/reference/nearest_neighbor.html){target="_blank"}.
+
+## How to Implement in `{sklearn}`
+
+A KNN classifier is a model class. We first import `KNeighborsClassifier` from `sklearn.neighbors` and then create an instance of the model constructor using:
+
+```{r echo = TRUE, eval = FALSE}
+from sklearn.neighbors import KNeighborsClassifier
+
+knn_clf = KNeighborsClassifier()
+```
+
+Note that, since KNN is a distance-based model, all numerical predictors should be scaled. Additionally, using categorical predictors with KNN models makes assumptions that aren't well-supported. That being said, we can keep calm and cross-validate to determine whether using them improves model performance.
+
+#### Hyperparameters and Other Extras
+
+Like other model classes, nearest neighbors have *tunable hyperparameters*. The ones you are most likely to utilize are
+
++ `n_neighbors`, which determines the number of *voting neighbors* to determine the model's ultimate prediction on a new observation. The default is 5.
+
+  + Remember, the fewer voting neighbors, the more flexible the model is.
+
++ `metric` determines how we'll compute distances between observations. More than just Euclidean distance are available. 
+  
+  + `p` is an additional parameter associated with the metric which determines the powers used in the distance calculation. For example if `p = 2` corresponds to Euclidean distance $\displaystyle{\sqrt{d_1^2 + d_2^2 + \cdot + d_k^2}}$. The `p` parameter governs the powers and the order of the root used.
+
++ `weights` determines whether votes will be weighted or not. The possible values are `uniform` (all votes are equal) or `distance` (closer neighbors have more powerful votes).
+
+You can see the full `{sklearn}` documentation for `KNeighborsClassifier()` [here](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html){target="_blank"}.
+
+***
+
+## Summary
+
+In this notebook we learned a bit about the $k$ *nearest neighbors* algorithm. In particular, we saw that this is a distance-based algorithm which can be used for either regression or classification. We also saw that it is a non-parametric method which does not result in a *model* and cannot be interpreted. The algorithm is run every time a new prediction is to be made, making *nearest neighbors* an expensive algorithm in terms of both space and time. While *nearest neighbors* has its drawbacks it is a powerful technique which can fit very complex decision boundaries in the classification setting and can approximate complex functions well in the regression setting. *Nearest neighbors* also makes no distribution assumptions about the underlying data -- only that observations are most similar to those around them.
+
+We'll implement $k$ *nearest neighbors* using the `nearest_neighbor()` model class from `{tidymodels}` in our next class meeting.
