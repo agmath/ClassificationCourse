@@ -1,0 +1,136 @@
+---
+title: "Introduction to Text and Tokenization"
+author: 
+  - "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(tidyverse)
+library(tidymodels)
+library(tidytext)
+library(patchwork)
+library(kableExtra)
+```
+
+**Purpose:** In this notebook we'll expand our ability to utilize recorded data by seeing how to process and gain insights from text data using the `{tidytext}` package. 
+
+**Note:** Note that exploratory analyses with text features seems quite a bit simpler in R. Perhaps my bias is showing, but I explored several Python packages including `{nltk}`, `{SpaCy}`, and a port of `{tidytext}`. None of these packages seemed intuitive to me, because they either
+
+  + result in objects other than data frames
+  + produce list columns
+  + are not fully mature in the case of `{tidytext}`
+  
+I'd encourage you to use R functionality here for your exploratory work, but then switch back to `{sklearn}` and include text steps in your feature engineering `Pipeline()`s when it is time to build models. More on this towards the end of the notebook.
+
+## The Big Idea
+
+Until now we've limited ourselves to working with strictly numerical or categorical data. Any other columns in datasets, particularly text columns, have been ignored. I think we can all agree that there are likely valuable insights buried in text data though -- its just a matter of how to extract those insights.
+
+We'll spend several class meetings thinking about and utilizing text data. In this first notebook, we'll talk about *tokenization*. We'll treat each text entry as a *bag of words* and assign each observed word to that response. We'll also introduce the notion of *stopwords*, which are words so common that they should be ignored as part of an analysis.
+
+In order to understand how tokenization works, let's consider an example. Below is a small dataframe consisting of the opening lines of each of three classic books. 
+
+```{r echo = FALSE}
+famous_opening_lines <- tibble(book = c("Moby Dick", "A Tale of Two Cities", "Pride and Prejudice"),
+                               opening_line = c("Call me Ishmael.",
+                                                "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.",
+                                                "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.")
+)
+famous_opening_lines %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+Let's tokenize the statements!
+
+```{r echo = FALSE}
+tokenized_openers <- famous_opening_lines %>%
+  unnest_tokens(word, opening_line) 
+
+tokenized_openers %>%
+  head() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+We've just broken the sentences up into single words. Notice that our data frame has gotten much longer. We've moved from `r famous_opening_lines %>% nrow()` rows to `r tokenized_openers %>% nrow()` rows of data. 
+
+We can also see that some of these tokens are likely uninformative -- words like `it`, `was`, and `the` are highly likely to appear in any sentence. These very common and uninformative words are often called *stopwords*. The `{tidytext}` package has a pre-built data frame of `r stop_words %>% nrow()` *stopwords* that we can use as a starting point for removal. The first six stopwords in the `stopwords` data frame are shown below.
+
+```{r echo = FALSE}
+stop_words %>%
+  head() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+You can also see that there are different *lexicons* -- those available are `r stop_words %>% count(lexicon) %>% pull(lexicon)`. Let's see what the data frame of tokenized opening lines looks like if we remove all *stopwords*.
+
+```{r echo = FALSE}
+tokenized_no_stopwords <- famous_opening_lines %>%
+  unnest_tokens(word, opening_line) %>%
+  anti_join(stop_words, by = "word")
+
+tokenized_no_stopwords %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+The remaining words look much more informative, and now we've only got `r tokenized_no_stopwords %>% nrow()` tokens to deal with.
+
+## How Can We Use This?
+
+Tokenization is a very basic approach, but it can be really powerful. For example, let's consider two full texts from Jane Austen -- *Pride and Prejudice* and *Sense and Sensibility*. We can get these using the `{janeaustenr}` package.
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(janeaustenr)
+library(plotly)
+pp_df <- tibble(book = "PridePrejudice",
+                text = prideprejudice)
+ss_df <- tibble(book = "SenseSensibility",
+                text = sensesensibility)
+books_df <- pp_df %>% 
+  bind_rows(ss_df)
+
+p <- books_df %>%
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words, by = "word") %>%
+  filter(!is.na(word)) %>%
+  group_by(book) %>%
+  count(word) %>%
+  pivot_wider(id_cols = word, names_from = book, values_from = n, values_fill = 0) %>%
+  filter(PridePrejudice + SenseSensibility > 20) %>%
+  ggplot() + 
+  geom_point(aes(x = PridePrejudice,
+                 y = SenseSensibility),
+             alpha = 0.2) +
+  geom_abline(slope = 1, intercept = 0, lty = "dashed", alpha = 0.8) +
+  geom_text(aes(x = PridePrejudice,
+                y = SenseSensibility,
+                label = word)) +
+  ylim(c(-10, 600)) + 
+  xlim(c(-10, 600)) +
+  labs(x = "Pride and Prejudice",
+       y = "Sense and Sensibility")
+
+ggplotly(p)
+```
+
+The plot above shows word frequencies across the two texts. For example, we can see that the main character's names in their respective texts appears lots in that text but very infrequently in the other. Any words falling near the dashed line are words about equally represented in both texts, while words falling further from the line are more strongly represented in the text corresponding to the axis the observation is closer to. I've made the plot with `{plotly}` so you can zoom in and out as you like.
+
+## Implementation in `{sklearn}`
+
+There are several feature engineering steps from `sklearn.feature_extraction.text` which can be useful inclusions to your modeling pipelines. One of which is relevant to the discussions in this notebook -- that is, `CountVectorizer()`. You can learn about this particular feature engineering step from the [`CountVectorizer()` documentation](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html).
+
+***
+
+## Summary
+
+In this notebook we introduced word *tokenization* as a basic technique which can be useful in analysis of text data. We also introduced the notion of *stopwords* which are common and uninformative words which can easily be removed from a tokenized *corpus* (that's what we commonly call a collection of text data). We also saw that we can use data visualization techniques to help identify tokens common to one *corpus* and not common to another. We could use such a plot to create text-based features (via dummy variables) for a model.
+
+We'll do more with tokenization in our next class meeting.

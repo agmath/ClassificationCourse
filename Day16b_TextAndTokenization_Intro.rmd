@@ -115,6 +115,16 @@ ggplotly(p)
 
 The plot above shows word frequencies across the two texts. For example, we can see that the main character's names in their respective texts appears lots in that text but very infrequently in the other. Any words falling near the dashed line are words about equally represented in both texts, while words falling further from the line are more strongly represented in the text corresponding to the axis the observation is closer to. I've made the plot with `{plotly}` so you can zoom in and out as you like.
 
+## Implementation in `{tidymodels}` with `{textrecipes}`
+
+The `{textrecipes}` library provides access to several feature engineering `step_*()` functions which can be used specifically with text features. For example, a few recipe steps which are related to the concepts in this notebook are 
+
++ `step_tokenize()` which will tokenize text-based columns.
++ `step_stopwords()` which will remove stopwords.
++ `step_tokenfilter()` which will allow you to keep only the most frequently occurring tokens.
+
+These steps can be added to a `recipe()` along with, perhaps, `step_dummy()` to engineer features from text columns which can be utilized in our classification models. You can learn more from the [`{textrecipes}` vignette](https://textrecipes.tidymodels.org/).
+
 ***
 
 ## Summary
