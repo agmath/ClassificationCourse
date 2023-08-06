@@ -1,0 +1,210 @@
+---
+title: "Introduction to Boosting Methods"
+author: 
+  - "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+library(kableExtra)
+```
+
+**Purpose:** In this notebook we'll continue our exploration of *ensembles* by looking at *boosting* methods. While our previous topic -- bagging and random forests -- looked at models in parallel, *boosting* methods use models in series. That is, boosting methods chain models together, passing information from previous models as inputs to subsequent models. In particular, 
+
+## The Big Idea
+
+Boosting methods typically try to slowly chip away at the reducible error. In the first iteration of *boosting*, we build a *weak learner* (a high-bias model) to predict our response -- in the next iteration, we build another weak learner in order to make predictions that will reduce the error from the first model. Subsequent *boosting* iterations build weak learners to reduce prediction errors left over from previous rounds.
+
+We'll use the regression setting to introduce *boosting methods* in this notebook though this technique is applicable to classification as well. There are a few additional intricacies in the classification setting, but the main idea is the same. Let's see boosting in action using a small example with a single predictor. We'll start with a toy dataset. 
+
+```{r echo = FALSE}
+num_obs <- 100
+x <- runif(num_obs, 0, 10)
+y <- 2*x + 8 + rnorm(num_obs, 0, 2)
+
+toy_data <- tibble(x = x,
+                   y = y)
+
+toy_data %>%
+  ggplot() + 
+  geom_point(aes(x = x,
+                 y = y)) +
+  labs(title = "Toy Data")
+```
+
+We'll plot the results of four rounds of *boosting* below. 
+
+```{r echo = FALSE, fig.height = 10}
+dt_1_spec <- decision_tree(tree_depth = 1) %>%
+  set_engine("rpart") %>%
+  set_mode("regression")
+dt_1_rec <- recipe(y ~ x, data = toy_data)
+dt_1_wf <- workflow() %>%
+  add_model(dt_1_spec) %>%
+  add_recipe(dt_1_rec)
+dt_1_fit <- dt_1_wf %>%
+  fit(toy_data)
+
+toy_data <- dt_1_fit %>%
+  augment(toy_data) %>%
+  mutate(residual = y - .pred) %>%
+  rename(pred_1 = .pred)
+
+for(i in 1:3){
+  dt_spec <- decision_tree(tree_depth = 1) %>%
+    set_engine("rpart") %>%
+    set_mode("regression")
+  dt_rec <- recipe(residual ~ x, data = toy_data)
+  dt_wf <- workflow() %>%
+    add_model(dt_spec) %>%
+    add_recipe(dt_rec)
+  dt_fit <- dt_wf %>%
+    fit(toy_data)
+
+  toy_data <- dt_fit %>%
+    augment(toy_data) %>%
+    mutate(!!paste0("residual_", i) := residual) %>%
+    mutate(residual = residual - .pred) %>%
+    rename(!!paste0("pred_", i + 1) := .pred)
+}
+
+p1 <- toy_data %>%
+  ggplot() + 
+  geom_point(aes(x = x,
+                 y = y),
+             alpha = 0.2) + 
+  geom_point(aes(x = x,
+                 y = pred_1),
+             color = "purple") + 
+  labs(x = "x",
+       y = "y",
+       title = "Boosting: Round 1")
+
+p2 <- toy_data %>%
+  ggplot() + 
+  geom_point(aes(x = x,
+                 y = residual_1),
+             alpha = 0.2) + 
+  geom_point(aes(x = x,
+                 y = pred_2),
+             color = "purple") + 
+  labs(x = "x",
+       y = "Residuals (First Round)",
+       title = "Boosting: Round 2")
+
+p3 <- toy_data %>%
+  ggplot() + 
+  geom_point(aes(x = x,
+                 y = residual_2),
+             alpha = 0.2) + 
+  geom_point(aes(x = x,
+                 y = pred_3),
+             color = "purple") + 
+  labs(x = "x",
+       y = "Residuals (First Two Rounds)",
+       title = "Boosting: Round 3")
+
+p4 <- toy_data %>%
+  ggplot() + 
+  geom_point(aes(x = x,
+                 y = residual_3),
+             alpha = 0.2) + 
+  geom_point(aes(x = x,
+                 y = pred_4),
+             color = "purple") + 
+  labs(x = "x",
+       y = "Residuals (First Three Rounds)",
+       title = "Boosting: Round 4")
+
+p5 <- toy_data %>%
+  ggplot() + 
+  geom_point(aes(x = x,
+                 y = y),
+             alpha = 0.2) + 
+  geom_point(aes(x = x,
+                 y = pred_1 + pred_2 + pred_3 + pred_4),
+             color = "purple") + 
+  labs(x = "x",
+       y = "y",
+       title = "Boosting: Overall Prediction",
+       subtitle = "(Four Rounds)")
+
+(p1 + p2) / (p3 + p4) / p5
+```
+
+We can see that the boosting iterations each try to [very slowly] reduce the total error made by the model. 
+
+## Some Warnings
+
+We should beware of the following when using boosting methods.
+
++ *Boosting* methods are very sensitive to the number of boosting iterations. This is a parameter that should be *tuned* during the training process.
++ It is important that the learners in the ensemble are *weak* learners. These are very high bias models -- decision trees of depth 1 or 2 are a common choice.
++ Something not addressed in this notebook, but important to *boosting ensembles* is their learning rate. This is an additional parameter which should be *tuned* during training. It governs how quickly the model tries to reduce prediction errors.
++ Model interpretability with boosting methods is very low because the model is broken into many smaller component models.
++ Training and prediction are more computationally intensive than with single models because many models must be trained and evaluated.
+
+## How to Implementat in `{tidymodels}`
+
+A boosted model is a model class (that is, a model `spec`*ification*). We define our intention to build a boosting classifier using
+
+```{r echo = TRUE, eval = FALSE}
+boost_tree_spec <- boosted_tree() %>%
+  set_engine("xgboost") %>%
+  set_mode("classification") #or "regression"
+```
+
+As with many of our model specifications, boosting models can be used for *both* regression and classification. For this reason, the line to `set_mode()` is required when declaring the model specification. The line to `set_engine()` above is unnecessary since `xgboost` is the default engine. There are other available engines though.
+
+#### Hyperparameters and Other Extras
+
+Like other model classes, boosted models have *tunable hyperparameters*. They are
+
++ `mtry`, which determines the number of randomly chosen predictors to offer each tree at each decision juncture.
++ `trees` determines the number of trees in the forest.
++ `min_n` is an integer determining the minimum number of training observations required for a node to be split further. That is, if a node/bucket contains fewer than `min_n` training observations, it will not be split further.
++ `tree_depth` is an integer denoting the maximum depth of each individual tree (not available for all engines).
++ `learn_rate` determines how quickly the model will attempt to learn (initial boosting iterations are weighted more heavily, while later iterations have less influence in the model's ultimate predictions). 
+
+  + Powers of ten, for example `1e-5, 1e-3, 0.1, 10`, are typically a good starting point for learning rates.
+
++ Additional hyperparameters are `loss_reduction`, `sample_size`, and `stop_iter`. 
+
+You can see the full `{parsnip}` documentation for `boost_tree()`, including descriptions of those last three hyperparameters, [here](https://parsnip.tidymodels.org/reference/boost_tree.html){target="_blank"}.
+
+## How to Implementat in `{sklearn}`
+
+A support vector classifier is a model class. We first import `GradientBoostingClassifier` from `sklearn.ensemble` and then create an instance of the model constructor using:
+
+```{python echo = TRUE, eval = FALSE}
+from sklearn.ensemble import GradientBoostingClassifier
+
+gb_clf = GradientBoostedClassifier()
+```
+
+#### Hyperparameters and Other Extras
+
+Like other model classes, boosted models have *tunable hyperparameters*. The ones you are most likely to use are
+
++ `max_features`, which determines the number of randomly chosen predictors to offer each tree at each decision juncture.
++ `n_estimators` determines the number of trees in the forest.
++ `min_samples_split` is an integer (or float) determining the minimum number (or proportion) of training observations required for a node to be split further. That is, if a node/bucket contains fewer than `min_samples_split` training observations, it will not be split further.
++ `max_depth` is an integer denoting the maximum depth of each individual tree (not available for all engines).
++ `learning_rate` determines how quickly the model will attempt to learn (initial boosting iterations are weighted more heavily, while later iterations have less influence in the model's ultimate predictions). 
+
+  + Powers of ten, for example `1e-5, 1e-3, 0.1, 10`, are typically a good starting point for learning rates.
+
+You can see the full `{sklearn}` documentation for `GradientBoostedClassifier()`, including descriptions of those last three hyperparameters, [here](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html){target="_blank"}.
+
+***
+
+## Summary
+
+In this notebook we were introduced to the notion of *boosting methods*. These are *slow-learning* techniques aimed at chipping away at the reducible error made by our models. We'll implement boosting at our next class meeting.
