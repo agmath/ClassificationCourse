@@ -239,7 +239,7 @@ Like other model classes, decision trees have *tunable hyperparameters*. You are
 
 + `ccp_alpha`, which is a penalty associated with large trees. A grown tree will be pruned back to be below this threshold.
 + `max_depth` is an integer denoting the depth of the tree. This is the maximum number of splits between the root node and any leaf of the tree.
-+ `min_samples_split` is an integer determining the minimum number of training observations required for a node to be split further. That is, if a node/bucket contains fewer than `min_samples_split` training observations, it will not be split further.
++ `min_samples_split` is an integer (or float) determining the minimum number (or proportion) of training observations required for a node to be split further. That is, if a node/bucket contains fewer than `min_samples_split` training observations, it will not be split further.
 + `criterion` determines how the quality of a split is measured. Options are `gini`, `entropy`, and `log_loss`, with `gini` as the default.
 
 There are additional hyperparameters as well. You can see the full `{sklearn}` documentation for `DecisionTreeClassifier()` [here](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html){target="_blank"}.

@@ -1,0 +1,148 @@
+---
+title: "Introduction to Ensembles, Bagging, and Random Forests"
+author: 
+  - "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+library(kableExtra)
+```
+
+**Purpose:** In this notebook we'll introduce the notion of *ensembles* of models. In particular, we will introduce *bootstrap aggregation* (or *bagging*) and *random forests*. After reading through this notebook you should understand the following.
+
++ An *ensemble* is a collection of models used together to generate a predicted response.
++ An *ensemble* can implement models in parallel or in series.
++ Bootstrapping is a technique to generate new, hypothetical random samples of observations.
+
+  + We can build models on these hypothetical random samples and aggregate their results. This can be useful for understanding variability in the model and also in the model's predictions. This technique is known as *bootstrap aggregation*.
+  + Bootstrapping can also be used for simple parameter estimation for populations. 
+  
++ A *random forest* is a collection of decision trees which are presented a random subset of features at each decision juncture.
+
+## The Big Idea
+
+All this time we've been looking at individual model classes and searching for the best model, but we've perhaps presented ourselves with a false choice. Why not build a collection of models and then aggregate their individual predicted responses in order to obtain an ultimate prediction? This is the main idea behind *ensembles*.
+
+#### Bootstrapping
+
+Bootstrapping is a widely used technique to generate new, hypothetical random samples. We treat our available sample data as if it were the population, and repeatedly draw random samples from it. These random samples have the same size as the original set of sample data and are drawn *with replacement*. 
+
+For example, consider a small dataset with 10 observations, numbered 1 - 10. The data frame below contains the original observations and nine bootstrapped samples.
+
+```{r echo = FALSE}
+bootstraps_df <- tibble(original = 1:10)
+for(i in 1:9){
+  bootstraps_df <- bootstraps_df %>%
+    mutate(!!paste0("bs_", i) := sample(1:10, 10, replace = TRUE))
+}
+
+bootstraps_df %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+Now we have 10 sets of training data we could use to fit models!
+
+#### Bootstrap Aggregation (Bagging)
+
+Once we have additional training sets obtained via the bootstrap, we can fit a model on each of these training sets. We could do this with any class of model, but trees are the most commonly utilized. Given the example data from above, we could fit a model on each of the available training sets, giving us 10 models. Once we have those trained models, we can use those models to make predictions. The act of distilling all of these predictions down to a single predictions is called *aggregation*. There are several techniques:
+
++ In classification applications, we can allow each model to vote on the class.
++ In classification applications, we can average the "certainty" of the model's predictions for membership to each class.
++ In regression applications, we can average the predictions together.
+
+**Note:** We aren't restricted to *averaging* -- we can try any aggregation method we like.
+
+#### Random Forests
+
+There's a problem with *bagging* in that, all of the resulting models are likely to look similar. They have access to similar data and the same predictors. Unfortunately, this means that these models are likely to make the same mistakes -- we often say that their prediction errors are correlated. We don't really benefit by having lots of models if they all do the same thing and make similar errors. We need models that make different errors so that, on the whole, the errors will balance one another out. Is it possible that building several worse models will lead to a better *ensemble* overall? That's the gist of the phenomenon known as [the Wisdom of the Crowd](https://youtu.be/iOucwX7Z1HU).
+
+A *random forest* is a form of bootstrap aggregation where we construct a decision tree model on each of the bootstrapped training sets. Rather than just constructing a decision tree though, we allow each tree access to only a random subset of predictors each time it makes a split. Since the trees are provided random access to the predictors, our trees won't all look alike. This means that the decision trees in our *random forest ensemble* won't make the same errors and the ensemble can benefit from the wisdom of the crowd.
+
+Because a *random forest* is an *ensemble* of models, typically consisting of hundreds of trees, it has much lower interpretive value than an individual decision tree has. That being said, we can look at variable importance plots to determine which variables were selected most often by trees in the forest when the opportunity to take them arose. In this way, we are able to interpret which features are most strongly associated with the response variable.
+
+## Some Warnings
+
+It will be useful to beware of the following regarding random forests.
+
++ Random forests can be large an take time to fit. 
++ Random forests can be sensitive to tree depth, a parameter that should be tuned either directly (by tuning `max_depth`) or indirectly (by tuning a parameter like `min_n`).
+
+## How to Implement in `{tidymodels}`
+
+A Random Forest is a model class (that is, a model `spec`*ification*). We define our intention to build a Random Forest classifier using
+
+```{r echo = TRUE, eval = FALSE}
+rf_clf_spec <- rand_forest() %>%
+  set_engine("ranger") %>%
+  set_mode("classification")
+```
+
+As with many of our model specifications, random forests can be used for *both* regression and classification. For this reason, the line to `set_mode()` is required when declaring the model specification. The line to `set_engine()` above is unnecessary since `ranger`` is the default engine. There are other available engines though.
+
+#### Hyperparameters and Other Extras
+
+Like other model classes, random forests have *tunable hyperparameters*. They are
+
++ `mtry`, which determines the number of randomly chosen predictors to offer each tree at each decision juncture.
++ `trees` determines the number of trees in the forest.
++ `min_n` is an integer determining the minimum number of training observations required for a node to be split further. That is, if a node/bucket contains fewer than `min_n` training observations, it will not be split further.
+
+You can see the full `{parsnip}` documentation for `rand_forest()` [here](https://parsnip.tidymodels.org/reference/rand_forest.html){target="_blank"}.
+
+## How to Implement in `{sklearn}`
+
+A random forest is a model class. We first import `RandomForestClassifier` from `sklearn.ensemble` and then create an instance of the model constructor using:
+
+```{python echo = TRUE, eval = FALSE}
+from sklearn.ensemble import RandomForestClassifier
+
+rf_clf = RandomForestClassifier()
+```
+
+#### Hyperparameters and Other Extras
+
+Like other model classes, random forests have *tunable hyperparameters*. They are
+
++ `max_features`, which determines the number of randomly chosen predictors to offer each tree at each decision juncture.
++ `n_estimators` determines the number of trees in the forest.
++ `min_samples_split` is an integer (or float) determining the minimum number (or proportion) of training observations required for a node to be split further. That is, if a node/bucket contains fewer than `min_samples_split` training observations, it will not be split further.
+
+You can see the full `{sklearn}` documentation for `RandomForestClassifier()` [here](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html){target="_blank"}.
+
+***
+
+## Summary
+
+In this notebook you were introduced to the notions of the *bootstrap*, *bootstrap aggregation* (or *bagging*), and *random forests*. None of these techniques were actually implemented in this notebook, we will implement them in our next class meeting.
+
+```{r eval = FALSE, echo = FALSE, include = FALSE}
+rf_spec <- rand_forest() %>%
+  set_engine("ranger", importance = "impurity") %>%
+  set_mode("classification")
+rf_rec <- recipe(species ~ ., data = penguins) %>%
+  step_impute_knn(all_predictors()) %>%
+  step_dummy(all_nominal_predictors())
+rf_wf <- workflow() %>%
+  add_model(rf_spec) %>%
+  add_recipe(rf_rec)
+
+rf_fit <- rf_wf %>%
+  fit(penguins)
+
+rf_fit %>%
+  extract_fit_engine() %>%
+  ranger::treeInfo(tree = 1)
+
+rf_fit %>%
+  extract_fit_engine() %>%
+  vip::vip()
+```
