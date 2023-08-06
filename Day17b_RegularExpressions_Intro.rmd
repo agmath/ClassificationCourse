@@ -33,9 +33,9 @@ Regular expressions are also something you might ask your favorite AI assistant 
 
 ### How Do We Implement and Use regex?
 
-Using `{tidymodels}` we can use regular expressions in multiple ways. We can
+Using R we can use regular expressions in multiple ways. We can
 
-+ tokenize words and then filter the results using a regular expression and the `str_detect()` function.
++ tokenize words (or bigrams) and then filter the results using a regular expression and the `str_detect()` function.
 + tokenize sentences (or paragraphs, or chapters, etc.) and filter results using a regular expression and the `str_detect()` function.
 + use `str_extract()` on raw text to extract subsections matching a pattern.
 
@@ -77,6 +77,8 @@ biden_tweets %>%
 ```
 
 Your ability to extract insights from text programmatically is strongly enhanced by command of regular expressions. This tool allows you to perform targeted inquiries about the presence or absence of particular components of text. Regular expressions can also be a way to extract numerical or categorical features from text descriptions as long as you are reasonably confident that the way those features appear across responses follows a consistent pattern.
+
+In terms of model construction, you may use some of the `{textrecipes}` steps from the previous notebook in conjunction with a custom `step_mutate()` which utilizes regular expressions to engineer new model features.
 
 ***
 

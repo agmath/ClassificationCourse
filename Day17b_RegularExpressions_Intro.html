@@ -11,7 +11,7 @@
 
 <meta name="author" content="Dr. Gilbert" />
 
-<meta name="date" content="2023-06-12" />
+<meta name="date" content="2023-08-05" />
 
 <title>Introduction to Pattern Matching and Regular Expressions</title>
 
@@ -583,7 +583,7 @@ display: none;
 <h1 class="title toc-ignore">Introduction to Pattern Matching and
 Regular Expressions</h1>
 <h4 class="author">Dr. Gilbert</h4>
-<h4 class="date">June 12, 2023</h4>
+<h4 class="date">August 05, 2023</h4>
 
 </div>
 
@@ -624,11 +624,10 @@ paragraph.</p>
 </div>
 <div id="how-do-we-implement-and-use-regex" class="section level3">
 <h3>How Do We Implement and Use regex?</h3>
-<p>Using <code>{tidymodels}</code> we can use regular expressions in
-multiple ways. We can</p>
+<p>Using R we can use regular expressions in multiple ways. We can</p>
 <ul>
-<li>tokenize words and then filter the results using a regular
-expression and the <code>str_detect()</code> function.</li>
+<li>tokenize words (or bigrams) and then filter the results using a
+regular expression and the <code>str_detect()</code> function.</li>
 <li>tokenize sentences (or paragraphs, or chapters, etc.) and filter
 results using a regular expression and the <code>str_detect()</code>
 function.</li>
@@ -1031,6 +1030,10 @@ particular components of text. Regular expressions can also be a way to
 extract numerical or categorical features from text descriptions as long
 as you are reasonably confident that the way those features appear
 across responses follows a consistent pattern.</p>
+<p>In terms of model construction, you may use some of the
+<code>{textrecipes}</code> steps from the previous notebook in
+conjunction with a custom <code>step_mutate()</code> which utilizes
+regular expressions to engineer new model features.</p>
 <hr />
 </div>
 </div>
