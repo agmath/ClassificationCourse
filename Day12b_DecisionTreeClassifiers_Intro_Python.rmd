@@ -199,6 +199,7 @@ It will be useful to beware of the following regarding decision trees.
 + We need to use *regularization* techniques to constrain our trees and prevent this overfitting.
 
   + The `{tidymodels}` ecosystem has been built on a *pit of success* (rather than pit of failure) philosophy. The idea is that it should be easy to do the right thing, and difficult to do the wrong thing. For this reason, decision trees utilize some regularization by default to prevent overfitting.
+  + The `{sklearn}` ecosystem was not built with the same *pit of success* philosophy. The default trees in this module are unconstrained and will overfit.
 
 ## How to Implement in `{tidymodels}`
 
