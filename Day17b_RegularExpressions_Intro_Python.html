@@ -624,15 +624,19 @@ paragraph.</p>
 </div>
 <div id="how-do-we-implement-and-use-regex" class="section level3">
 <h3>How Do We Implement and Use regex?</h3>
-<p>Using R we can use regular expressions in multiple ways. We can</p>
+<p>There are lots of specialty text processing packages in Python,
+including <code>{nltk}</code>, <code>{SpaCy}</code>, and others. We can
+accomplish quite a bit in Python using basic string functionality from
+<code>{pandas}</code> and regular expressions though. In particular, the
+following functions can be applied to columns of data frames.</p>
 <ul>
-<li>tokenize words (or bigrams) and then filter the results using a
-regular expression and the <code>str_detect()</code> function.</li>
-<li>tokenize sentences (or paragraphs, or chapters, etc.) and filter
-results using a regular expression and the <code>str_detect()</code>
-function.</li>
-<li>use <code>str_extract()</code> on raw text to extract subsections
-matching a pattern.</li>
+<li><code>Counter()</code> can be used in conjunction with the
+<code>.most_common()</code> method to identify the most common words in
+a text column.</li>
+<li><code>str.contains()</code> will search a string for a pattern match
+using either fixed strings or regular expressions.</li>
+<li><code>str.extract()</code> will collect all components in a string
+which match a pattern.</li>
 </ul>
 <p>There’s lots we can do, and you’ll find more use-cases as you
 continue to explore working with text.</p>
@@ -640,7 +644,10 @@ continue to explore working with text.</p>
 dataset</a> containing Joe Biden’s tweets from 2007 to 2020 which was <a href="https://www.kaggle.com/datasets/rohanrao/joe-biden-tweets">posted
 to Kaggle</a> by user Vopani in 2020. We can see the first few tweets
 below.</p>
-<pre class="r"><code>biden_tweets %&gt;%
+<pre class="python"><code>import pandas as pd
+
+biden_tweets = pd.read_csv(&quot;https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/biden_tweets.csv&quot;)</code></pre>
+<pre class="r"><code>py$biden_tweets %&gt;%
   select(-id, -url) %&gt;%
   head() %&gt;%
   kable() %&gt;%
@@ -671,7 +678,7 @@ likes
 <tbody>
 <tr>
 <td style="text-align:left;">
-2007-10-24 22:45:00
+2007-10-24 22:45
 </td>
 <td style="text-align:left;">
 Tune in 11:30 ET tomorrow for a live webcast of Families USA
@@ -692,7 +699,7 @@ Presidential Forum on health care: <a href="http://presidentialforums.health08.o
 </tr>
 <tr>
 <td style="text-align:left;">
-2007-12-29 15:35:00
+2007-12-29 15:35
 </td>
 <td style="text-align:left;">
 Iowans, there’s a good chance there’s a Biden near you today on a cool
@@ -713,7 +720,7 @@ Iowans, there’s a good chance there’s a Biden near you today on a cool
 </tr>
 <tr>
 <td style="text-align:left;">
-2012-04-09 09:42:00
+2012-04-09 09:42
 </td>
 <td style="text-align:left;">
 We’re excited to announce that <span class="citation">@JoeBiden</span>
@@ -735,7 +742,7 @@ Vice President on the trail.
 </tr>
 <tr>
 <td style="text-align:left;">
-2012-04-09 09:43:00
+2012-04-09 09:43
 </td>
 <td style="text-align:left;">
 Campaign staff will run this account to keep you up to date on what the
@@ -756,7 +763,7 @@ VP’s up to, but you’ll see occasional tweets from Joe himself, too.
 </tr>
 <tr>
 <td style="text-align:left;">
-2012-04-09 13:11:00
+2012-04-09 13:11
 </td>
 <td style="text-align:left;">
 News for you this morning: VP Biden will speak in Exeter, NH on 4/12 on
@@ -777,7 +784,7 @@ tax fairness and the President’s support for the #BuffettRule.
 </tr>
 <tr>
 <td style="text-align:left;">
-2012-04-09 13:25:00
+2012-04-09 13:25
 </td>
 <td style="text-align:left;">
 In NH on 4/12, the Vice President will give his take on why millionaires
@@ -801,16 +808,18 @@ shouldn’t pay a lower tax rate than middle class families do.
 <p>Perhaps we want to extract the first appearing hashtag from each of
 the tweets posted by <code>@JoeBiden</code>. We can see the first tweets
 containing hashtags, along with their extracted hashtag, below.</p>
-<pre class="r"><code>biden_tweets %&gt;%
-  mutate(hashtags = str_extract(tweet, &quot;#([A-z]|\\d|-)+&quot;)) %&gt;%
-  select(tweet, hashtags) %&gt;%
-  filter(!is.na(hashtags)) %&gt;%
-  head(10) %&gt;%
+<p>DONE TO HERE – I’m not loving working with text in python</p>
+<pre class="python"><code>biden_tweets[&quot;hashtags&quot;] = biden_tweets[&quot;tweet&quot;].str.extract(r&quot;(#[A-Za-z\d-]+)&quot;)
+biden_hashtags = biden_tweets.loc[biden_tweets[&quot;hashtags&quot;].notnull(), [&quot;tweet&quot;, &quot;hashtags&quot;]]</code></pre>
+<pre class="r"><code>py$biden_hashtags %&gt;%
+  head() %&gt;%
   kable() %&gt;%
   kable_styling(bootstrap_options = c(&quot;hover&quot;, &quot;striped&quot;))</code></pre>
 <table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
+<th style="text-align:left;">
+</th>
 <th style="text-align:left;">
 tweet
 </th>
@@ -822,6 +831,9 @@ hashtags
 <tbody>
 <tr>
 <td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
 News for you this morning: VP Biden will speak in Exeter, NH on 4/12 on
 tax fairness and the President’s support for the #BuffettRule.
 </td>
@@ -830,6 +842,9 @@ tax fairness and the President’s support for the #BuffettRule.
 </td>
 </tr>
 <tr>
+<td style="text-align:left;">
+9
+</td>
 <td style="text-align:left;">
 The VP will be speaking in NH on Thursday about the #BuffettRule. Here’s
 what you need to know about it: <a href="http://t.co/sWu4EjD0" class="uri">http://t.co/sWu4EjD0</a>
@@ -840,6 +855,9 @@ what you need to know about it: <a href="http://t.co/sWu4EjD0" class="uri">http:
 </tr>
 <tr>
 <td style="text-align:left;">
+13
+</td>
+<td style="text-align:left;">
 Heads up: We’ll be livestreaming the Vice President’s New Hampshire
 speech on the #BuffettRule tomorrow. Watch this space for details.
 </td>
@@ -848,6 +866,9 @@ speech on the #BuffettRule tomorrow. Watch this space for details.
 </td>
 </tr>
 <tr>
+<td style="text-align:left;">
+15
+</td>
 <td style="text-align:left;">
 RT <span class="citation">@OFA_NH</span>: #Exeter gets ready for <span class="citation">@JoeBiden</span>’s #BuffettRule speech here tomorrow:
 <a href="http://t.co/8YZjlEqe" class="uri">http://t.co/8YZjlEqe</a>
@@ -858,6 +879,9 @@ RT <span class="citation">@OFA_NH</span>: #Exeter gets ready for <span class="ci
 </tr>
 <tr>
 <td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
 Compare your tax rate to Mitt Romney’s: <a href="http://t.co/R0vmjGJe" class="uri">http://t.co/R0vmjGJe</a> #BuffettRule
 </td>
 <td style="text-align:left;">
@@ -866,46 +890,14 @@ Compare your tax rate to Mitt Romney’s: <a href="http://t.co/R0vmjGJe" class="
 </tr>
 <tr>
 <td style="text-align:left;">
+17
+</td>
+<td style="text-align:left;">
 The Vice President is speaking about the #BuffettRule in Exeter, New
 Hampshire at 12:15pm ET—tune in here: <a href="http://t.co/QK0yYL8X" class="uri">http://t.co/QK0yYL8X</a>
 </td>
 <td style="text-align:left;">
 #BuffettRule
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Watch Vice President Biden’s speech live: <a href="http://t.co/uYcZa0vK" class="uri">http://t.co/uYcZa0vK</a> #BuffettRule
-</td>
-<td style="text-align:left;">
-#BuffettRule
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-RT <span class="citation">@Obama2012</span>: “The President and I
-believe in a fair shot and a fair shake.”—VP <span class="citation">@JoeBiden</span> #BuffettRule
-</td>
-<td style="text-align:left;">
-#BuffettRule
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Here’s the full video of VP Biden’s speech on the #BuffettRule in New
-Hampshire this morning: <a href="http://t.co/RFhqv9o8" class="uri">http://t.co/RFhqv9o8</a>
-</td>
-<td style="text-align:left;">
-#BuffettRule
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Join Vice President Biden and special guests for a #Gen44 event in D.C.
-on April 17th: <a href="http://t.co/8SUwSQoW" class="uri">http://t.co/8SUwSQoW</a>
-</td>
-<td style="text-align:left;">
-#Gen44
 </td>
 </tr>
 </tbody>
@@ -913,112 +905,103 @@ on April 17th: <a href="http://t.co/8SUwSQoW" class="uri">http://t.co/8SUwSQoW</
 <p>Perhaps we wanted all of the hashtags appearing in each tweet. Below
 is one way to do that – but I am sure that there is a more efficient
 way.</p>
-<pre class="r"><code>biden_tweets %&gt;%
-  mutate(hashtags = str_extract(tweet, &quot;#([A-z]|\\d|-)+&quot;)) %&gt;%
-  select(tweet, hashtags) %&gt;%
-  filter(!is.na(hashtags)) %&gt;%
-  mutate(hashtags = str_extract_all(tweet, &quot;#([A-z]|\\d|-)+&quot;)) %&gt;%
-  head(10) %&gt;%
+<pre class="python"><code>biden_hashtags = pd.DataFrame(biden_tweets[&quot;tweet&quot;].str.extractall(r&quot;(#[A-Za-z\d-]+)&quot;))
+
+biden_hashtags[&quot;tweet_number&quot;] = biden_hashtags.index.get_level_values(0) 
+
+biden_hashtags.columns = [&quot;hashtags&quot;, &quot;tweet_number&quot;]
+
+biden_tweets[&quot;tweet_number&quot;] = biden_tweets.index
+
+biden_hashtags = biden_hashtags.merge(biden_tweets[[&quot;tweet_number&quot;, &quot;tweet&quot;]], how = &quot;left&quot;, left_on = &quot;tweet_number&quot;, right_on = &quot;tweet_number&quot;)</code></pre>
+<pre class="r"><code>py$biden_hashtags %&gt;%
+  head() %&gt;%
   kable() %&gt;%
   kable_styling(bootstrap_options = c(&quot;hover&quot;, &quot;striped&quot;))</code></pre>
 <table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-tweet
+hashtags
+</th>
+<th style="text-align:right;">
+tweet_number
 </th>
 <th style="text-align:left;">
-hashtags
+tweet
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
+#BuffettRule
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
 News for you this morning: VP Biden will speak in Exeter, NH on 4/12 on
 tax fairness and the President’s support for the #BuffettRule.
 </td>
+</tr>
+<tr>
 <td style="text-align:left;">
 #BuffettRule
 </td>
-</tr>
-<tr>
+<td style="text-align:right;">
+9
+</td>
 <td style="text-align:left;">
 The VP will be speaking in NH on Thursday about the #BuffettRule. Here’s
 what you need to know about it: <a href="http://t.co/sWu4EjD0" class="uri">http://t.co/sWu4EjD0</a>
 </td>
+</tr>
+<tr>
 <td style="text-align:left;">
 #BuffettRule
 </td>
-</tr>
-<tr>
+<td style="text-align:right;">
+13
+</td>
 <td style="text-align:left;">
 Heads up: We’ll be livestreaming the Vice President’s New Hampshire
 speech on the #BuffettRule tomorrow. Watch this space for details.
 </td>
-<td style="text-align:left;">
-#BuffettRule
-</td>
 </tr>
 <tr>
+<td style="text-align:left;">
+#Exeter
+</td>
+<td style="text-align:right;">
+15
+</td>
 <td style="text-align:left;">
 RT <span class="citation">@OFA_NH</span>: #Exeter gets ready for <span class="citation">@JoeBiden</span>’s #BuffettRule speech here tomorrow:
 <a href="http://t.co/8YZjlEqe" class="uri">http://t.co/8YZjlEqe</a>
 </td>
+</tr>
+<tr>
 <td style="text-align:left;">
-#Exeter , #BuffettRule
+#BuffettRule
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:left;">
+RT <span class="citation">@OFA_NH</span>: #Exeter gets ready for <span class="citation">@JoeBiden</span>’s #BuffettRule speech here tomorrow:
+<a href="http://t.co/8YZjlEqe" class="uri">http://t.co/8YZjlEqe</a>
 </td>
 </tr>
 <tr>
+<td style="text-align:left;">
+#BuffettRule
+</td>
+<td style="text-align:right;">
+16
+</td>
 <td style="text-align:left;">
 Compare your tax rate to Mitt Romney’s: <a href="http://t.co/R0vmjGJe" class="uri">http://t.co/R0vmjGJe</a> #BuffettRule
-</td>
-<td style="text-align:left;">
-#BuffettRule
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-The Vice President is speaking about the #BuffettRule in Exeter, New
-Hampshire at 12:15pm ET—tune in here: <a href="http://t.co/QK0yYL8X" class="uri">http://t.co/QK0yYL8X</a>
-</td>
-<td style="text-align:left;">
-#BuffettRule
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Watch Vice President Biden’s speech live: <a href="http://t.co/uYcZa0vK" class="uri">http://t.co/uYcZa0vK</a> #BuffettRule
-</td>
-<td style="text-align:left;">
-#BuffettRule
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-RT <span class="citation">@Obama2012</span>: “The President and I
-believe in a fair shot and a fair shake.”—VP <span class="citation">@JoeBiden</span> #BuffettRule
-</td>
-<td style="text-align:left;">
-#BuffettRule
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Here’s the full video of VP Biden’s speech on the #BuffettRule in New
-Hampshire this morning: <a href="http://t.co/RFhqv9o8" class="uri">http://t.co/RFhqv9o8</a>
-</td>
-<td style="text-align:left;">
-#BuffettRule
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Join Vice President Biden and special guests for a #Gen44 event in D.C.
-on April 17th: <a href="http://t.co/8SUwSQoW" class="uri">http://t.co/8SUwSQoW</a>
-</td>
-<td style="text-align:left;">
-#Gen44
 </td>
 </tr>
 </tbody>
@@ -1030,10 +1013,13 @@ particular components of text. Regular expressions can also be a way to
 extract numerical or categorical features from text descriptions as long
 as you are reasonably confident that the way those features appear
 across responses follows a consistent pattern.</p>
-<p>In terms of model construction, you may use some of the
-<code>{textrecipes}</code> steps from the previous notebook in
-conjunction with a custom <code>step_mutate()</code> which utilizes
-regular expressions to engineer new model features.</p>
+<p>In terms of model construction, you may continue to use some of the
+<code>{sklearn}</code> steps from
+<code>sklearn.feature_extraction.text</code> submodule from the previous
+notebook to engineer new model features. You may also create custom
+feature engineering functions for your modeling <code>Pipelines()</code>
+but doing so is outside of my expertise. You can read more about <a href="https://www.andrewvillazon.com/custom-scikit-learn-transformers/">custom
+feature engineering steps here</a>, from Andrew Villazon.</p>
 <hr />
 </div>
 </div>

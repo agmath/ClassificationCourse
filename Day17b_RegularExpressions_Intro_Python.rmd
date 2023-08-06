@@ -15,8 +15,7 @@ library(tidymodels)
 library(tidytext)
 library(patchwork)
 library(kableExtra)
-
-biden_tweets <- read_csv("https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/biden_tweets.csv")
+library(reticulate)
 ```
 
 **Purpose:** In this notebook we'll continue to expand our ability to extract insights from text data using a pattern-matching tool called *regular expressions* or *regex*.
@@ -33,18 +32,24 @@ Regular expressions are also something you might ask your favorite AI assistant 
 
 ### How Do We Implement and Use regex?
 
-Using R we can use regular expressions in multiple ways. We can
+There are lots of specialty text processing packages in Python, including `{nltk}`, `{SpaCy}`, and others. We can accomplish quite a bit in Python using basic string functionality from `{pandas}` and regular expressions though. In particular, the following functions can be applied to columns of data frames.
 
-+ tokenize words (or bigrams) and then filter the results using a regular expression and the `str_detect()` function.
-+ tokenize sentences (or paragraphs, or chapters, etc.) and filter results using a regular expression and the `str_detect()` function.
-+ use `str_extract()` on raw text to extract subsections matching a pattern.
++ `Counter()` can be used in conjunction with the `.most_common()` method to identify the most common words in a text column.
++ `str.contains()` will search a string for a pattern match using either fixed strings or regular expressions.
++ `str.extract()` will collect all components in a string which match a pattern.
 
 There's lots we can do, and you'll find more use-cases as you continue to explore working with text.
 
 Let's consider an example. I'll load [this dataset](https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/biden_tweets.csv) containing Joe Biden's tweets from 2007 to 2020 which was [posted to Kaggle](https://www.kaggle.com/datasets/rohanrao/joe-biden-tweets) by user Vopani in 2020. We can see the first few tweets below.
 
+```{python} 
+import pandas as pd
+
+biden_tweets = pd.read_csv("https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/biden_tweets.csv")
+```
+
 ```{r}
-biden_tweets %>%
+py$biden_tweets %>%
   select(-id, -url) %>%
   head() %>%
   kable() %>%
@@ -53,32 +58,44 @@ biden_tweets %>%
 
 Perhaps we want to extract the first appearing hashtag from each of the tweets posted by `@JoeBiden`. We can see the first tweets containing hashtags, along with their extracted hashtag, below.
 
+DONE TO HERE -- I'm not loving working with text in python
+
+```{python}
+biden_tweets["hashtags"] = biden_tweets["tweet"].str.extract(r"(#[A-Za-z\d-]+)")
+biden_hashtags = biden_tweets.loc[biden_tweets["hashtags"].notnull(), ["tweet", "hashtags"]]
+```
+
 ```{r}
-biden_tweets %>%
-  mutate(hashtags = str_extract(tweet, "#([A-z]|\\d|-)+")) %>%
-  select(tweet, hashtags) %>%
-  filter(!is.na(hashtags)) %>%
-  head(10) %>%
+py$biden_hashtags %>%
+  head() %>%
   kable() %>%
   kable_styling(bootstrap_options = c("hover", "striped"))
 ```
 
 Perhaps we wanted all of the hashtags appearing in each tweet. Below is one way to do that -- but I am sure that there is a more efficient way.
 
+```{python}
+biden_hashtags = pd.DataFrame(biden_tweets["tweet"].str.extractall(r"(#[A-Za-z\d-]+)"))
+
+biden_hashtags["tweet_number"] = biden_hashtags.index.get_level_values(0) 
+
+biden_hashtags.columns = ["hashtags", "tweet_number"]
+
+biden_tweets["tweet_number"] = biden_tweets.index
+
+biden_hashtags = biden_hashtags.merge(biden_tweets[["tweet_number", "tweet"]], how = "left", left_on = "tweet_number", right_on = "tweet_number")
+```
+
 ```{r}
-biden_tweets %>%
-  mutate(hashtags = str_extract(tweet, "#([A-z]|\\d|-)+")) %>%
-  select(tweet, hashtags) %>%
-  filter(!is.na(hashtags)) %>%
-  mutate(hashtags = str_extract_all(tweet, "#([A-z]|\\d|-)+")) %>%
-  head(10) %>%
+py$biden_hashtags %>%
+  head() %>%
   kable() %>%
   kable_styling(bootstrap_options = c("hover", "striped"))
 ```
 
 Your ability to extract insights from text programmatically is strongly enhanced by command of regular expressions. This tool allows you to perform targeted inquiries about the presence or absence of particular components of text. Regular expressions can also be a way to extract numerical or categorical features from text descriptions as long as you are reasonably confident that the way those features appear across responses follows a consistent pattern.
 
-In terms of model construction, you may use some of the `{textrecipes}` steps from the previous notebook in conjunction with a custom `step_mutate()` which utilizes regular expressions to engineer new model features.
+In terms of model construction, you may continue to use some of the `{sklearn}` steps from `sklearn.feature_extraction.text` submodule from the previous notebook to engineer new model features. You may also create custom feature engineering functions for your modeling `Pipelines()` but doing so is outside of my expertise. You can read more about [custom feature engineering steps here](https://www.andrewvillazon.com/custom-scikit-learn-transformers/), from Andrew Villazon.
 
 ***
 
