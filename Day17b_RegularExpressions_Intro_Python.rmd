@@ -58,8 +58,6 @@ py$biden_tweets %>%
 
 Perhaps we want to extract the first appearing hashtag from each of the tweets posted by `@JoeBiden`. We can see the first tweets containing hashtags, along with their extracted hashtag, below.
 
-DONE TO HERE -- I'm not loving working with text in python
-
 ```{python}
 biden_tweets["hashtags"] = biden_tweets["tweet"].str.extract(r"(#[A-Za-z\d-]+)")
 biden_hashtags = biden_tweets.loc[biden_tweets["hashtags"].notnull(), ["tweet", "hashtags"]]

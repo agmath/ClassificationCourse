@@ -808,7 +808,6 @@ shouldn’t pay a lower tax rate than middle class families do.
 <p>Perhaps we want to extract the first appearing hashtag from each of
 the tweets posted by <code>@JoeBiden</code>. We can see the first tweets
 containing hashtags, along with their extracted hashtag, below.</p>
-<p>DONE TO HERE – I’m not loving working with text in python</p>
 <pre class="python"><code>biden_tweets[&quot;hashtags&quot;] = biden_tweets[&quot;tweet&quot;].str.extract(r&quot;(#[A-Za-z\d-]+)&quot;)
 biden_hashtags = biden_tweets.loc[biden_tweets[&quot;hashtags&quot;].notnull(), [&quot;tweet&quot;, &quot;hashtags&quot;]]</code></pre>
 <pre class="r"><code>py$biden_hashtags %&gt;%
