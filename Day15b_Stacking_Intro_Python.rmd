@@ -1,0 +1,42 @@
+---
+title: "Introduction to Stacking Models with `StackingClassifier()`"
+author: 
+  - "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+library(kableExtra)
+```
+
+**Purpose:** In this notebook we'll continue our exploration of *ensembles* by looking customizable model stacks.
+
+## The Big Idea
+
+We've spent a few class meetings talking about ensembles of models. Our previous two topics focused on *random forests* and *gradient boosted trees*, two very common types of ensemble with implementations in `{sklearn}`. It is possible, however, to use custom ensembles. 
+
+Say, for example, we fit several classifiers -- a logistic regression model, nearest neighbors, support vector machines, and decision trees -- perhaps each with different hyperparameters. We may not simply want to choose the model that performs best from our collection -- perhaps we can achieve better results if we *blend* the predictions from each of our models together. This is the purpose of the `StackingClassifier()` from the `sklearn.ensemble` module.
+
+## How It Works
+
+The strategy for fitting a stack of models is fairly straight-forward.
+
++ Create a collection of *estimators* (candidate model pipelines) for inclusion in your stack.
++ Package these estimators into a `StackingClassifier()`.
++ Score the *stacking classifier* using cross-validation or fit it to your training data.
+
+
+Please browse through the [documentation for `StackingClassifier()`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.StackingClassifier.html), and we'll implement a model stack at our next class meeting.
+
+***
+
+## Summary
+
+In this notebook we were introduced the `StackingClassifier()` from `sklearn.ensemble` for building a custom ensemble of models. This expands our ability to create ensembles of models beyond just *gradient boosted trees* and *random forests* and allows us to make use of all valuable models that we've trained rather than being forced to decide on a *single* best model.
