@@ -1,0 +1,35 @@
+---
+title: 'Deep Learning: Installing TensorFlow'
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+  pdf_document: default
+---
+
+```{r global-options, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(reticulate)
+```
+
+```{python}
+import tensorflow as tf
+tf.constant("Hello Tensorflow!")
+```
+
+**Purpose:** We are about to discuss *neural networks* and *deep learning*. These are advanced structures which are built on specialized libraries. In this notebook, you'll install `{keras}` and `{tensorflow}`.
+
+## Setup
+
+Follow the instructions to install Keras and Tensorflow here.
+
+1. Run `library(reticulate)` in an R code chunk and then open a Python code chunk.
+2. Using the python code chunk, install TensorFlow with `!pip install tensorflow`
+3. Similarly, install Keras with `!pip install keras`
+4. Remove the lines to `!pip install...` and replace them with import statements. It is common to `import tensorflow as tf`.
+5. Run `tf.constant("Hello TensorFlow!")`
+  + In addition to a notification, you should see `<tf.Tensor: shape=(), dtype=string, numpy=b'Hello TensorFlow!'>`.
+
+## Summary
+
+You now have TensorFlow installed. This is a state of the art software for training and utilizing deep learning networks which was developed at Google.
