@@ -15,9 +15,10 @@ library(tidymodels)
 library(tidytext)
 library(patchwork)
 library(kableExtra)
+library(reticulate)
 ```
 
-**Purpose:** In this notebook we'll expand our ability to utilize recorded data by seeing how to process and gain insights from text data using the `{tidytext}` package. 
+**Purpose:** In this notebook we'll expand our ability to utilize recorded data by seeing how to process and gain insights from text data using the `{tidytext}` package and using `{pandas}` functionality in Python. 
 
 **Note:** Note that exploratory analyses with text features seems quite a bit simpler in R. Perhaps my bias is showing, but I explored several Python packages including `{nltk}`, `{SpaCy}`, and a port of `{tidytext}`. None of these packages seemed intuitive to me, because they either
 
@@ -25,7 +26,9 @@ library(kableExtra)
   + produce list columns
   + are not fully mature in the case of `{tidytext}`
   
-I'd encourage you to use R functionality here for your exploratory work, but then switch back to `{sklearn}` and include text steps in your feature engineering `Pipeline()`s when it is time to build models. More on this towards the end of the notebook.
+I'd encourage you to use R functionality here for your exploratory work, but then use `{reticulate}` to switch back to `{sklearn}` and include text steps in your feature engineering `Pipeline()`s when it is time to build models. More on this towards the end of the notebook.
+
+
 
 ## The Big Idea
 
@@ -35,57 +38,80 @@ We'll spend several class meetings thinking about and utilizing text data. In th
 
 In order to understand how tokenization works, let's consider an example. Below is a small dataframe consisting of the opening lines of each of three classic books. 
 
-```{r echo = FALSE}
-famous_opening_lines <- tibble(book = c("Moby Dick", "A Tale of Two Cities", "Pride and Prejudice"),
-                               opening_line = c("Call me Ishmael.",
+```{python echo = FALSE}
+import pandas as pd
+import nltk
+#nltk.download("stopwords")
+
+famous_opening_lines = pd.DataFrame({
+  "book" : ["Moby Dick", "A Tale of Two Cities", "Pride and Prejudice"],
+  "opening_line" : ["Call me Ishmael.",
                                                 "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.",
-                                                "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.")
-)
-famous_opening_lines %>%
+                                                "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife."]
+})
+```
+
+```{r echo = FALSE}
+py$famous_opening_lines %>%
   kable() %>%
   kable_styling(bootstrap_options = c("hover", "striped"))
 ```
 
 Let's tokenize the statements!
 
-```{r echo = FALSE}
-tokenized_openers <- famous_opening_lines %>%
-  unnest_tokens(word, opening_line) 
+```{python echo = FALSE}
+tokens_df = famous_opening_lines["opening_line"].str.split(" ", expand = True)
+tokens_df["book"] = famous_opening_lines["book"]
+tokenized_openers = tokens_df.melt(id_vars = ["book"]).sort_values(["book", "variable"]).drop("variable", axis = 1).reset_index(drop = True)
+```
 
-tokenized_openers %>%
+```{r echo = FALSE}
+py$tokenized_openers %>%
   head() %>%
   kable() %>%
   kable_styling(bootstrap_options = c("hover", "striped"))
 ```
 
-We've just broken the sentences up into single words. Notice that our data frame has gotten much longer. We've moved from `r famous_opening_lines %>% nrow()` rows to `r tokenized_openers %>% nrow()` rows of data. 
+We've just broken the sentences up into single words. Notice that our data frame has gotten much longer. We've moved from `r py$famous_opening_lines %>% nrow()` rows to `r py$tokenized_openers %>% nrow()` rows of data. 
 
-We can also see that some of these tokens are likely uninformative -- words like `it`, `was`, and `the` are highly likely to appear in any sentence. These very common and uninformative words are often called *stopwords*. The `{tidytext}` package has a pre-built data frame of `r stop_words %>% nrow()` *stopwords* that we can use as a starting point for removal. The first six stopwords in the `stopwords` data frame are shown below.
+We can also see that some of these tokens are likely uninformative -- words like `it`, `was`, and `the` are highly likely to appear in any sentence. These very common and uninformative words are often called *stopwords*. The `{nltk}` package has a pre-built data frame of `r stop_words %>% nrow()` *stopwords* that we can use as a starting point for removal. The first six stopwords in the `stopwords` data frame are shown below.
+
+```{python echo = FALSE}
+stop_words = nltk.corpus.stopwords.words("english")
+```
 
 ```{r echo = FALSE}
-stop_words %>%
+py$stop_words %>%
   head() %>%
   kable() %>%
   kable_styling(bootstrap_options = c("hover", "striped"))
 ```
 
-You can also see that there are different *lexicons* -- those available are `r stop_words %>% count(lexicon) %>% pull(lexicon)`. Let's see what the data frame of tokenized opening lines looks like if we remove all *stopwords*.
+You can also see that there are different *lexicons* -- those available are `r length(py$stop_words)`. Let's see what the data frame of tokenized opening lines looks like if we remove all *stopwords*.
+
+```{python echo = FALSE}
+stop_words = pd.DataFrame({
+  "stopword" : stop_words
+})
+
+temp_list_outer = tokenized_openers.merge(stop_words, how = "outer", indicator = True, left_on = "value", right_on = "stopword")
+
+tokenized_no_stopwords = temp_list_outer[(temp_list_outer._merge == "left_only")].drop(["_merge", "stopword"], axis = 1).reset_index().sort_values(["book", "index"])
+
+tokenized_no_stopwords = tokenized_no_stopwords[tokenized_no_stopwords["value"].notnull()]
+```
 
 ```{r echo = FALSE}
-tokenized_no_stopwords <- famous_opening_lines %>%
-  unnest_tokens(word, opening_line) %>%
-  anti_join(stop_words, by = "word")
-
-tokenized_no_stopwords %>%
+py$tokenized_no_stopwords %>%
   kable() %>%
   kable_styling(bootstrap_options = c("hover", "striped"))
 ```
 
-The remaining words look much more informative, and now we've only got `r tokenized_no_stopwords %>% nrow()` tokens to deal with.
+The remaining words look much more informative, and now we've only got `r py$tokenized_no_stopwords %>% nrow()` tokens to deal with.
 
 ## How Can We Use This?
 
-Tokenization is a very basic approach, but it can be really powerful. For example, let's consider two full texts from Jane Austen -- *Pride and Prejudice* and *Sense and Sensibility*. We can get these using the `{janeaustenr}` package.
+Tokenization is a very basic approach, but it can be really powerful. For example, let's consider two full texts from Jane Austen -- *Pride and Prejudice* and *Sense and Sensibility*. We can get these using the `{janeaustenr}` package. If you look at the RMD file, the code below uses `{tidytext}` in R because of its convenience.
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
 library(janeaustenr)
