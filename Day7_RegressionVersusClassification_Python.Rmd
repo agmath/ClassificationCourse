@@ -82,7 +82,7 @@ toy_data = pd.DataFrame({
 #toy_data = pd.DataFrame({
 #  "x" : np.concatenate([x_a, x_b, x_c]), 
 #  "y" : np.concatenate([y_a, y_b, y_c]), 
-#  "label" : np.concatenate([num_a*["A"], num_b*["B"], num_c*["C"])
+#  "label" : np.concatenate([num_a*["A"], num_b*["B"], num_c*["C"]])
 #  })
 
 # ##Two class rolled
