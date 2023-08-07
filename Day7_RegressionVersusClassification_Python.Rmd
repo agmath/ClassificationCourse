@@ -1,0 +1,289 @@
+---
+title: "Regression Versus Classification"
+author: 
+  - "Dr. Gilbert"
+output: 
+  html_document:
+    theme: cerulean
+---
+
+```{r setup}
+library(reticulate)
+```
+
+```{python}
+import pandas as pd
+import numpy as np
+from plotnine import ggplot, geom_point, geom_line, geom_abline, aes, labs
+
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, roc_auc_score, roc_curve
+```
+
+**Purpose:** In this notebook, our goals are to differentiate between *regression* and *classification*. In particular, we'll recognize the following:
+
++ Regression models are built to predict or explain a *numerical response*.
++ Classification models are build to predict or explain a *categorical response*.
++ Regression models seek to fit the training data as closely as possible -- your mental image might be as a "line of best fit".
++ Classification models seek to separate classes -- your mental image might be that classifiers seek to "draw fences".
+
+## Toy Data for Classification
+
+As we saw in MAT300, it is sometimes useful to have some "fake" data to play with in order to understand classification models. We'll often call these "fake" datasets *toy data*. I've built several *toy* data sets below. I encourage you to play around by switching data sets and by making changes to the data sets I've provided.
+
+```{python}
+#Easy two-class
+num_a = 25
+num_b = 30
+ 
+np.random.seed(123)
+x_a = np.random.normal(loc = 20, scale = 5, size = num_a)
+y_a = np.random.normal(loc = 20, scale = 5, size = num_a)
+x_b = np.random.normal(loc = 50, scale = 5, size = num_b)
+y_b = np.random.normal(loc = 50, scale = 5, size = num_b)
+ 
+toy_data = pd.DataFrame({
+  "x" : np.concatenate([x_a, x_b]), 
+  "y" : np.concatenate([y_a, y_b]), 
+  "label" : np.concatenate([num_a*["A"], num_b*["B"]])
+  })
+
+#Second separable two-class with rare class
+# num_points = 1000
+# x = np.random.uniform(size = num_points, low = 0, high = 50)
+# y = np.random.uniform(size = num_points, low = 0, high = 50)
+# label = num_points*["A"]
+# for i in range(num_points):
+#   if np.sqrt((x[i] - 20)**2 + (y[i] - 40)**2) < 3:
+#     label[i] = "A"
+#   else:
+#     label[i] = "B"
+
+# toy_data = pd.DataFrame({
+#   "x" : x, 
+#   "y" : y, 
+#   "label" : label
+#   })
+
+# #Separable three-class
+# num_a = 10
+# num_b = 15
+# num_c = 12
+# 
+# x_a = np.random.normal(size = num_a, loc = 20, scale = 5)
+# y_a = np.random.normal(size = num_a, loc = 20, scale = 3)
+# x_b = np.random.normal(size = num_b, loc = 40, scale = 3)
+# y_b = np.random.normal(size = num_b, loc = 40, scale = 3)
+# x_c = np.random.normal(size = num_c, loc = 60, scale = 3)
+# y_c = np.random.normal(size = num_c, loc = 20, scale = 3)
+# 
+#toy_data = pd.DataFrame({
+#  "x" : np.concatenate([x_a, x_b, x_c]), 
+#  "y" : np.concatenate([y_a, y_b, y_c]), 
+#  "label" : np.concatenate([num_a*["A"], num_b*["B"], num_c*["C"])
+#  })
+
+# ##Two class rolled
+# num_a = 250
+# num_b = 175
+# 
+# x_a = np.random.uniform(size = num_a, low = 0, high = 40)
+# x_b = np.random.uniform(size = num_b, low = 25, high = 60)
+# y_a = -(x_a - 25)**2 + 475 + np.random.normal(size = num_a, loc = 0, scale = 50)
+# y_b = (x_b - 40)**2 + np.random.normal(size = num_b, loc = 0, scale = 50)
+# 
+#toy_data = pd.DataFrame({
+#  "x" : np.concatenate([x_a, x_b]), 
+#  "y" : np.concatenate([y_a, y_b]), 
+#  "label" : np.concatenate([num_a*["A"], num_b*["B"]])
+#  })
+```
+
+```{python}
+(
+  ggplot(data = toy_data) +
+  geom_point(aes(x = "x", y = "y", color = "label"))
+)
+```
+
+Now that we have some toy data, we'll build several classifiers.
+
+```{python}
+dt_clf = DecisionTreeClassifier()
+
+dt_clf.fit(toy_data[["x", "y"]], toy_data["label"])
+
+new_x = pd.DataFrame({
+  "x" : np.linspace(min(toy_data["x"]) - 5, max(toy_data["x"]) + 5, num = 150)
+  })
+
+new_y = pd.DataFrame({
+  "y" : np.linspace(min(toy_data["y"]) - 5, max(toy_data["y"]) + 5, num = 150)
+  })
+
+new_grid = new_x.merge(new_y, how = "cross")
+new_grid["pred_class"] = dt_clf.predict(new_grid[["x", "y"]])
+
+(
+  ggplot() + 
+  geom_point(aes(x = new_grid["x"], y = new_grid["y"], color = new_grid["pred_class"]), alpha = 0.02) +
+  geom_point(aes(x = toy_data["x"], y = toy_data["y"], color = toy_data["label"])) +
+  labs(title = "Class Regions for Decision Tree")
+)
+```
+
+Now a KNN Classifier...
+
+```{python}
+knn_clf = KNeighborsClassifier()
+
+knn_clf.fit(toy_data[["x", "y"]], toy_data["label"])
+
+new_grid["pred_class"] = knn_clf.predict(new_grid[["x", "y"]])
+
+(
+  ggplot() + 
+  geom_point(aes(x = new_grid["x"], y = new_grid["y"], color = new_grid["pred_class"]), alpha = 0.01) +
+  geom_point(aes(x = toy_data["x"], y = toy_data["y"], color = toy_data["label"])) +
+  labs(title = "Class Regions for KNN (n = 3)", color = "label")
+)
+```
+
+And a logistic regression classifier... (**Note:** This one is not appropriate for cases with more than two classes.)
+
+```{python}
+log_reg_clf = LogisticRegression()
+
+log_reg_clf.fit(toy_data[["x", "y"]], toy_data["label"])
+
+new_grid["pred_class"] = log_reg_clf.predict(new_grid[["x", "y"]])
+
+(
+  ggplot() + 
+  geom_point(aes(x = new_grid["x"], y = new_grid["y"], color = new_grid["pred_class"]), alpha = 0.02) +
+  geom_point(aes(x = toy_data["x"], y = toy_data["y"], color = toy_data["label"])) +
+  labs(title = "Logistic Regression", color = "label")
+)
+```
+
+Note that different classifiers make different assumptions about the data. Some classifiers make probablistic or distribution assumptions, while others are distance-based. In general, different classifiers will result in different boundary structures and can make quite different predictions on new observations. This means that we are searching for the most appropriate model *class* and level of *flexibility* as we approach classification problems.
+
+## Assessing Classifier Performance
+
+There are several performance measures for classifiers. Perhaps the most obvious measure is *accuracy* -- the proportion of observations correctly classified by our model. We'll encounter others as well -- accuracy is not always (or perhaps even often) the most appropriate performance measure for our classifiers.
+
+Before getting into computing *accuracy* and our other performance metrics, it is worth talking about a *confusion matrix*. Confusion matrices summarize our data and predictions -- the true classes of the observations are along the rows and the predicted classes are along the columns. For example, a confusion matrix for our decision tree classifier from earlier appears below.
+
+```{python}
+toy_data["pred_class_dt"] = dt_clf.predict(toy_data[["x", "y"]])
+
+confusion_matrix(toy_data["label"], toy_data["pred_class_dt"])
+```
+
+### Reading the Confusion Matrix
+
+The confusion matrix is an array of numbers whose rows correspond to the *true class* that an observation belongs to. The columns of the confusion matrix correspond to the observation's *predicted class* according to the model. This means that
+
++ observations along the main diagonal of the confusion matrix are correctly predicted observations.
++ observations away from the main diagonal correspond to incorrectly predicted observations -- in particular, the number in row $i$, column $j$ is the number of observations which are *truly* class $i$ but were *predicted* as class $j$.
+
+Understanding the confusion matrix can give us great insight as to where our model is becoming "confused" and how we might hope to improve it.
+
+### Computing Accuracy
+
+The *accuracy* of a classification model is the rate at which it correctly classifies observations. To compute *accuracy*, we sum the entries of the confusion matrix along the main diagonal and then divide by the total number of observations we made predictions for. Mathematically, we have
+
+$$\text{accuracy} = \frac{\sum{a_{ii}}}{n}$$
+
+where $a_{ii}$ is the $i^{th}$ diagonal entry of the confusion matrix and $n$ is the total number of observations that predictions were made on.
+
+The `{sklearn}` module, specifically `sklearn.metrics`, makes it easy for us to compute accuracy and nearly any other performance metric we would want to utilize!
+
+```{python}
+accuracy_score(toy_data["label"], toy_data["pred_class_dt"])
+```
+
+### Why Not Accuracy?
+
+To see why accuracy might not be the best measure of model performance, comment out the first data set in our initial code cell and uncomment the second toy data set -- this is the one labeled *second separable two-class with rare case*. Run the code to generate the data and then rerun the code cells up to this point in order to construct the decision tree, KNN, and logistic regression classifiers. 
+
+Pay special attention to the plot of logistic regression classifier. We'll print out the confusion matrix and the accuracy metric corresponding to that model here.
+
+```{python}
+toy_data["pred_class_lr"] = log_reg_clf.predict(toy_data[["x", "y"]])
+
+confusion_matrix(toy_data["label"], toy_data["pred_class_lr"])
+
+accuracy_score(toy_data["label"], toy_data["pred_class_lr"])
+```
+
+What happened? That level of accuracy is pretty excellent, right? Unfortunately not if we care about that rare class more than the dominant class. This is often the case, especially in medical applications where the prevalence of a relatively rare disease is not widespread and most cases are truly negative. We are perhaps more interested in an ability to identify those rare cases than we are in simply obtaining an accurate model. 
+
+Especially in situations where we are dealing with rare classes, we need other performance metrics to capture what we truly care about.
+
+### Recall
+
+Recall measures our model's ability to detect the presence of a class of interest from the population. That is, given that an observation *belongs to class X*, what is the likelihood that the model *predicted class X*? 
+
+To compute the *recall rate for Class X*, we only look at the row of the confusion matrix corresponding to Class X. The denominator is the total number of observations belonging to that row. The numerator is the diagonal entry in that row (ie. the correctly classified observations).
+
+Again, `{sklearn}`, makes computing our performance metric quite easy.
+
+```{python}
+recall_score(toy_data["label"], toy_data["pred_class_lr"], pos_label = "A")
+```
+
+Like accuracy, the higher the *recall* rate, the better the model's ability to detect observations of the class of interest.
+
+### Precision
+
+Precision measures our model's ability to discriminate against a class of interest from the population. That is, given that the model *predicted class X*, what is the likelihood that the observation actually *belongs to class X*? 
+
+To compute the *precision rate for Class X*, we only look at the column of the confusion matrix corresponding to Class X. The denominator is the total number of observations belonging to that column. The numerator is the diagonal entry in that column (ie. the correctly classified observations).
+
+Again, `{sklearn}`, makes computing our performance metric quite easy.
+
+```{python}
+precision_score(toy_data["label"], toy_data["pred_class_lr"], pos_label = "A")
+```
+
+Like accuracy and recall, the higher the *precision* rate, the better the model's ability to detect observations not belonging to the class of interest.
+
+### ROC-AUC
+
+When dealing with binary classification, the *receiver-operator-curve*'s *area under the curve* is a measure of the increases in true positive and false positive rates when varying a decision threshold. The idea is that we could use a variety of thresholds for assigning an observation to the class of interest. 
+
+The natural threshold is that if our model predicts a 50% chance or higher, then we should assign that observation to the class of interest and otherwise assign it to the other class. This isn't the only possible choice, however. We could use a threshold of 20%, which would allow us to capture more of the cases actually belonging to the class of interest (*true positives*) but would also result in more mistakes (*false positives*). Similarly, we could use a threshold of 80% which would result in fewer *false positives* but also fewer *true positives*. One of the goals here is to find the optimal threshold.
+
+For ROC-AUC, the close to 1, the better our model is doing at discriminating true positives from false positives. Values closer to 0.5 are like random guessing and indicate poor model performance. Values below 0.5 indicate that something has gone wrong because our model is doing worse than random guessing would do -- in such cases it is likely that we have mixed up our classes somewhere.
+
+```{python}
+lr_class_probs = log_reg_clf.predict_proba(toy_data[["x", "y"]])
+roc_auc_score(toy_data["label"], lr_class_probs[:, 1])
+
+fpr, tpr, thresh = roc_curve(toy_data["label"], lr_class_probs[:, 1], pos_label = "B")
+
+(
+  ggplot() + 
+  geom_line(aes(x = fpr, y = tpr), color = "blue") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") + 
+labs(x = "1 - Specificity (FPR)", y = "Sensitivity (TPR)", title = "ROC Curve (Logistic Regressor)")
+)
+```
+
+
+### Other Assessment Metrics for Classifiers
+
+While we'll most often stick with `accuracy`, `precision`, `recall`, and `roc_auc`, it is worth knowing that there are other assessment metrics for classifiers. You can [find several of them here](https://scikit-learn.org/stable/modules/model_evaluation.html) on the `sklearn.metrics` documentation.
+
+***
+
+## Summary
+
+In this notebook we saw several examples of classification datasets, built three classifiers, and assessed them using different performance metrics. In particular, we saw classification *accuracy*, the rate of *recall* for a class of interest, the rate of *precision* for a class of interest, and the area under the *roc*-curve as performance metrics. We discussed how they are computed and showed how to calculate them easily with functionality from the `sklearn.metrics` submodule.
+
+Being able to assess model performance is critical for our ability to move forward. These assessment metrics are how we will compare our models and how we will be able to determine whether our models are performing well/poorly and also improving or not.
+
+At this point, we have all of the foundational material we need. We'll move on to implementing specific classes of classification model and discussing what applications and use cases they are well-suited or poorly-suited to.
