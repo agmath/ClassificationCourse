@@ -1,0 +1,140 @@
+---
+title: 'Deep Learning: Implementation'
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+  pdf_document: default
+---
+
+**Purpose:** The previous two notebooks have discussed theoretical and foundational aspects of deep learning models. In particular, what types of architectures and activation functions exist (and, to a lesser extent, how do I choose one). In this notebook our goal will be to actually build, assess, and utilize a deep learning network for image classification.
+
+## Data and Modeling
+
+Since you set up TensorFlow in an earlier notebook, let's load `{reticulate}` in an R code chunk and then import `{tensorflow}`, `{keras}`, using a python chunk.We'll use the Fashion MNIST data set, so we'll load that as well. You can learn more about that data set from [its official repository here](https://github.com/zalandoresearch/fashion-mnist).
+
+```{r}
+library(reticulate)
+```
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import tensorflow as tf
+from keras.datasets import fashion_mnist
+from keras.models import Sequential
+from keras.layers import Flatten, Dense, Dropout, Lambda
+
+(x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
+
+x_train = x_train/255
+x_test = x_test/255
+
+labels_df = pd.DataFrame({
+  "label" : range(10),
+  "item" : ["Tshirt", "Trousers", "Pullover", "Dress", "Coat", "Sandal", "Shirt", "Sneaker", "Bag", "AnkleBoot"]
+  })
+```
+
+In the code block above, we loaded the Fashion MNIST data, which comes already packaged into training and test sets. We then scaled the pixel densities from integer values (between 0 and 255) to floats. We created a data frame of labels for convenience, since the labels in `y_train` and `y_test` are numeric only. Finally, we wrote a function to rotate the matrix of pixel intensities so that the images will be arranged vertically when we plot them -- this is important for us humans but of no importance to the neural network we'll be training. 
+
+Let's take a look at a few items and their labels.
+
+```{python}
+item_num = 4
+
+print("Item is: ", labels_df.loc[labels_df["label"] == y_train[item_num], "item"])
+
+plt.imshow(x_train[item_num, :, :])
+plt.show()
+```
+
+Okay -- I'm having a difficult time identifying some of these items. Can we train a sequential neural network to learn the classes?
+
+```{python}
+model = Sequential([
+  Flatten(input_shape = (28,28)),
+  Dense(128, activation = "relu"),
+  Dropout(0.2),
+  Dense(10, activation = "softmax")
+])
+
+model.summary()
+```
+
+We have a model with over 100,000 parameters! Because random weights are initially set for each of these, we can use the model straight "out of the box" for prediction. We shouldn't expect the network to perform very well though.
+
+```{python}
+predictions = model.predict(x_train[:2, :, :])
+#Predictions as a vector of log-odds
+predictions
+#Predictions as class-membership probabilities
+tf.nn.softmax(predictions)
+```
+
+Let's define a loss function so that we can train the model by optimizing the loss.
+
+```{python}
+y_train_wide = np.zeros((len(y_train), 10))
+
+for i in range(len(y_train)):
+  label = y_train[i]
+  y_train_wide[i, label] = 1
+
+predictions
+y_train_wide[:2, :]
+loss_fn = tf.keras.losses.CategoricalCrossentropy()
+loss_fn(y_train_wide[:2], predictions)
+```
+
+Before training, we'll need to set the optimizer, assign the loss function, and define the performance metric. We'll then compile the model with these attributes.
+
+```{python}
+model.compile(optimizer = "adam", loss = loss_fn, metrics = ["accuracy"])
+```
+
+Since the model has been compiled, we are ready to train it. This network has an output layer consisting of 10 neurons (one for each class). Because of this, we'll need a response which is of the same shape -- that is we need a binary matrix whose rows contain a 1 in exactly one position, denoting the class of the corresponding training record. We have this in `y_train_wide`.
+
+```{python}
+model.fit(x_train, y_train_wide, epochs = 5)
+```
+
+Now let's evaluate our model performance.
+
+```{python}
+y_test_wide = np.zeros((len(y_test), 10))
+
+for i in range(len(y_test)):
+  label = y_test[i]
+  y_test_wide[i, label] = 1
+
+score = model.evaluate(x_test, y_test_wide)
+score
+```
+
+We got 88% accuracy with a pretty vanilla and shallow neural network. There was only one hidden layer here, with 20% dropout. We didn't tune any model hyperparameters and only trained over 5 epochs. We can see that loss was continuing to decrease and accuracy was continuing to climb from one epoch to the next here.
+
+Since our model has been trained, we can use it to make predictions again.
+
+```{python}
+predictions = model.predict(x_test[1:5, :, :])
+tf.nn.softmax(predictions)
+```
+
+We can update our model so that it will provide class predictions rather than just the class membership probabilities.
+
+```{python}
+class_model = Sequential([
+  model,
+  Lambda(lambda x: tf.argmax(x, axis = -1))
+])
+
+class_model.predict(x_test[1:5, :, :])
+```
+
+Now that we've trained an assessed one neural network, go back and change your model. Add hidden layers to make it a true deep learning model. Experiment with the dropout rate or activation functions. Just remember that you'll need 10 neurons in your output layer since we have 10 classes and that the activation function used there should remain `softmax` since we are working on a multiclass classification problem. Everything else (other than the input shape) is fair game to change though!
+
+## Summary
+
+In this notebook we installed and used TensorFlow from R to build and assess a shallow learning network to classify clothing items from very pixelated images. The images were $28\times 28$. We saw that even a "simple" neural network was much better at predicting the class of an item based off of its pixelated image than we are as humans.
