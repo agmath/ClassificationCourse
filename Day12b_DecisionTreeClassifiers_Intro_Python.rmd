@@ -8,13 +8,20 @@ output:
     theme: cerulean
 ---
 
-```{r global-options, include=FALSE}
+```{r global-options, message = FALSE, warning = FALSE}
 #knitr::opts_chunk$set(eval = FALSE)
 library(tidyverse)
 library(tidymodels)
-library(patchwork)
-library(kableExtra)
 library(rpart.plot)
+library(reticulate)
+```
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from plotnine import ggplot, aes, geom_point, labs, scale_color_manual, theme
+from sklearn.tree import DecisionTreeClassifier, plot_tree
 ```
 
 **Purpose:** In this notebook we'll introduce *decision tree* models. These are another class of model which can be used in both the regression and classification settings. In particular, we note that
@@ -69,46 +76,46 @@ toy_data %>%
 
 Now that we have our data, let's build a decision tree classifier on it.
 
-```{r echo = FALSE}
-dt_clf_spec <- decision_tree() %>%
-  set_engine("rpart") %>%
-  set_mode("classification")
+```{python echo = FALSE}
+toy_data = r.toy_data
+dt_clf = DecisionTreeClassifier()
 
-dt_clf_rec <- recipe(class ~ ., data = toy_data)
+dt_clf.fit(toy_data[["x1", "x2"]], toy_data["class"])
 
-dt_clf_wf <- workflow() %>%
-  add_model(dt_clf_spec) %>%
-  add_recipe(dt_clf_rec)
+new_x1 = pd.DataFrame({
+  "x1" : np.linspace(0, 100, num = 100)
+})
 
-dt_clf_fit <- dt_clf_wf %>%
-  fit(toy_data)
+new_x2 = pd.DataFrame({
+  "x2" : np.linspace(0, 100, num = 100)
+})
 
-new_data <- crossing(x1 = seq(0, 100, length.out = 100),
-                     x2 = seq(0, 75, length.out = 75))
-new_data <- dt_clf_fit %>%
-  augment(new_data)
-
-ggplot() + 
-  geom_point(data = new_data,
-             aes(x = x1,
-                 y = x2,
-                 color = .pred_class),
-             alpha = 0.1) +
-  geom_point(data = toy_data,
-             aes(x = x1, 
-                 y = x2, 
-                 color = class)) + 
-  scale_color_manual(values = c("darkgreen", "gold", "purple", "red")) +
+new_grid = new_x1.merge(new_x2, how = "cross")
+new_grid["pred_class"] = dt_clf.predict(new_grid[["x1", "x2"]])
+  
+(
+  ggplot() + 
+  geom_point(aes(x = new_grid["x1"], y = new_grid["x2"], color = new_grid["pred_class"]), alpha = 0.05) +
+  geom_point(aes(x = toy_data["x1"], y = toy_data["x2"], color = toy_data["class"])) + 
   labs(x = "X1", y = "X2",
        title = "A Four-Class Classification Problem",
        subtitle = "and Decision Tree Boundaries") +
-  theme(legend.pos = "none")
+  scale_color_manual(values = ["darkgreen", "gold", "purple", "red"])
+  )
 ```
 
 In the plot above, we see that the decision tree classifier seems to do quite well! The tree is asking yes/no questions about individual predictors (`X1` or `X2`) which can be seen because the decision boundaries are perpendicular to those axes. In the plot below, we can see the actual structure of the decision tree.
 
-```{r echo = FALSE, message = FALSE, warning = FALSE}
-rpart.plot(dt_clf_fit %>% extract_fit_engine(), box.palette = list("Greens", "Oranges", "Purples", "Reds"))
+```{python echo = FALSE, message = FALSE, warning = FALSE}
+plt.figure(figsize = (18, 6))
+out = plot_tree(dt_clf, feature_names = ["x1", "x2"], filled = True, rounded = True, fontsize = 11)
+for o in out:
+    arrow = o.arrow_patch
+    if arrow is not None:
+        arrow.set_edgecolor('black')
+        arrow.set_linewidth(3)
+
+plt.show()
 ```
 
 Trees won't always perform well, however. Indeed, if the optimal structure of the decision boundaries is not constructable via line segments perpendicular to the feature axes, we may end up requiring a very deep tree to approximate the decision boundary. A different model class is likely to be a better choice in these cases.
@@ -228,7 +235,7 @@ You can see the full `{parsnip}` documentation for `decision_tree()` [here](http
 A support vector classifier is a model class. We first import `DecisionTreeClassifier` from `sklearn.tree` and then create an instance of the model constructor using:
 
 ```{python echo = TRUE, eval = FALSE}
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier, plot_tree
 
 dt_clf = DecisionTreeClassifier()
 ```
