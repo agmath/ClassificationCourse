@@ -13,7 +13,7 @@
 
 <meta name="date" content="2023-08-07" />
 
-<title>MAT434: Competition Assignment 3</title>
+<title>MAT434: Competition Assignment 2</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -356,7 +356,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">MAT434: Competition Assignment 3</h1>
+<h1 class="title toc-ignore">MAT434: Competition Assignment 2</h1>
 <h4 class="author">Dr. Gilbert</h4>
 <h4 class="date">August 07, 2023</h4>
 
@@ -369,30 +369,55 @@ display: none;
 select and open the R Project which is managing your GitHub
 repository.</p></li>
 <li><p>Use <code>File -&gt; Open File...</code> and navigate to the
-location of your R Markdown notebook from Competition Assignment 2. Open
+location of your R Markdown notebook from Competition Assignment 1. Open
 it.</p></li>
 <li><p>Run all of the code in your existing notebook.</p></li>
-<li><p>Add a new section to your notebook called <em>Model Construction
-and Interpretation</em>. You’ll start working on this section by
-discussing and building KNN and decision tree classifiers to predict
-<code>priceRange</code> for properties. You should use cross-validation
-for hyperparameter tuning and performance estimation.</p>
+<li><p>Use what you know about the competition and the data set to write
+an appropriate <em>Statement of Purpose</em> for the analysis and
+modeling you’ll be doing throughout this competition.</p>
 <ul>
-<li>Much like your EDA, this section of your analytics report should
-include a mixture of discussion and code. You’ll need to use narrative
-discussion (text) to help walk your reader through your approach to
-modeling and the decisions you are making. They should understand what
-you are doing and why you are doing it even if they are not an expert in
-statistical modeling (like you are becoming!).</li>
+<li>As a reminder, a <em>Statement of Purpose</em> is a really short (2
+- 3 sentences) description of the purpose of the project. It very
+pointedly answers three questions, (i) what are we doing?, (ii) who are
+we doing it for?, and (iii) why do they care/how do they benefit? You
+can think of the <em>Statement of Purpose</em> as a very brief project
+proposal.</li>
 </ul></li>
-<li><p>Use your model to make predictions for the properties in
-<code>comp.csv</code>. Submit those predictions to our class Kaggle
-competition for scoring.</p></li>
+<li><p>In your first Python code chunk, add the necessary code to import
+<code>train_test_split</code> from
+<code>sklearn.model_selection</code>.</p></li>
+<li><p>Open a new code cell and split your data into training and test
+sets. Don’t forget to set a seed. Think about whether you should use the
+<code>strata</code> argument for <code>train_test_split()</code> and use
+it if you believe you should.</p></li>
+<li><p>Conduct an exploratory data analysis using your <em>training</em>
+data to learn more about your data set. One of your major goals in this
+section of your <a href="https://agmath.github.io/RegressionCourse/WhatIsAnAnalyticsReport.html">analytics
+report</a> should be to understand which of your available features (or
+engineered features) are most closely associated with your response
+variable.</p>
+<ul>
+<li>This section of your analytics report should include a mixture of
+discussion and code. You’ll need to use narrative discussion (text) to
+help walk your reader through your analysis. They should understand what
+you are doing and why you are doing it.</li>
+</ul></li>
 <li><p>When you are done, use the blue ball of yarn button to knit the
-notebook into an HTML document.</p></li>
+notebook into an HTML document.</p>
+<ul>
+<li>You can do this step more often if you like. I do it fairly
+frequently because I like to see what my rendered notebook looks
+like.</li>
+</ul></li>
 <li><p>Use the <code>Git</code> tab in the top right pane of RStudio to
 <em>Pull, Commit, Push</em> your new files to your remote repository at
-GitHub.</p></li>
+GitHub.</p>
+<ul>
+<li>Again, you can do this step more often if you like. One advantage to
+committing and pushing often is that doing so saves <em>checkpoints</em>
+in your project that you can revert back to if you decide that your
+analysis took a wrong turn.</li>
+</ul></li>
 </ol>
 <p>Stop by my office if you have any questions or need help.</p>
 

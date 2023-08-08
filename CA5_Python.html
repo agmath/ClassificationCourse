@@ -13,7 +13,7 @@
 
 <meta name="date" content="2023-08-07" />
 
-<title>MAT434: Competition Assignment 3</title>
+<title>MAT434: Competition Assignment 5</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -356,7 +356,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">MAT434: Competition Assignment 3</h1>
+<h1 class="title toc-ignore">MAT434: Competition Assignment 5</h1>
 <h4 class="author">Dr. Gilbert</h4>
 <h4 class="date">August 07, 2023</h4>
 
@@ -371,21 +371,20 @@ repository.</p></li>
 <li><p>Use <code>File -&gt; Open File...</code> and navigate to the
 location of your R Markdown notebook from Competition Assignment 2. Open
 it.</p></li>
-<li><p>Run all of the code in your existing notebook.</p></li>
-<li><p>Add a new section to your notebook called <em>Model Construction
-and Interpretation</em>. You’ll start working on this section by
-discussing and building KNN and decision tree classifiers to predict
-<code>priceRange</code> for properties. You should use cross-validation
-for hyperparameter tuning and performance estimation.</p>
-<ul>
-<li>Much like your EDA, this section of your analytics report should
-include a mixture of discussion and code. You’ll need to use narrative
-discussion (text) to help walk your reader through your approach to
-modeling and the decisions you are making. They should understand what
-you are doing and why you are doing it even if they are not an expert in
-statistical modeling (like you are becoming!).</li>
-</ul></li>
-<li><p>Use your model to make predictions for the properties in
+</ol>
+<p>Now that you’ve learned about techniques for extracting signals from
+text features, its time to revisit the <code>description</code> feature
+in your data set.</p>
+<ol start="4" style="list-style-type: decimal">
+<li><p>Head back to the EDA section of your notebook and apply what
+you’ve learned about text analysis to your <em>training</em> data. Refer
+back to our recent notebooks about any functionality you’ll want to
+import or utilize.</p></li>
+<li><p>Once you are satisfied with your EDA, head over to your <em>Model
+Construction and Interpretation</em> section. See if you can improve
+upon your existing models by extracting text-based features from the
+<code>description</code> feature.</p></li>
+<li><p>Use your new model to make predictions for the properties in
 <code>comp.csv</code>. Submit those predictions to our class Kaggle
 competition for scoring.</p></li>
 <li><p>When you are done, use the blue ball of yarn button to knit the

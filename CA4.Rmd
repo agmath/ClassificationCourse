@@ -23,9 +23,11 @@ Complete the following:
 4. You'll be adding to your *Model Construction and Interpretation* section in this assignment. Your focus here will be to tune ensembles (random forest, gradient boosting models, customized model stacks) to try and outperform your existing best-performing KNN or decision tree classifier.
 
     + Again, make sure you are including ample discussion to justify your modeling choices and to help your reader(s) understand what you are doing. If decision-makers can't follow your analysis then you'll have a really difficult time convincing them that they should utilize your models.
+    
+5. Use your new best model to make predictions for the properties in `comp.csv`. Submit those predictions to our class Kaggle competition for scoring.
 
-5. When you are done, use the blue ball of yarn button to knit the notebook into an HTML document. 
+6. When you are done, use the blue ball of yarn button to knit the notebook into an HTML document. 
 
-6. Use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new files to your remote repository at GitHub.
+7. Use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new files to your remote repository at GitHub.
 
 Stop by my office if you have any questions or need help.

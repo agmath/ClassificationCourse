@@ -13,7 +13,7 @@
 
 <meta name="date" content="2023-08-07" />
 
-<title>MAT434: Competition Assignment 3</title>
+<title>MAT434: Competition Assignment 1</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -356,40 +356,73 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">MAT434: Competition Assignment 3</h1>
+<h1 class="title toc-ignore">MAT434: Competition Assignment 1</h1>
 <h4 class="author">Dr. Gilbert</h4>
 <h4 class="date">August 07, 2023</h4>
 
 </div>
 
 
+<p>I firmly believe that the best way to <em>learn</em> about
+statistical modeling is to <em>do</em> statistical modeling. Every time
+I run a course like this one, I use a Kaggle Competition and
+corresponding series of Competition Assignments to motivate students to
+go further and learn more about statistical modeling techniques. This is
+a <em>friendly</em> competition associated with our class (and perhaps
+similar classes at institutions like our own). To be clear, your
+ultimate course grade is <strong>not</strong> tied to your position on
+the leaderboard. However, students in these courses often mention that
+the Competition Assignments are motivating and one of the most valuable
+parts of the class experience. I hope you’ll all find this as well!</p>
 <p>Complete the following:</p>
 <ol style="list-style-type: decimal">
+<li><p>Check the <code>#competition-questions</code> channel in Slack
+for a direct link to our Kaggle Competition for this semester.</p></li>
+<li><p>Peruse the competition site, reading the details for this
+semester’s competition. On the <em>Overview</em> page for the
+Competition, click on the black <code>Join Competition</code>
+button.</p></li>
+<li><p>Navigate to the <em>Data</em> tab on the competition site.
+Download the <code>data.csv</code> and <code>comp.csv</code> files. You
+can also download the <code>sample_submission.csv</code> file if you
+like, but you don’t need to. Put these files into a convenient location
+on your computer.</p>
+<ul>
+<li>You may be prompted to accept the competition rules before you are
+allowed to download the data. The rules are to (i) learn new things,
+(ii) don’t cheat, (iii) apply yourself, and (iv) have fun.</li>
+</ul></li>
 <li><p>Open RStudio and use <code>File -&gt; Recent Projects</code> to
 select and open the R Project which is managing your GitHub
 repository.</p></li>
-<li><p>Use <code>File -&gt; Open File...</code> and navigate to the
-location of your R Markdown notebook from Competition Assignment 2. Open
-it.</p></li>
-<li><p>Run all of the code in your existing notebook.</p></li>
-<li><p>Add a new section to your notebook called <em>Model Construction
-and Interpretation</em>. You’ll start working on this section by
-discussing and building KNN and decision tree classifiers to predict
-<code>priceRange</code> for properties. You should use cross-validation
-for hyperparameter tuning and performance estimation.</p>
+<li><p>Use <code>File -&gt; New File -&gt; R Markdown...</code> to
+create a new R Markdown notebook. Fill in the fields as usual and then
+click the button to create the notebook.</p></li>
+<li><p>In the <code>setup</code> chunk, add the code necessary to load
+the <code>{reticulate}</code> library. You may also want to load
+<code>{kableExtra}</code> for pretty table printing.</p></li>
+<li><p>Open a new Python code chunk and import
+<code>pandas</code>.</p></li>
+<li><p>Also in that Python code cell, use <code>pd.read_csv()</code>
+with the path to the <code>data.csv</code> file on your computer to read
+that data into a named object.</p>
 <ul>
-<li>Much like your EDA, this section of your analytics report should
-include a mixture of discussion and code. You’ll need to use narrative
-discussion (text) to help walk your reader through your approach to
-modeling and the decisions you are making. They should understand what
-you are doing and why you are doing it even if they are not an expert in
-statistical modeling (like you are becoming!).</li>
+<li>If you are having trouble identifying the file path, you can click
+on the <code>Environment</code> tab in the top-right pane of RStudio and
+click the <em>Data Import</em> button. From here, you can click on
+<em>Browse</em> and navigate to the location where you saved the file.
+Don’t completely read in the data this way though. Look in the lower
+right to see the code necessary to read in your data. Part of the second
+line in that code viewer will be the path to you file. Copy it and paste
+it into the <code>read_csv()</code> function in your notebook. As we’ve
+done with URLs, you’ll need to surround the file path with quotes.</li>
 </ul></li>
-<li><p>Use your model to make predictions for the properties in
-<code>comp.csv</code>. Submit those predictions to our class Kaggle
-competition for scoring.</p></li>
-<li><p>When you are done, use the blue ball of yarn button to knit the
-notebook into an HTML document.</p></li>
+<li><p>Remove the boilerplate that appears after your <code>setup</code>
+code chunk.</p></li>
+<li><p>Add a new code cell and use it to print out the
+<code>.head()</code> of the data you’ve just read in.</p></li>
+<li><p>Use the blue ball of yarn button to knit the notebook into an
+HTML document.</p></li>
 <li><p>Use the <code>Git</code> tab in the top right pane of RStudio to
 <em>Pull, Commit, Push</em> your new files to your remote repository at
 GitHub.</p></li>

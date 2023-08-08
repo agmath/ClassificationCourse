@@ -1,0 +1,47 @@
+---
+title: "MAT434: Competition Assignment 1"
+author: "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+I firmly believe that the best way to *learn* about statistical modeling is to *do* statistical modeling. Every time I run a course like this one, I use a Kaggle Competition and corresponding series of Competition Assignments to motivate students to go further and learn more about statistical modeling techniques. This is a *friendly* competition associated with our class (and perhaps similar classes at institutions like our own). To be clear, your ultimate course grade is **not** tied to your position on the leaderboard. However, students in these courses often mention that the Competition Assignments are motivating and one of the most valuable parts of the class experience. I hope you'll all find this as well!
+
+Complete the following:
+
+1. Check the `#competition-questions` channel in Slack for a direct link to our Kaggle Competition for this semester.
+
+2. Peruse the competition site, reading the details for this semester's competition. On the *Overview* page for the Competition, click on the black `Join Competition` button.
+
+3. Navigate to the *Data* tab on the competition site. Download the `data.csv` and `comp.csv` files. You can also download the `sample_submission.csv` file if you like, but you don't need to. Put these files into a convenient location on your computer.
+
+    + You may be prompted to accept the competition rules before you are allowed to download the data. The rules are to (i) learn new things, (ii) don't cheat, (iii) apply yourself, and (iv) have fun. 
+
+4. Open RStudio and use `File -> Recent Projects` to select and open the R Project which is managing your GitHub repository.
+
+5. Use `File -> New File -> R Markdown...` to create a new R Markdown notebook. Fill in the fields as usual and then click the button to create the notebook.
+
+6. In the `setup` chunk, add the code necessary to load the `{reticulate}` library. You may also want to load `{kableExtra}` for pretty table printing.
+
+7. Open a new Python code chunk and import `pandas`.
+
+8. Also in that Python code cell, use `pd.read_csv()` with the path to the `data.csv` file on your computer to read that data into a named object. 
+
+    + If you are having trouble identifying the file path, you can click on the `Environment` tab in the top-right pane of RStudio and click the *Data Import* button. From here, you can click on *Browse* and navigate to the location where you saved the file. Don't completely read in the data this way though. Look in the lower right to see the code necessary to read in your data. Part of the second line in that code viewer will be the path to you file. Copy it and paste it into the `read_csv()` function in your notebook. As we've done with URLs, you'll need to surround the file path with quotes.
+    
+8. Remove the boilerplate that appears after your `setup` code chunk.
+
+9. Add a new code cell and use it to print out the `.head()` of the data you've just read in.
+
+10. Use the blue ball of yarn button to knit the notebook into an HTML document. 
+
+11. Use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new files to your remote repository at GitHub.
+
+Stop by my office if you have any questions or need help.

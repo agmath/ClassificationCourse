@@ -23,13 +23,15 @@ Complete the following:
 4. Return to your *Model Construction and Interpretation* section. Train at least one deep learning model. Are you able to outperform your best existing model or ensemble?
 
     + While Neural Networks are not known for their interpretability, be sure to discuss your modeling decisions (architecture, activation functions, etc.) and why you are making the choices you are making.
+    
+5. Use your new model to make predictions on the properties in `comp.csv`. Submit those predictions to our class Kaggle competition for scoring.
 
-5. Add a *Conclusions* section to your analytics report.
+6. Add a *Conclusions* section to your analytics report.
 
     + We'll omit the *Executive Summary* and *Introduction* sections from this analytics report, but you'll include those sections in the analytics report corresponding to your final course project.
 
-6. When you are done, use the blue ball of yarn button to knit the notebook into an HTML document. 
+7. When you are done, use the blue ball of yarn button to knit the notebook into an HTML document. 
 
-7. Use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new files to your remote repository at GitHub.
+8. Use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new files to your remote repository at GitHub.
 
 Stop by my office if you have any questions or need help.

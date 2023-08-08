@@ -18,11 +18,9 @@ Complete the following:
 
 2. Use `File -> Open File...` and navigate to the location of your R Markdown notebook from Competition Assignment 2. Open it.
 
-3. Add code to your `setup` chunk which will load the `{tidytext}` package. Run all of the code in your existing notebook. 
-
 Now that you've learned about techniques for extracting signals from text features, its time to revisit the `description` feature in your data set. 
 
-4. Head back to the EDA section of your notebook and apply what you've learned about text analysis to your *training* data. 
+4. Head back to the EDA section of your notebook and apply what you've learned about text analysis to your *training* data. Refer back to our recent notebooks about any functionality you'll want to import or utilize.
 
 5. Once you are satisfied with your EDA, head over to your *Model Construction and Interpretation* section. See if you can improve upon your existing models by extracting text-based features from the `description` feature.
 

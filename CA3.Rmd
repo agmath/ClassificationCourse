@@ -24,8 +24,10 @@ Complete the following:
 
     + Much like your EDA, this section of your analytics report should include a mixture of discussion and code. You'll need to use narrative discussion (text) to help walk your reader through your approach to modeling and the decisions you are making. They should understand what you are doing and why you are doing it even if they are not an expert in statistical modeling (like you are becoming!). 
 
-5. When you are done, use the blue ball of yarn button to knit the notebook into an HTML document. 
+5. Use your model to make predictions for the properties in `comp.csv`. Submit those predictions to our class Kaggle competition for scoring.
 
-6. Use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new files to your remote repository at GitHub.
+6. When you are done, use the blue ball of yarn button to knit the notebook into an HTML document. 
+
+7. Use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new files to your remote repository at GitHub.
 
 Stop by my office if you have any questions or need help.
