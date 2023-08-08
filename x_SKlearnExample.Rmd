@@ -197,3 +197,79 @@ Looks like our model is very certain that won't be a home run.
 ## Summary
 
 There it is -- we've walked through a basic modeling process using the `{sklearn}` framework. We'll discuss this in greater detail and introduce more advanced techniques throughout MAT434.
+
+***
+
+## Extension: Hyperparameters and Tuning
+
+The workflow in the example outlined above is a standard basic approach to modeling. We built two vanilla models (keeping all default parameters) and applied them to our *home run prediction* problem. Taking a closer look at these models, how sure are we that we have the "best" model? We identified that the KNN classifier outperformed the decision tree classifier, but that is for a specific value of $k$ (nearest neighbors) and for an unconstrained decision tree. Even though we didn't override any settings, we made modeling choices by accepting the default parameters.
+
+These parameters which must be set prior to your model seeing its training data are called model *hyperparameters*. Each class of model has different hyperparameters available to it, and you'll be introduced to them throughout our course. Ideally, we'd like the optimal settings for these hyperparameters to be learned from our data, but how do we make that happen if they need to be set prior to the model seeing any training data?
+
+<center>*Keep Calm and Cross-Validate*</center>
+
+The `{sklearn}` module contains a few specialized functions for using cross-validation to search over combinations of hyperparameter settings. I'll introduce one here: `GridSearchCV()` from the `sklearn.model_selection` sub-module. Let's import it and then see it in action.
+
+```{python}
+from sklearn.model_selection import GridSearchCV
+```
+
+We'll attempt to optimize our `KNeighborsClassifier()` over its `n_neighbors` hyperparameter, and our `DecisionTreeClassifier()` over its `max_depth` hyperparameter. We'll create the parameter grids below. These are essentially lists of options for each hyperparameter. Note that for grids as part of a pipeline, the key for the index must be of the form `"StepName__ParameterName"`. We'll keep these parameter grids separate since they correspond to different modeling pipelines. An important consideration is that, in the case where we attempt to optimize a single model class over multiple hyperparameters, the `GridSearchCV()` function will test models over all combinations of hyperparameters in each list. Be careful with this because it can result in cross-validating over many, many models.
+
+> *Note.* you may want to check out [`RandomizedSearchCV`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html) if you have lots of hyperparameters to optimize over.
+
+```{python}
+grid_neighbors = [{
+  "model__n_neighbors" : [1, 3, 5, 7, 11, 15, 21, 41]
+}]
+
+grid_depth = [{
+  "model__max_depth" : [2, 3, 4, 5, 8, 10, 12, 15, 20]
+}]
+```
+
+Now that we have the grids, we'll run `GridSearchCV()` to cross-validate over the hyperparameter values and identify the optimal setting for each model. We'll reset our `Pipeline()`s since those were actually fit to data earlier.
+
+```{python}
+pipe_knn = Pipeline([
+  ("preprocessor", preprocessor_knn),
+  ("model", knn_clf)
+])
+pipe_dt = Pipeline([
+  ("preprocessor", preprocessor_dt),
+  ("model", dt_clf)
+])
+
+grid_results_knn = GridSearchCV(pipe_knn, param_grid = grid_neighbors, scoring = "accuracy", cv = 5)
+
+grid_results_knn.fit(X_train, y_train)
+
+grid_results_dt = GridSearchCV(pipe_dt, param_grid = grid_depth, scoring = "accuracy", cv = 5)
+
+grid_results_dt.fit(X_train, y_train)
+
+knn_gridsearch_results = pd.DataFrame(grid_results_knn.cv_results_)
+dt_gridsearch_results = pd.DataFrame(grid_results_dt.cv_results_)
+```
+
+Now that we've run our cross-validated grid search, let's see the results for each.
+
+```{r}
+py$knn_gridsearch_results %>%
+  arrange(-mean_test_score) %>%
+  select(param_model__n_neighbors, mean_test_score, std_test_score) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+It looks like our best-performing nearest neighbor models are with 11 and 15 neighbors. These models both sit at about 95.6% accuracy. There isn't much difference in estimated (average) performance. The standard deviations in the accuracy on folds is higher with 11 neighbors than with 15. The choice of which setting to consider optimal is yours and just should be justified. 
+
+```{r}
+py$dt_gridsearch_results %>%
+  arrange(-mean_test_score) %>%
+  select(param_model__max_depth, mean_test_score, std_test_score) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+Check this out! It looks like our optimized decision tree classifier (`max_depth = 5`) beats our best KNN classifier. The accuracy for this model is nearly 95.9% and has a standard deviation in fold accuracies comparable to the KNN models. Hyperparameter tuning helps improve your models on the margins, but sometimes these improvements can be quite significant.
