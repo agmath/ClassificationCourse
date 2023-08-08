@@ -178,3 +178,108 @@ Looks like our model is very certain that won't be a home run.
 ## Summary
 
 There it is -- we've walked through a basic modeling process using the `{tidymodels}` framework. We'll discuss this in greater detail and introduce more advanced techniques throughout MAT434.
+
+***
+
+## Extension: Hyperparameters and Tuning
+
+The workflow in the example outlined above is a standard basic approach to modeling. We built two vanilla models (keeping all default parameters) and applied them to our *home run prediction* problem. Taking a closer look at these models, how sure are we that we have the "best" model? We identified that the KNN classifier outperformed the decision tree classifier, but that is for a specific value of $k$ (nearest neighbors) and for an unconstrained decision tree. Even though we didn't override any settings, we made modeling choices by accepting the default parameters.
+
+These parameters which must be set prior to your model seeing its training data are called model *hyperparameters*. Each class of model has different hyperparameters available to it, and you'll be introduced to them throughout our course. Ideally, we'd like the optimal settings for these hyperparameters to be learned from our data, but how do we make that happen if they need to be set prior to the model seeing any training data?
+
+<center>*Keep Calm and Cross-Validate*</center>
+
+The `{tidymodels}` ecosystem contains a few specialized functions for using cross-validation to search over combinations of hyperparameter settings. I'll introduce one here: `tune_grid()`.
+
+The process of using `tune_grid()` is similar to that of `fit()` or `fit_resamples()`. We'll pass the `tune_grid()` function a model workflow, but rather than setting static hyperparameter values like `tree_depth = 6`, we'll explicitly state that we want to *tune* that hyperparameter by setting `tree_depth = tune()`.
+
+We'll attempt to optimize our `nearest_neighbor()` classifier over its `neighbors` hyperparameter, and our `decision_tree()` classifier over its `tree_depth` hyperparameter. We'll create the parameter grids below. These are essentially tibbles (data frames) of options for each hyperparameter. An important consideration when tuning hyperparameters is that, in the case where we attempt to optimize a single model class over multiple hyperparameters, we'll need to build a tibble containing all combinations of hyperparameters in each list. Be careful with this because it can result in cross-validating over many, many models.
+
+> *Note.* You can set the `grid` parameter of `tune_grid()` to a number which will create a "space filling" grid containing that number of hyperparameter combinations if you are attempting to tune across lots of hyperparameters.
+
+```{r}
+grid_neighbors <- tibble(
+  "neighbors" = c(1, 3, 5, 7, 11, 15, 21, 41)
+  )
+
+grid_depth <- tibble(
+  "tree_depth" = c(2, 3, 4, 5, 8, 10, 12, 15, 20)
+  )
+```
+
+Now that we have the grids, we'll re-create our model workflows, setting the relevant hyperparameters to `tune()`. Then we'll pipe these workflows into `tune_grid()` and read the results.
+
+```{r}
+knn_spec <- nearest_neighbor(neighbors = tune()) %>%
+  set_engine("kknn") %>%
+  set_mode("classification")
+
+knn_rec <- recipe(is_home_run ~ pitch_mph + launch_speed + launch_angle + Cover, data = train) %>%
+  step_impute_median(all_numeric_predictors()) %>%
+  step_unknown(all_nominal_predictors()) %>%
+  step_dummy(all_nominal_predictors())
+
+knn_wf <- workflow() %>%
+  add_model(knn_spec) %>%
+  add_recipe(knn_rec)
+
+#decision tree workflow
+dt_spec <- decision_tree(tree_depth = tune()) %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
+
+dt_rec <- recipe(is_home_run ~ pitch_mph + launch_speed + launch_angle + Cover, data = train) %>%
+  step_impute_median(all_numeric_predictors()) %>%
+  step_unknown(all_nominal_predictors()) %>%
+  step_dummy(all_nominal_predictors())
+
+dt_wf <- workflow() %>%
+  add_model(dt_spec) %>%
+  add_recipe(dt_rec)
+```
+
+The tunable workflows are built, so now let's tune our models over our hyperparameter grids.
+
+```{r}
+knn_tune_results <- knn_wf %>%
+  tune_grid(
+    grid = grid_neighbors,
+    resamples = train_folds
+  )
+
+dt_tune_results <- dt_wf %>%
+  tune_grid(
+    grid = grid_depth,
+    resamples = train_folds
+  )
+```
+
+Now that we've run our cross-validated grid search, let's see the results for each.
+
+```{r}
+knn_tune_results %>%
+  collect_metrics() %>%
+  filter(.metric == "accuracy") %>%
+  select(neighbors, mean, std_err) %>%
+  arrange(-mean) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+It looks like our best-performing nearest neighbor model is with 21 nearest neighbors, although 15 and 11 are not far behind.These models both sit at above 95.5% accuracy. It may be worth testing more options near 21 neighbors, since the closest options we considered were 15 and 41 -- perhaps another value will be optimal.
+
+Now let's look at the results from our decision tree classifier.
+
+```{r}
+dt_tune_results %>%
+  collect_metrics() %>%
+  filter(.metric == "accuracy") %>%
+  select(tree_depth, mean, std_err) %>%
+  arrange(-mean) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+Check this out! It looks like our optimized decision tree classifier (`max_depth = 5`) beats our best KNN classifier. The accuracy for this model is nearly 95.9% and has a standard deviation in fold accuracies comparable to the KNN models. Notice also that trees of depth 5, 8, 10, 12, 15, and 20 all perform similarly. This indicates that additional flexibility for our trees doesn't improve model performance. The estimated model performance and standard error don't change across these values, which indicates that there are some *Pit of Success* principles operating behind the scenes here, preventing our models from growing beyond a depth of 5.
+
+Hyperparameter tuning helps improve your models on the margins, but sometimes these improvements can be quite significant.

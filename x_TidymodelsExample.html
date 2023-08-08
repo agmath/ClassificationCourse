@@ -1625,6 +1625,361 @@ no
 <p>There it is – we’ve walked through a basic modeling process using the
 <code>{tidymodels}</code> framework. We’ll discuss this in greater
 detail and introduce more advanced techniques throughout MAT434.</p>
+<hr />
+</div>
+<div id="extension-hyperparameters-and-tuning" class="section level2">
+<h2>Extension: Hyperparameters and Tuning</h2>
+<p>The workflow in the example outlined above is a standard basic
+approach to modeling. We built two vanilla models (keeping all default
+parameters) and applied them to our <em>home run prediction</em>
+problem. Taking a closer look at these models, how sure are we that we
+have the “best” model? We identified that the KNN classifier
+outperformed the decision tree classifier, but that is for a specific
+value of <span class="math inline">\(k\)</span> (nearest neighbors) and
+for an unconstrained decision tree. Even though we didn’t override any
+settings, we made modeling choices by accepting the default
+parameters.</p>
+<p>These parameters which must be set prior to your model seeing its
+training data are called model <em>hyperparameters</em>. Each class of
+model has different hyperparameters available to it, and you’ll be
+introduced to them throughout our course. Ideally, we’d like the optimal
+settings for these hyperparameters to be learned from our data, but how
+do we make that happen if they need to be set prior to the model seeing
+any training data?</p>
+<center>
+<em>Keep Calm and Cross-Validate</em>
+</center>
+<p>The <code>{tidymodels}</code> ecosystem contains a few specialized
+functions for using cross-validation to search over combinations of
+hyperparameter settings. I’ll introduce one here:
+<code>tune_grid()</code>.</p>
+<p>The process of using <code>tune_grid()</code> is similar to that of
+<code>fit()</code> or <code>fit_resamples()</code>. We’ll pass the
+<code>tune_grid()</code> function a model workflow, but rather than
+setting static hyperparameter values like <code>tree_depth = 6</code>,
+we’ll explicitly state that we want to <em>tune</em> that hyperparameter
+by setting <code>tree_depth = tune()</code>.</p>
+<p>We’ll attempt to optimize our <code>nearest_neighbor()</code>
+classifier over its <code>neighbors</code> hyperparameter, and our
+<code>decision_tree()</code> classifier over its <code>tree_depth</code>
+hyperparameter. We’ll create the parameter grids below. These are
+essentially tibbles (data frames) of options for each hyperparameter. An
+important consideration when tuning hyperparameters is that, in the case
+where we attempt to optimize a single model class over multiple
+hyperparameters, we’ll need to build a tibble containing all
+combinations of hyperparameters in each list. Be careful with this
+because it can result in cross-validating over many, many models.</p>
+<blockquote>
+<p><em>Note.</em> You can set the <code>grid</code> parameter of
+<code>tune_grid()</code> to a number which will create a “space filling”
+grid containing that number of hyperparameter combinations if you are
+attempting to tune across lots of hyperparameters.</p>
+</blockquote>
+<pre class="r"><code>grid_neighbors &lt;- tibble(
+  &quot;neighbors&quot; = c(1, 3, 5, 7, 11, 15, 21, 41)
+  )
+
+grid_depth &lt;- tibble(
+  &quot;tree_depth&quot; = c(2, 3, 4, 5, 8, 10, 12, 15, 20)
+  )</code></pre>
+<p>Now that we have the grids, we’ll re-create our model workflows,
+setting the relevant hyperparameters to <code>tune()</code>. Then we’ll
+pipe these workflows into <code>tune_grid()</code> and read the
+results.</p>
+<pre class="r"><code>knn_spec &lt;- nearest_neighbor(neighbors = tune()) %&gt;%
+  set_engine(&quot;kknn&quot;) %&gt;%
+  set_mode(&quot;classification&quot;)
+
+knn_rec &lt;- recipe(is_home_run ~ pitch_mph + launch_speed + launch_angle + Cover, data = train) %&gt;%
+  step_impute_median(all_numeric_predictors()) %&gt;%
+  step_unknown(all_nominal_predictors()) %&gt;%
+  step_dummy(all_nominal_predictors())
+
+knn_wf &lt;- workflow() %&gt;%
+  add_model(knn_spec) %&gt;%
+  add_recipe(knn_rec)
+
+#decision tree workflow
+dt_spec &lt;- decision_tree(tree_depth = tune()) %&gt;%
+  set_engine(&quot;rpart&quot;) %&gt;%
+  set_mode(&quot;classification&quot;)
+
+dt_rec &lt;- recipe(is_home_run ~ pitch_mph + launch_speed + launch_angle + Cover, data = train) %&gt;%
+  step_impute_median(all_numeric_predictors()) %&gt;%
+  step_unknown(all_nominal_predictors()) %&gt;%
+  step_dummy(all_nominal_predictors())
+
+dt_wf &lt;- workflow() %&gt;%
+  add_model(dt_spec) %&gt;%
+  add_recipe(dt_rec)</code></pre>
+<p>The tunable workflows are built, so now let’s tune our models over
+our hyperparameter grids.</p>
+<pre class="r"><code>knn_tune_results &lt;- knn_wf %&gt;%
+  tune_grid(
+    grid = grid_neighbors,
+    resamples = train_folds
+  )
+
+dt_tune_results &lt;- dt_wf %&gt;%
+  tune_grid(
+    grid = grid_depth,
+    resamples = train_folds
+  )</code></pre>
+<p>Now that we’ve run our cross-validated grid search, let’s see the
+results for each.</p>
+<pre class="r"><code>knn_tune_results %&gt;%
+  collect_metrics() %&gt;%
+  filter(.metric == &quot;accuracy&quot;) %&gt;%
+  select(neighbors, mean, std_err) %&gt;%
+  arrange(-mean) %&gt;%
+  kable() %&gt;%
+  kable_styling(bootstrap_options = c(&quot;hover&quot;, &quot;striped&quot;))</code></pre>
+<table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+neighbors
+</th>
+<th style="text-align:right;">
+mean
+</th>
+<th style="text-align:right;">
+std_err
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+0.9582564
+</td>
+<td style="text-align:right;">
+0.0019568
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+0.9574359
+</td>
+<td style="text-align:right;">
+0.0023856
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+0.9565128
+</td>
+<td style="text-align:right;">
+0.0026726
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+0.9558974
+</td>
+<td style="text-align:right;">
+0.0022069
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+0.9513846
+</td>
+<td style="text-align:right;">
+0.0024422
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0.9503590
+</td>
+<td style="text-align:right;">
+0.0026369
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.9298462
+</td>
+<td style="text-align:right;">
+0.0020944
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0.9298462
+</td>
+<td style="text-align:right;">
+0.0018800
+</td>
+</tr>
+</tbody>
+</table>
+<p>It looks like our best-performing nearest neighbor model is with 21
+nearest neighbors, although 15 and 11 are not far behind.These models
+both sit at above 95.5% accuracy. It may be worth testing more options
+near 21 neighbors, since the closest options we considered were 15 and
+41 – perhaps another value will be optimal.</p>
+<p>Now let’s look at the results from our decision tree classifier.</p>
+<pre class="r"><code>dt_tune_results %&gt;%
+  collect_metrics() %&gt;%
+  filter(.metric == &quot;accuracy&quot;) %&gt;%
+  select(tree_depth, mean, std_err) %&gt;%
+  arrange(-mean) %&gt;%
+  kable() %&gt;%
+  kable_styling(bootstrap_options = c(&quot;hover&quot;, &quot;striped&quot;))</code></pre>
+<table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+tree_depth
+</th>
+<th style="text-align:right;">
+mean
+</th>
+<th style="text-align:right;">
+std_err
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0.9586667
+</td>
+<td style="text-align:right;">
+0.0017070
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+0.9586667
+</td>
+<td style="text-align:right;">
+0.0017070
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+0.9586667
+</td>
+<td style="text-align:right;">
+0.0017070
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+0.9586667
+</td>
+<td style="text-align:right;">
+0.0017070
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+0.9586667
+</td>
+<td style="text-align:right;">
+0.0017070
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+0.9586667
+</td>
+<td style="text-align:right;">
+0.0017070
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0.9579487
+</td>
+<td style="text-align:right;">
+0.0019568
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0.9563077
+</td>
+<td style="text-align:right;">
+0.0027919
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0.9557949
+</td>
+<td style="text-align:right;">
+0.0022842
+</td>
+</tr>
+</tbody>
+</table>
+<p>Check this out! It looks like our optimized decision tree classifier
+(<code>max_depth = 5</code>) beats our best KNN classifier. The accuracy
+for this model is nearly 95.9% and has a standard deviation in fold
+accuracies comparable to the KNN models. Notice also that trees of depth
+5, 8, 10, 12, 15, and 20 all perform similarly. This indicates that
+additional flexibility for our trees doesn’t improve model performance.
+The estimated model performance and standard error don’t change across
+these values, which indicates that there are some <em>Pit of
+Success</em> principles operating behind the scenes here, preventing our
+models from growing beyond a depth of 5.</p>
+<p>Hyperparameter tuning helps improve your models on the margins, but
+sometimes these improvements can be quite significant.</p>
 </div>
 
 
