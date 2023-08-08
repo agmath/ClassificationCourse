@@ -12,7 +12,7 @@ library(tidyverse)
 library(kableExtra)
 ```
 
-You've been working on your *Tidy Data Analysis* ([new students](https://agmath.github.io/ClassificationCourse/Day2_TidyAnalyses_newStudents.html) or [returning students](https://agmath.github.io/ClassificationCourse/Day2_TidyAnalyses_returningStudents.html)) in an R project that is managing a GitHub Repository. Complete the following:
+You've been working on your initial data wrangling and analysis ([new students](https://agmath.github.io/ClassificationCourse/Day2_TidyAnalyses_newStudents.html), [returning students](https://agmath.github.io/ClassificationCourse/Day2_TidyAnalyses_returningStudents.html), [python users](https://agmath.github.io/ClassificationCourse/Day2_DataWrangling_Python.html)) in an R project that is managing a GitHub Repository. Complete the following:
 
 1. Knit your markdown file to generate the HTML notebook.
 2. Use the `Git` tab in the top-right pane of RStudio to *Pull* in changes from your remote repository. The button for pulling in changes is the blue down arrow -- you should already be up to date.

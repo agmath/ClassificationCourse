@@ -1,0 +1,39 @@
+---
+title: "MAT434: Homework 5"
+author: "Dr. Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: cerulean
+---
+
+```{r global-options, include=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+We're about to enter the statistical modeling portion of our course. Our first stop will be to look at classification schemes appropriate for *binary* (two-class) classification problems. We'll be working with a synthetic data set on the fictitious *Spaceship Titanic*! Like its namesake vessel, the *Spaceship Titanic* encountered tragedy when several of its passengers were warped to an alternate dimension during flight! We'll try to build a model that can help us understand who was transported. It will help if you come to class already familiar with the data set, so you'll do some exploration in this homework assignment.
+
+Complete the following:
+
+1. Open RStudio and use `File -> Recent Projects...` to select the R Project which is managing your GitHub repository. Confirm that you want to open your project.
+
+2. Use `File -> New File -> R Markdown...` to create a new R Markdown notebook. Fill in the fields in the box that opens, using a meaningful file name...like `Spaceship Titanic Rescue`. Confirm all of your choices a click the button to create the file.
+
+3. In the `setup` code chunk near the top of the notebook, add code to load the `{reticulate}` library. You may also want to load `{kableExtra}` to nicely format any tabular output.
+
+4. Add a Python code chunk to your notebook and import `{pandas}` and any `{plotnine}` functions you plan to use (you'll add to this list as you are constructing your notebook). You'll want to import `train_test_split` from `sklearn.model_selection` here as well.
+
+4. Navigate to the location of a copy of the data set [here](https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/spaceship_titanic.csv). Copy the URL from your web browser. 
+
+5. Back in RStudio and in that same `setup` code chunk, read in the *Spaceship Titanic* data using `pd.read_csv()` with the URL to the raw data as the only argument to the function. Be sure that you surround the URL with quotes and that you are storing the result into a named object -- perhaps `spaceship_data`.
+
+6. Do some basic exploration of the data set. How many rows are there? How many columns? Are there missing values? Try using inline R code if you can.
+
+7. Use the `train_test_split()` function to split your data into *training* and *test* sets. Don't forget to set a seed with the `random_state` argument, and you'll likely want to use the `strata` argument to ensure proportional representation of the groups corresponding to the `Transported` column in both sets.
+
+8. Conduct an exploratory data analysis on your *training* data.
+
+9. When you are done, use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new notebook and changes out to your remote repository.
+
+We'll pick up from here at our next class meeting. Stop by my office if you have any questions or need help.

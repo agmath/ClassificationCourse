@@ -13,7 +13,7 @@
 
 <meta name="date" content="2023-08-07" />
 
-<title>MAT434: Homework 6</title>
+<title>MAT434: Homework 5</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -356,49 +356,67 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">MAT434: Homework 6</h1>
+<h1 class="title toc-ignore">MAT434: Homework 5</h1>
 <h4 class="author">Dr. Gilbert</h4>
 <h4 class="date">August 07, 2023</h4>
 
 </div>
 
 
-<p>We’ve spent a couple of class meetings trying to understand which
-<em>Spaceship Titanic</em> passengers were transported to an alternate
-dimension. We’ve even built a couple of predictive models which we hope
-will pre-screen future space travelers to lower the risk of future
-dimensional transport hazards. I hope we were successful!</p>
+<p>We’re about to enter the statistical modeling portion of our course.
+Our first stop will be to look at classification schemes appropriate for
+<em>binary</em> (two-class) classification problems. We’ll be working
+with a synthetic data set on the fictitious <em>Spaceship Titanic</em>!
+Like its namesake vessel, the <em>Spaceship Titanic</em> encountered
+tragedy when several of its passengers were warped to an alternate
+dimension during flight! We’ll try to build a model that can help us
+understand who was transported. It will help if you come to class
+already familiar with the data set, so you’ll do some exploration in
+this homework assignment.</p>
 <p>Complete the following:</p>
 <ol style="list-style-type: decimal">
 <li><p>Open RStudio and use <code>File -&gt; Recent Projects...</code>
 to select the R Project which is managing your GitHub repository.
 Confirm that you want to open your project.</p></li>
-<li><p>Use <code>File -&gt; Recent Files</code> and choose your
-<em>Spaceship Titanic</em> notebook to open it.</p></li>
-<li><p>Use the blue ball of yarn icon to <em>knit</em> your notebook to
-html.</p>
-<ul>
-<li>If you have any errors, you’ll be forced to fix them before your
-document can be knitted. Drop by my office if you encounter any
-challenges and need help.</li>
-</ul></li>
-<li><p>Use the <code>Git</code> tab in the top right pane of RStudio to
-<em>Pull, Commit, Push</em> your new notebook and changes out to your
-remote repository.</p></li>
-<li><p>Navigate to your GitHub pages repository on GitHub and update
-your pages site to include a description of the <em>Spaceship
-Titanic</em> work we’ve done and a link that will open the html file
-containing your work. Again, this is a file located in another
-repository, so you might need to revisit the instructions for <a href="https://agmath.github.io/ClassificationCourse/Day5_GitHubPages.html"><em>Sharing
-Files from Another Repository</em></a>.</p>
-<ul>
-<li><strong>Note:</strong> Since you’ve done this before, you may just
-want to copy, paste, and edit the markdown used to link visitors to your
-<em>Tidy Analysis</em> notebook. This approach is nearly always the
-route I take when adding new file links to my site.</li>
-</ul></li>
+<li><p>Use <code>File -&gt; New File -&gt; R Markdown...</code> to
+create a new R Markdown notebook. Fill in the fields in the box that
+opens, using a meaningful file name…like
+<code>Spaceship Titanic Rescue</code>. Confirm all of your choices a
+click the button to create the file.</p></li>
+<li><p>In the <code>setup</code> code chunk near the top of the
+notebook, add code to load the <code>{reticulate}</code> library. You
+may also want to load <code>{kableExtra}</code> to nicely format any
+tabular output.</p></li>
+<li><p>Add a Python code chunk to your notebook and import
+<code>{pandas}</code> and any <code>{plotnine}</code> functions you plan
+to use (you’ll add to this list as you are constructing your notebook).
+You’ll want to import <code>train_test_split</code> from
+<code>sklearn.model_selection</code> here as well.</p></li>
+<li><p>Navigate to the location of a copy of the data set <a href="https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/spaceship_titanic.csv">here</a>.
+Copy the URL from your web browser.</p></li>
+<li><p>Back in RStudio and in that same <code>setup</code> code chunk,
+read in the <em>Spaceship Titanic</em> data using
+<code>pd.read_csv()</code> with the URL to the raw data as the only
+argument to the function. Be sure that you surround the URL with quotes
+and that you are storing the result into a named object – perhaps
+<code>spaceship_data</code>.</p></li>
+<li><p>Do some basic exploration of the data set. How many rows are
+there? How many columns? Are there missing values? Try using inline R
+code if you can.</p></li>
+<li><p>Use the <code>train_test_split()</code> function to split your
+data into <em>training</em> and <em>test</em> sets. Don’t forget to set
+a seed with the <code>random_state</code> argument, and you’ll likely
+want to use the <code>strata</code> argument to ensure proportional
+representation of the groups corresponding to the
+<code>Transported</code> column in both sets.</p></li>
+<li><p>Conduct an exploratory data analysis on your <em>training</em>
+data.</p></li>
+<li><p>When you are done, use the <code>Git</code> tab in the top right
+pane of RStudio to <em>Pull, Commit, Push</em> your new notebook and
+changes out to your remote repository.</p></li>
 </ol>
-<p>Stop by my office if you have any questions or need help.</p>
+<p>We’ll pick up from here at our next class meeting. Stop by my office
+if you have any questions or need help.</p>
 
 
 

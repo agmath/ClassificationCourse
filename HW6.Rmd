@@ -30,5 +30,4 @@ Complete the following:
 
     + **Note:** Since you've done this before, you may just want to copy, paste, and edit the markdown used to link visitors to your *Tidy Analysis* notebook. This approach is nearly always the route I take when adding new file links to my site.
 
-
 Stop by my office if you have any questions or need help.
