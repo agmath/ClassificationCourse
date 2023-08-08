@@ -464,27 +464,28 @@ repository here</a>.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">library</span>(keras)</span></code></pre></div>
 <pre><code>## Warning: package &#39;keras&#39; was built under R version 4.2.3</code></pre>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="fu">c</span>(<span class="fu">c</span>(x_train, y_train), <span class="fu">c</span>(x_test, y_test)) <span class="sc">%&lt;-%</span> keras<span class="sc">::</span><span class="fu">dataset_fashion_mnist</span>()</span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a></span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>x_train <span class="ot">&lt;-</span> x_train<span class="sc">/</span><span class="dv">255</span></span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>x_test <span class="ot">&lt;-</span> x_test<span class="sc">/</span><span class="dv">255</span></span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a></span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>labels_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">label =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">9</span>, <span class="dv">1</span>),</span>
-<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>                    <span class="at">item =</span> <span class="fu">c</span>(<span class="st">&quot;Tshirt&quot;</span>,</span>
-<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>                             <span class="st">&quot;Trousers&quot;</span>,</span>
-<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>                             <span class="st">&quot;Pullover&quot;</span>,</span>
-<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>                             <span class="st">&quot;Dress&quot;</span>,</span>
-<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>                             <span class="st">&quot;Coat&quot;</span>,</span>
-<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>                             <span class="st">&quot;Sandal&quot;</span>,</span>
-<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>                             <span class="st">&quot;Shirt&quot;</span>,</span>
-<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>                             <span class="st">&quot;Sneaker&quot;</span>,</span>
-<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a>                             <span class="st">&quot;Bag&quot;</span>,</span>
-<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a>                             <span class="st">&quot;AnkleBoot&quot;</span>))</span>
-<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a></span>
-<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a>rotate_img <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
-<span id="cb17-21"><a href="#cb17-21" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">t</span>(<span class="fu">apply</span>(x, <span class="dv">2</span>, rev)))</span>
-<span id="cb17-22"><a href="#cb17-22" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">use_virtualenv</span>(<span class="st">&quot;r-reticulate&quot;</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="fu">c</span>(<span class="fu">c</span>(x_train, y_train), <span class="fu">c</span>(x_test, y_test)) <span class="sc">%&lt;-%</span> keras<span class="sc">::</span><span class="fu">dataset_fashion_mnist</span>()</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>x_train <span class="ot">&lt;-</span> x_train<span class="sc">/</span><span class="dv">255</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>x_test <span class="ot">&lt;-</span> x_test<span class="sc">/</span><span class="dv">255</span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>labels_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">label =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">9</span>, <span class="dv">1</span>),</span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>                    <span class="at">item =</span> <span class="fu">c</span>(<span class="st">&quot;Tshirt&quot;</span>,</span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>                             <span class="st">&quot;Trousers&quot;</span>,</span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>                             <span class="st">&quot;Pullover&quot;</span>,</span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>                             <span class="st">&quot;Dress&quot;</span>,</span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>                             <span class="st">&quot;Coat&quot;</span>,</span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>                             <span class="st">&quot;Sandal&quot;</span>,</span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>                             <span class="st">&quot;Shirt&quot;</span>,</span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a>                             <span class="st">&quot;Sneaker&quot;</span>,</span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a>                             <span class="st">&quot;Bag&quot;</span>,</span>
+<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a>                             <span class="st">&quot;AnkleBoot&quot;</span>))</span>
+<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a></span>
+<span id="cb17-21"><a href="#cb17-21" tabindex="-1"></a>rotate_img <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb17-22"><a href="#cb17-22" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">t</span>(<span class="fu">apply</span>(x, <span class="dv">2</span>, rev)))</span>
+<span id="cb17-23"><a href="#cb17-23" tabindex="-1"></a>}</span></code></pre></div>
 <p>In the code block above, we loaded the Fashion MNIST data, which
 comes already packaged into training and test sets. We then scaled the
 pixel densities from integer values (between 0 and 255) to floats. We
@@ -533,24 +534,24 @@ very well though.</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, x_train[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, , ])</span>
 <span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="co">#Predictions as a vector of log-odds</span></span>
 <span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>predictions</span></code></pre></div>
-<pre><code>##            [,1]       [,2]     [,3]      [,4]        [,5]      [,6]      [,7]
-## [1,] -0.5690303 -0.4441714 0.708425 0.8719616 -0.02352333 0.1401564 0.7602355
-## [2,] -0.3379377  0.7865040 1.192331 1.6290985  0.43103647 0.5790970 2.3129435
-##             [,8]      [,9]     [,10]
-## [1,]  0.08462293 -1.334162 0.4596525
-## [2,] -1.04428577 -1.197889 1.3783085</code></pre>
+<pre><code>##           [,1]       [,2]       [,3]       [,4]      [,5]       [,6]       [,7]
+## [1,] -1.648724 -1.0336069 -0.4888104  0.9340105 0.6264582 -0.6713266 -0.2404144
+## [2,] -1.207683 -0.4959969 -0.6039417 -0.2834867 0.8526995 -0.6635556 -0.2990605
+##           [,8]       [,9]     [,10]
+## [1,] 0.6183798  0.1759474 0.9536076
+## [2,] 0.2451360 -0.3320074 0.8050008</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="co">#Predictions as class-membership probabilities</span></span>
 <span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>tf<span class="sc">$</span>nn<span class="sc">$</span><span class="fu">softmax</span>(predictions)</span></code></pre></div>
 <pre><code>## tf.Tensor(
-## [[0.04411765 0.0499848  0.15827204 0.18639198 0.07612426 0.08966196
-##   0.16668833 0.08481846 0.02052674 0.12341379]
-##  [0.02429925 0.07480519 0.11224839 0.17372643 0.0524269  0.06079334
-##   0.34423575 0.01199029 0.01028302 0.13519143]], shape=(2, 10), dtype=float64)</code></pre>
+## [[0.01536183 0.02841744 0.04899899 0.20328737 0.1494659  0.04082455
+##   0.06281511 0.14826333 0.09525499 0.20731049]
+##  [0.02976349 0.06064083 0.05443589 0.0749993  0.23361277 0.05128559
+##   0.07384032 0.12724335 0.07144715 0.22273133]], shape=(2, 10), dtype=float64)</code></pre>
 <p>Let’s define a loss function so that we can train the model by
 optimizing the loss.</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>loss_fn <span class="ot">&lt;-</span> <span class="fu">loss_sparse_categorical_crossentropy</span>(<span class="at">from_logits =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="fu">loss_fn</span>(y_train[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], predictions)</span></code></pre></div>
-<pre><code>## tf.Tensor(2.9047611054976423, shape=(), dtype=float64)</code></pre>
+<pre><code>## tf.Tensor(2.5440052433875255, shape=(), dtype=float64)</code></pre>
 <p>Before training, we’ll need to set the optimizer, assign the loss
 function, and define the performance metric. We’ll then compile the
 model with these attributes.</p>
@@ -575,7 +576,7 @@ done in Python and the objects passed back and forth.</p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>model <span class="sc">%&gt;%</span></span>
 <span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>  <span class="fu">evaluate</span>(x_test, y_test, <span class="at">verbose =</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>##      loss  accuracy 
-## 0.3637221 0.8679000</code></pre>
+## 0.3607832 0.8694000</code></pre>
 <p>We got 88% accuracy with a pretty vanilla and shallow neural network.
 There was only one hidden layer here, with 20% dropout. We didn’t tune
 any model hyperparameters and only trained over 5 epochs. We can see
@@ -587,31 +588,31 @@ again.</p>
 <span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>  <span class="fu">predict</span>(x_test[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, , ])</span>
 <span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>tf<span class="sc">$</span>nn<span class="sc">$</span><span class="fu">softmax</span>(predictions)</span></code></pre></div>
 <pre><code>## tf.Tensor(
-## [[3.90483094e-07 4.36535476e-08 1.65390380e-08 3.64878554e-08
-##   2.66950344e-08 1.77420180e-02 6.81227660e-07 4.05621272e-03
-##   6.16297766e-07 9.78199958e-01]
-##  [2.11449077e-05 3.94095127e-08 9.97258712e-01 6.18061420e-08
-##   1.55007376e-03 9.44068518e-16 1.16995329e-03 2.05261337e-19
-##   1.52648434e-08 2.88310005e-15]
-##  [1.43530064e-08 9.99999969e-01 1.28916979e-09 9.83417494e-09
-##   4.94390693e-09 6.94104461e-15 2.47172531e-10 2.74790881e-21
-##   8.53839229e-14 4.69960315e-18]
-##  [8.71413243e-09 9.99996518e-01 1.24829838e-08 3.44992647e-06
-##   1.01218345e-08 6.93856571e-13 4.47487930e-10 3.20576158e-17
-##   8.47579201e-13 5.31983032e-15]
-##  [1.05788534e-01 1.27444227e-06 5.09736748e-02 2.82194188e-03
-##   7.13519803e-03 6.53061009e-06 8.33091739e-01 1.72246462e-08
-##   1.80630985e-04 4.59427954e-07]], shape=(5, 10), dtype=float64)</code></pre>
+## [[2.14771081e-06 5.96806230e-09 9.31261613e-08 4.23981876e-09
+##   9.30036813e-08 1.46280751e-02 3.84307589e-07 1.83941684e-02
+##   2.09603835e-05 9.66954068e-01]
+##  [6.45713345e-05 5.12346772e-12 9.84473809e-01 8.09677257e-10
+##   5.47612784e-03 4.05613222e-14 9.98548925e-03 5.37773602e-18
+##   1.51070407e-09 2.68331613e-12]
+##  [7.59392880e-09 9.99999901e-01 3.91568703e-09 3.96942301e-08
+##   4.71173676e-08 7.78584651e-14 5.79345151e-10 2.97033261e-16
+##   2.87221422e-13 5.63757962e-17]
+##  [1.06643884e-08 9.99997928e-01 2.25757138e-08 1.99736781e-06
+##   4.03579059e-08 3.26339423e-11 1.45723760e-09 2.25855924e-16
+##   6.97245830e-13 9.11415922e-15]
+##  [1.11470820e-01 3.60349503e-06 1.70559776e-02 4.41448631e-04
+##   2.18194146e-03 3.59520015e-06 8.68748523e-01 3.60389026e-06
+##   8.95965220e-05 8.90058193e-07]], shape=(5, 10), dtype=float64)</code></pre>
 <p>We can update our model so that it will provide class predictions
 rather than just the class membership probabilities.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>probability_model <span class="ot">&lt;-</span> <span class="fu">keras_model_sequential</span>() <span class="sc">%&gt;%</span></span>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>class_model <span class="ot">&lt;-</span> <span class="fu">keras_model_sequential</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>  <span class="fu">model</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a>  <span class="fu">layer_activation_softmax</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a>  <span class="fu">layer_lambda</span>(tf<span class="sc">$</span>argmax)</span>
 <span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a></span>
-<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a>probability_model <span class="sc">%&gt;%</span></span>
+<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a>class_model <span class="sc">%&gt;%</span></span>
 <span id="cb35-7"><a href="#cb35-7" tabindex="-1"></a>  <span class="fu">predict</span>(x_test[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, , ])</span></code></pre></div>
-<pre><code>##  [1] 4 2 1 4 4 0 4 0 4 0</code></pre>
+<pre><code>##  [1] 4 2 1 4 1 0 4 0 4 0</code></pre>
 <p>Now that we’ve trained an assessed one neural network, go back and
 change your model. Add hidden layers to make it a true deep learning
 model. Experiment with the dropout rate or activation functions. Just

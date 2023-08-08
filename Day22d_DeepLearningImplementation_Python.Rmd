@@ -15,6 +15,7 @@ Since you set up TensorFlow in an earlier notebook, let's load `{reticulate}` in
 
 ```{r}
 library(reticulate)
+use_virtualenv("mat434")
 ```
 
 ```{python}
@@ -113,7 +114,7 @@ score = model.evaluate(x_test, y_test_wide)
 score
 ```
 
-We got 88% accuracy with a pretty vanilla and shallow neural network. There was only one hidden layer here, with 20% dropout. We didn't tune any model hyperparameters and only trained over 5 epochs. We can see that loss was continuing to decrease and accuracy was continuing to climb from one epoch to the next here.
+We got around 88% accuracy with a pretty vanilla and shallow neural network. There was only one hidden layer here, with 20% dropout. We didn't tune any model hyperparameters and only trained over 5 epochs. We can see that loss was continuing to decrease and accuracy was continuing to climb from one epoch to the next here.
 
 Since our model has been trained, we can use it to make predictions again.
 

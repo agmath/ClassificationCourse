@@ -18,6 +18,7 @@ library(tidyverse)
 library(tensorflow)
 library(keras)
 library(reticulate)
+use_virtualenv("r-reticulate")
 
 c(c(x_train, y_train), c(x_test, y_test)) %<-% keras::dataset_fashion_mnist()
 
@@ -122,12 +123,12 @@ tf$nn$softmax(predictions)
 We can update our model so that it will provide class predictions rather than just the class membership probabilities.
 
 ```{r}
-probability_model <- keras_model_sequential() %>%
+class_model <- keras_model_sequential() %>%
   model() %>%
   layer_activation_softmax() %>%
   layer_lambda(tf$argmax)
 
-probability_model %>%
+class_model %>%
   predict(x_test[1:5, , ])
 ```
 
