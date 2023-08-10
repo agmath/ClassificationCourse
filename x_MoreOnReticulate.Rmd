@@ -1,5 +1,5 @@
 ---
-title: 'Dual-Weilding Languages with `{reticulate}`'
+title: 'Dual-Wielding Languages with `{reticulate}`'
 author: "Dr. Gilbert"
 output:
   html_document:
