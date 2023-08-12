@@ -157,40 +157,33 @@ toy_data %>%
 
 Now let's try fitting a decision tree model to this data, as we did in the earlier example.
 
-```{r echo = FALSE}
-dt_clf_spec <- decision_tree() %>%
-  set_engine("rpart") %>%
-  set_mode("classification")
+```{python echo = FALSE}
+toy_data = r.toy_data
 
-dt_clf_rec <- recipe(class ~ ., data = toy_data)
+dt_clf = DecisionTreeClassifier()
 
-dt_clf_wf <- workflow() %>%
-  add_model(dt_clf_spec) %>%
-  add_recipe(dt_clf_rec)
+dt_clf.fit(toy_data[["x1", "x2"]], toy_data["class"])
 
-dt_clf_fit <- dt_clf_wf %>%
-  fit(toy_data)
+new_x1 = pd.DataFrame({
+  "x1" : np.linspace(0, 100, num = 100)
+})
 
-new_data <- crossing(x1 = seq(0, 100, length.out = 100),
-                     x2 = seq(0, 100, length.out = 75))
-new_data <- dt_clf_fit %>%
-  augment(new_data)
+new_x2 = pd.DataFrame({
+  "x2" : np.linspace(0, 100, num = 100)
+})
 
-ggplot() + 
-  geom_point(data = new_data,
-             aes(x = x1,
-                 y = x2,
-                 color = .pred_class),
-             alpha = 0.1) +
-  geom_point(data = toy_data,
-             aes(x = x1, 
-                 y = x2, 
-                 color = class)) + 
-  scale_color_manual(values = c("orange", "purple")) +
+new_grid = new_x1.merge(new_x2, how = "cross")
+new_grid["pred_class"] = dt_clf.predict(new_grid[["x1", "x2"]])
+  
+(
+  ggplot() + 
+  geom_point(aes(x = new_grid["x1"], y = new_grid["x2"], color = new_grid["pred_class"]), alpha = 0.05) +
+  geom_point(aes(x = toy_data["x1"], y = toy_data["x2"], color = toy_data["class"])) + 
   labs(x = "X1", y = "X2",
-       title = "A Two-Class Classification Problem",
+       title = "A Two-CLass Classification Problem",
        subtitle = "and Decision Tree Boundaries") +
-  theme(legend.pos = "none")
+  scale_color_manual(values = ["orange", "purple"])
+)
 ```
 
 In the plot above, we see that the decision tree classifier is performing poorly, even though the classification problem should be quite easily! This is because the decision boundaries for a decision tree are perpendicular to those axes.
