@@ -8,11 +8,14 @@ output:
 ---
 
 ```{r global-options, include=FALSE}
+library(tidyverse)
 library(reticulate)
+library(kableExtra)
 ```
 
 ```{python, include = FALSE}
 import pandas as pd
+import numpy as np
 ```
 
 **Purpose:** This notebook addresses how to wrangle data in Python. This notebook assumes that you already have a Python installation that can be accessed from within RStudio, you know how to install and load Python modules, you know how to read data from a remote location using a web URL, and you know how to create Python code chunks from an RMarkdown notebook in RStudio.
@@ -277,6 +280,56 @@ batted_balls.merge(park_dimension, how = "left", left_on = "park", right_on = "p
 The `left_on` and `right_on` arguments are the column matches. If matching on multiple columns, you can pass lists of column names here -- those lists should be the same length and the matching columns should appear in the same positions within the lists.
 
 23. Include another additional code cell and verify that the resulting data frame includes all of the original columns from `batted_balls` as well as the columns from `park_dimensions`. You can spot-check a few rows to ensure that the correct park dimension data has been appended to each row.
+
+## Wide- and Long-Format Data Frames
+
+It is common to find a need to reshape your data. Some formats are convenient for analysis, while other formats are convenient for presentation or storage. The `{tidyverse}` provides two functions whose job it is to reshape data frames from wide to long (`pivot_longer()`) or from long to wide (`pivot_wider()`). The process of transforming a data frame from *wide* format to *long* format is done by collapsing several columns down to just two -- one containing the old column names and another containing the corresponding values under those old columns. Let's see that below on a simple data set that we'll construct. For context, let's assume that the data set below contains growth measurements in centimeters for plants placed in four different types of fertilizer (`A` - `D`).
+
+```{python}
+num_obs = 5
+
+wide_fertilizer_data = pd.DataFrame({
+  "day" : range(num_obs),
+  "A" : np.random.uniform(0, 4, num_obs),
+  "B" : np.random.uniform(0, 4, num_obs),
+  "C" : np.random.uniform(0, 4, num_obs),
+  "D" : np.random.uniform(0, 4, num_obs)
+})
+```
+
+```{r}
+py$wide_fertilizer_data %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+In the simulated dataset above, the columns `A` - `D` aren't variables that are being measured. They are *levels* of a categorical variable, `fertilizer_type`. In order to make this data *tidy* for analysis, we'll need to pivot those four fertilizer types into a new column, and collapse the recorded growth values into another new column. This means that each `day` will be repeated four times...once for each of the four fertilizer types. We should go from a data frame with five rows to one with twenty (a longer data frame!). Let's see that with `pivot_longer()` below.
+
+```{python}
+long_fertilizer_data = wide_fertilizer_data.melt(id_vars = ["day"], var_name = "fertilizer_type", value_name = "growth") 
+```
+
+```{r}
+py$long_fertilizer_data %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+The longer data frame is more difficult for us to extract meaning from than the original wide data frame. However, this wide-format data frame is much better suited for analysis. 
+
+The `pivot_wider()` function can be though of as the inverse of the `pivot_longer()` function. We can use it to convert our `long_fertilizer_data` back into *wide* format. I've found `pivot_wider()` to be really useful when I want to display tables in my notebooks.
+
+```{python}
+wide_again = long_fertilizer_data.pivot(index = ["day"], columns = ["fertilizer_type"], values = ["growth"]) 
+```
+
+```{r}
+py$wide_again %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+Being able to quickly reshape data using `pivot_longer()` and `pivot_wider()` is a skill that will serve you quite well if you find yourself doing analysis and reporting.
 
 ## Misc Additional Items
 

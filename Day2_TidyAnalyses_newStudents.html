@@ -208,6 +208,230 @@ window.buildTabsets = function(tocID) {
 };
 
 </script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
 
 <style type="text/css">
 code{white-space: pre-wrap;}
@@ -903,6 +1127,520 @@ that the correct park dimension data has been appended to each row.</li>
 </ol>
 </div>
 </div>
+<div id="wide--and-long-format-data-frames" class="section level2">
+<h2>Wide- and Long-Format Data Frames</h2>
+<p>It is common to find a need to reshape your data. Some formats are
+convenient for analysis, while other formats are convenient for
+presentation or storage. The <code>{tidyverse}</code> provides two
+functions whose job it is to reshape data frames from wide to long
+(<code>pivot_longer()</code>) or from long to wide
+(<code>pivot_wider()</code>). The process of transforming a data frame
+from <em>wide</em> format to <em>long</em> format is done by collapsing
+several columns down to just two – one containing the old column names
+and another containing the corresponding values under those old columns.
+Let’s see that below on a simple data set that we’ll construct. For
+context, let’s assume that the data set below contains growth
+measurements in centimeters for plants placed in four different types of
+fertilizer (<code>A</code> - <code>D</code>).</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>num_obs <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>wide_fertilizer_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>  <span class="st">&quot;day&quot;</span> <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span>num_obs,</span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>  <span class="st">&quot;A&quot;</span> <span class="ot">=</span> <span class="fu">runif</span>(num_obs, <span class="dv">0</span>, <span class="dv">4</span>),</span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>  <span class="st">&quot;B&quot;</span> <span class="ot">=</span> <span class="fu">runif</span>(num_obs, <span class="dv">0</span>, <span class="dv">4</span>),</span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>  <span class="st">&quot;C&quot;</span> <span class="ot">=</span> <span class="fu">runif</span>(num_obs, <span class="dv">0</span>, <span class="dv">4</span>),</span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>  <span class="st">&quot;D&quot;</span> <span class="ot">=</span> <span class="fu">runif</span>(num_obs, <span class="dv">0</span>, <span class="dv">4</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>)</span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a>wide_fertilizer_data <span class="sc">%&gt;%</span></span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
+<table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+day
+</th>
+<th style="text-align:right;">
+A
+</th>
+<th style="text-align:right;">
+B
+</th>
+<th style="text-align:right;">
+C
+</th>
+<th style="text-align:right;">
+D
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.5839109
+</td>
+<td style="text-align:right;">
+1.0880620
+</td>
+<td style="text-align:right;">
+2.049659
+</td>
+<td style="text-align:right;">
+2.511917
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1.1548577
+</td>
+<td style="text-align:right;">
+2.0949121
+</td>
+<td style="text-align:right;">
+1.200408
+</td>
+<td style="text-align:right;">
+2.219914
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3.6650407
+</td>
+<td style="text-align:right;">
+2.9246722
+</td>
+<td style="text-align:right;">
+2.875292
+</td>
+<td style="text-align:right;">
+3.937419
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+3.6619361
+</td>
+<td style="text-align:right;">
+3.5285474
+</td>
+<td style="text-align:right;">
+1.938588
+</td>
+<td style="text-align:right;">
+1.715967
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0.7268172
+</td>
+<td style="text-align:right;">
+0.3553836
+</td>
+<td style="text-align:right;">
+1.996785
+</td>
+<td style="text-align:right;">
+0.460351
+</td>
+</tr>
+</tbody>
+</table>
+<p>In the simulated dataset above, the columns <code>A</code> -
+<code>D</code> aren’t variables that are being measured. They are
+<em>levels</em> of a categorical variable, <code>fertilizer_type</code>.
+In order to make this data <em>tidy</em> for analysis, we’ll need to
+pivot those four fertilizer types into a new column, and collapse the
+recorded growth values into another new column. This means that each
+<code>day</code> will be repeated four times…once for each of the four
+fertilizer types. We should go from a data frame with five rows to one
+with twenty (a longer data frame!). Let’s see that with
+<code>pivot_longer()</code> below.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>long_fertilizer_data <span class="ot">&lt;-</span> wide_fertilizer_data <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>, <span class="st">&quot;D&quot;</span>), <span class="at">names_to =</span> <span class="st">&quot;fertilizer_type&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;growth&quot;</span>) </span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>long_fertilizer_data <span class="sc">%&gt;%</span></span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
+<table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+day
+</th>
+<th style="text-align:left;">
+fertilizer_type
+</th>
+<th style="text-align:right;">
+growth
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:right;">
+0.5839109
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+1.0880620
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:right;">
+2.0496591
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+D
+</td>
+<td style="text-align:right;">
+2.5119171
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:right;">
+1.1548577
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+2.0949121
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:right;">
+1.2004076
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+D
+</td>
+<td style="text-align:right;">
+2.2199135
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:right;">
+3.6650407
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+2.9246722
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:right;">
+2.8752918
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+D
+</td>
+<td style="text-align:right;">
+3.9374192
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:right;">
+3.6619361
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+3.5285474
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:right;">
+1.9385879
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+D
+</td>
+<td style="text-align:right;">
+1.7159669
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:right;">
+0.7268172
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+0.3553836
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:right;">
+1.9967851
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+D
+</td>
+<td style="text-align:right;">
+0.4603510
+</td>
+</tr>
+</tbody>
+</table>
+<p>The longer data frame is more difficult for us to extract meaning
+from than the original wide data frame. However, this wide-format data
+frame is much better suited for analysis.</p>
+<p>The <code>pivot_wider()</code> function can be though of as the
+inverse of the <code>pivot_longer()</code> function. We can use it to
+convert our <code>long_fertilizer_data</code> back into <em>wide</em>
+format. I’ve found <code>pivot_wider()</code> to be really useful when I
+want to display tables in my notebooks.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>wide_again <span class="ot">&lt;-</span> long_fertilizer_data <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> <span class="st">&quot;day&quot;</span>, <span class="at">names_from =</span> fertilizer_type, <span class="at">values_from =</span> growth) </span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>wide_again <span class="sc">%&gt;%</span></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
+<table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+day
+</th>
+<th style="text-align:right;">
+A
+</th>
+<th style="text-align:right;">
+B
+</th>
+<th style="text-align:right;">
+C
+</th>
+<th style="text-align:right;">
+D
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.5839109
+</td>
+<td style="text-align:right;">
+1.0880620
+</td>
+<td style="text-align:right;">
+2.049659
+</td>
+<td style="text-align:right;">
+2.511917
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1.1548577
+</td>
+<td style="text-align:right;">
+2.0949121
+</td>
+<td style="text-align:right;">
+1.200408
+</td>
+<td style="text-align:right;">
+2.219914
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3.6650407
+</td>
+<td style="text-align:right;">
+2.9246722
+</td>
+<td style="text-align:right;">
+2.875292
+</td>
+<td style="text-align:right;">
+3.937419
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+3.6619361
+</td>
+<td style="text-align:right;">
+3.5285474
+</td>
+<td style="text-align:right;">
+1.938588
+</td>
+<td style="text-align:right;">
+1.715967
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0.7268172
+</td>
+<td style="text-align:right;">
+0.3553836
+</td>
+<td style="text-align:right;">
+1.996785
+</td>
+<td style="text-align:right;">
+0.460351
+</td>
+</tr>
+</tbody>
+</table>
+<p>Being able to quickly reshape data using <code>pivot_longer()</code>
+and <code>pivot_wider()</code> is a skill that will serve you quite well
+if you find yourself doing analysis and reporting.</p>
+</div>
 <div id="misc-additional-items" class="section level2">
 <h2>Misc Additional Items</h2>
 <p>There is much that we haven’t covered, but a few things definitely
@@ -915,19 +1653,19 @@ with the arrow operator (<code>&lt;-</code>). We overwrite the original
 object if we use the same name, but can use a different name and keep
 the original object available in our Global Environment. For
 example,</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>bb_with_park_dims <span class="ot">&lt;-</span> batted_balls <span class="sc">%&gt;%</span></span>
-<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>  <span class="fu">left_join</span>(park_dimensions, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;park&quot;</span> <span class="ot">=</span> <span class="st">&quot;park&quot;</span>))</span></code></pre></div></li>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>bb_with_park_dims <span class="ot">&lt;-</span> batted_balls <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>  <span class="fu">left_join</span>(park_dimensions, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;park&quot;</span> <span class="ot">=</span> <span class="st">&quot;park&quot;</span>))</span></code></pre></div></li>
 <li><p>The table outputs we’ve obtained while running our code look
 quite nice. If we <code>Knit</code> our document (using the blue ball of
 yarn icon), then the tables appearing in the HTML output are not nearly
 as readable. The <code>kableExtra</code> package provides functionality
 to convert our tables into visually pleasing components of our HTML
 document. For example,</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
-<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>bb_with_park_dims <span class="sc">%&gt;%</span></span>
-<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div></li>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>bb_with_park_dims <span class="sc">%&gt;%</span></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div></li>
 </ul>
 <p>The code in the block above will produce a nicely formatted table in
 which the rows are striped and if we hover over a row of our table then

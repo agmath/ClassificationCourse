@@ -208,6 +208,230 @@ window.buildTabsets = function(tocID) {
 };
 
 </script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
 
 <style type="text/css">
 code{white-space: pre-wrap;}
@@ -300,20 +524,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    var j = 0;
-    while (j < rules.length) {
+    for (var j = 0; j < rules.length; j++) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
-        j++;
-        continue;
-      }
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') {
-        j++;
-        continue;
-      }
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -370,17 +587,23 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+content: "";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "\e258";
-font-family: 'Glyphicons Halflings';
+content: "";
 border: none;
+}
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "";
+font-family: 'Glyphicons Halflings';
+display: inline-block;
+padding: 10px;
+border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -812,6 +1035,515 @@ that the correct park dimension data has been appended to each row.</li>
 </ol>
 </div>
 </div>
+<div id="wide--and-long-format-data-frames" class="section level2">
+<h2>Wide- and Long-Format Data Frames</h2>
+<p>It is common to find a need to reshape your data. Some formats are
+convenient for analysis, while other formats are convenient for
+presentation or storage. The <code>{tidyverse}</code> provides two
+functions whose job it is to reshape data frames from wide to long
+(<code>pivot_longer()</code>) or from long to wide
+(<code>pivot_wider()</code>). The process of transforming a data frame
+from <em>wide</em> format to <em>long</em> format is done by collapsing
+several columns down to just two – one containing the old column names
+and another containing the corresponding values under those old columns.
+Let’s see that below on a simple data set that we’ll construct. For
+context, let’s assume that the data set below contains growth
+measurements in centimeters for plants placed in four different types of
+fertilizer (<code>A</code> - <code>D</code>).</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>num_obs <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>wide_fertilizer_data <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>  <span class="st">&quot;day&quot;</span> : <span class="bu">range</span>(num_obs),</span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>  <span class="st">&quot;A&quot;</span> : np.random.uniform(<span class="dv">0</span>, <span class="dv">4</span>, num_obs),</span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>  <span class="st">&quot;B&quot;</span> : np.random.uniform(<span class="dv">0</span>, <span class="dv">4</span>, num_obs),</span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a>  <span class="st">&quot;C&quot;</span> : np.random.uniform(<span class="dv">0</span>, <span class="dv">4</span>, num_obs),</span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a>  <span class="st">&quot;D&quot;</span> : np.random.uniform(<span class="dv">0</span>, <span class="dv">4</span>, num_obs)</span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>py<span class="sc">$</span>wide_fertilizer_data <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
+<table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+day
+</th>
+<th style="text-align:right;">
+A
+</th>
+<th style="text-align:right;">
+B
+</th>
+<th style="text-align:right;">
+C
+</th>
+<th style="text-align:right;">
+D
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.8264057
+</td>
+<td style="text-align:right;">
+1.317352
+</td>
+<td style="text-align:right;">
+1.824590
+</td>
+<td style="text-align:right;">
+0.4845877
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3.6573500
+</td>
+<td style="text-align:right;">
+1.724042
+</td>
+<td style="text-align:right;">
+1.121196
+</td>
+<td style="text-align:right;">
+3.0031416
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0.0778902
+</td>
+<td style="text-align:right;">
+3.660756
+</td>
+<td style="text-align:right;">
+3.080697
+</td>
+<td style="text-align:right;">
+0.1803989
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0.8182959
+</td>
+<td style="text-align:right;">
+3.341337
+</td>
+<td style="text-align:right;">
+1.521192
+</td>
+<td style="text-align:right;">
+2.8867121
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1.6094134
+</td>
+<td style="text-align:right;">
+3.816755
+</td>
+<td style="text-align:right;">
+3.478010
+</td>
+<td style="text-align:right;">
+2.7209922
+</td>
+</tr>
+</tbody>
+</table>
+<p>In the simulated dataset above, the columns <code>A</code> -
+<code>D</code> aren’t variables that are being measured. They are
+<em>levels</em> of a categorical variable, <code>fertilizer_type</code>.
+In order to make this data <em>tidy</em> for analysis, we’ll need to
+pivot those four fertilizer types into a new column, and collapse the
+recorded growth values into another new column. This means that each
+<code>day</code> will be repeated four times…once for each of the four
+fertilizer types. We should go from a data frame with five rows to one
+with twenty (a longer data frame!). Let’s see that with
+<code>pivot_longer()</code> below.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>long_fertilizer_data <span class="op">=</span> wide_fertilizer_data.melt(id_vars <span class="op">=</span> [<span class="st">&quot;day&quot;</span>], var_name <span class="op">=</span> <span class="st">&quot;fertilizer_type&quot;</span>, value_name <span class="op">=</span> <span class="st">&quot;growth&quot;</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>py<span class="sc">$</span>long_fertilizer_data <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
+<table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+day
+</th>
+<th style="text-align:left;">
+fertilizer_type
+</th>
+<th style="text-align:right;">
+growth
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:right;">
+1.8264057
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:right;">
+3.6573500
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:right;">
+0.0778902
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:right;">
+0.8182959
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:right;">
+1.6094134
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+1.3173524
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+1.7240415
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+3.6607563
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+3.3413372
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+3.8167553
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:right;">
+1.8245895
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:right;">
+1.1211957
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:right;">
+3.0806975
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:right;">
+1.5211921
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:right;">
+3.4780098
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+D
+</td>
+<td style="text-align:right;">
+0.4845877
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+D
+</td>
+<td style="text-align:right;">
+3.0031416
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+D
+</td>
+<td style="text-align:right;">
+0.1803989
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+D
+</td>
+<td style="text-align:right;">
+2.8867121
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+D
+</td>
+<td style="text-align:right;">
+2.7209922
+</td>
+</tr>
+</tbody>
+</table>
+<p>The longer data frame is more difficult for us to extract meaning
+from than the original wide data frame. However, this wide-format data
+frame is much better suited for analysis.</p>
+<p>The <code>pivot_wider()</code> function can be though of as the
+inverse of the <code>pivot_longer()</code> function. We can use it to
+convert our <code>long_fertilizer_data</code> back into <em>wide</em>
+format. I’ve found <code>pivot_wider()</code> to be really useful when I
+want to display tables in my notebooks.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>wide_again <span class="op">=</span> long_fertilizer_data.pivot(index <span class="op">=</span> [<span class="st">&quot;day&quot;</span>], columns <span class="op">=</span> [<span class="st">&quot;fertilizer_type&quot;</span>], values <span class="op">=</span> [<span class="st">&quot;growth&quot;</span>]) </span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>py<span class="sc">$</span>wide_again <span class="sc">%&gt;%</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div>
+<table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+growth A
+</th>
+<th style="text-align:right;">
+B
+</th>
+<th style="text-align:right;">
+C
+</th>
+<th style="text-align:right;">
+D
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+1.8264057
+</td>
+<td style="text-align:right;">
+1.317352
+</td>
+<td style="text-align:right;">
+1.824590
+</td>
+<td style="text-align:right;">
+0.4845877
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+3.6573500
+</td>
+<td style="text-align:right;">
+1.724042
+</td>
+<td style="text-align:right;">
+1.121196
+</td>
+<td style="text-align:right;">
+3.0031416
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+0.0778902
+</td>
+<td style="text-align:right;">
+3.660756
+</td>
+<td style="text-align:right;">
+3.080697
+</td>
+<td style="text-align:right;">
+0.1803989
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:right;">
+0.8182959
+</td>
+<td style="text-align:right;">
+3.341337
+</td>
+<td style="text-align:right;">
+1.521192
+</td>
+<td style="text-align:right;">
+2.8867121
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+1.6094134
+</td>
+<td style="text-align:right;">
+3.816755
+</td>
+<td style="text-align:right;">
+3.478010
+</td>
+<td style="text-align:right;">
+2.7209922
+</td>
+</tr>
+</tbody>
+</table>
+<p>Being able to quickly reshape data using <code>pivot_longer()</code>
+and <code>pivot_wider()</code> is a skill that will serve you quite well
+if you find yourself doing analysis and reporting.</p>
+</div>
 <div id="misc-additional-items" class="section level2">
 <h2>Misc Additional Items</h2>
 <p>There is much that we haven’t covered, but a few things definitely
@@ -826,18 +1558,18 @@ function has this. We overwrite the original object if we use the same
 name (or if we use <code>inplace = True</code>), but can use a different
 name and keep the original object available in our Global Environment.
 For example,</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>bb_with_park_dims <span class="op">=</span> batted_balls.merge(parks, how <span class="op">=</span> <span class="st">&quot;left&quot;</span>, left_on <span class="op">=</span> <span class="st">&quot;park&quot;</span>, right_on <span class="op">=</span> <span class="st">&quot;park&quot;</span>)</span></code></pre></div></li>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>bb_with_park_dims <span class="op">=</span> batted_balls.merge(parks, how <span class="op">=</span> <span class="st">&quot;left&quot;</span>, left_on <span class="op">=</span> <span class="st">&quot;park&quot;</span>, right_on <span class="op">=</span> <span class="st">&quot;park&quot;</span>)</span></code></pre></div></li>
 <li><p>The table outputs we’ve obtained while running our code don’t
 look excellent. There is an R package called <code>{kableExtra}</code>
 which provides functionality to convert our tables into visually
 pleasing components of our HTML document. Since this is an R package,
 you would need <code>{reticulate}</code> within an R code chunk to use
 it. For example,</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
-<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>py<span class="sc">$</span>bb_with_park_dims <span class="sc">%&gt;%</span></span>
-<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div></li>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>py<span class="sc">$</span>bb_with_park_dims <span class="sc">%&gt;%</span></span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;striped&quot;</span>))</span></code></pre></div></li>
 </ul>
 <p>The code in the block above will produce a nicely formatted table in
 which the rows are striped and if we hover over a row of our table then
