@@ -28,7 +28,7 @@ Follow the steps below to set up Python for use from within RStudio. The first f
 5. In the lower left pane, click on the *Terminal* tab. Type and run `which python`. You should get a file path pointing to your Python executable. Make sure your Python version is 3.x and not 2.x.
 
     + If you have Python 3.x installed, then skip to step 6.
-    + If you don't have Python installed, type and run `path_to_python <- reticulate::install_python()`, which will install python on your machine and save the path to the executable in the `path_to_python` variable.
+    + If you don't have Python installed, switch back to the *Console* tab and type/run `path_to_python <- reticulate::install_python()`, which will install python on your machine and save the path to the executable in the `path_to_python` variable.
   
 6. Switch back to the *Console* tab and run `reticulate::virtualenv_create("mat434", path_to_python)`. If you already had python installed, provide the explicit path to your Python executable that you saw when you ran `which python` from the terminal. This virtual environment will be placed in your home directory.
 
@@ -40,17 +40,14 @@ Nearly all of our work for this course will occur within RMarkdown documents. Be
 
 1. Use `File -> New File -> RMarkdown...` to open a new RMarkdown document. Fill in the fields and click the button to create the notebook.
 2. Delete all of the boilerplate from line 11 down.
-3. In the initial `r` setup chunk, add a line to `reticulate::use_virtualenv("mat434")`
-4. In a text cell (over a white background), write a short sentence about running code in Python.
-5. Open a new code cell/chunk using the `+C` button at the top of the script editor and choose `python` as the language. 
-
-    + Notice that the code cell looks similar to the R code cell above. Code cells always begin with triple back-ticks and then the language being used in the cell. What follows are options including a name for your code chunk.
-
-6. In that new code cell, type `!pip install numpy` and run it with either `ctrl+Enter` or `cmd+Enter`. You can also `!pip install` `pandas`, `plotnine`, and `scikit-learn`.
+3. In the initial `r` setup chunk, add a line to `reticulate::use_virtualenv("mat434")`, and run it.
+4. In that same setup chunk, add a line to install the `numpy` module in your virtual environment. The code for doing that is `virtualenv_install("mat434", "numpy")`.  You can also install `pandas`, `plotnine`, and `scikit-learn`.
 
     + Installation commands shouldn't be included in a notebook, so let's delete them now that we're finished installing packages. Note that this is how you'll install Python packages into your virtual environment for the future though.
-  
-7. In your (now empty) Python code cell, add a line to `import pandas as pd`. Run that line.
+
+5. In a text cell (over a white background), write a short sentence about running code in Python.
+6. Open a new code cell/chunk using the `+C` button at the top of the script editor and choose `python` as the language. 
+7. In your Python code cell, add a line to `import pandas as pd`. Run that line.
 8. In that same cell, let's read some data into this notebook. Here's a [link to some data on birdstrikes on airplanes](https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/faa_birdstrikes.csv) from the FAA. Use `pd.read_csv()` to read this file into your notebook by passing the quoted URL as the only argument to the function. Store your object in a variable `FAAdata`.
 9. Write a new line `FAAdata.head()` and run it.
 10. In a text cell (white space) below your code cell and output, describe what you are seeing.

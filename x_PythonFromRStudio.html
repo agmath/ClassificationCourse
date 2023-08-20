@@ -269,17 +269,23 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+content: "";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "\e258";
-font-family: 'Glyphicons Halflings';
+content: "";
 border: none;
+}
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "";
+font-family: 'Glyphicons Halflings';
+display: inline-block;
+padding: 10px;
+border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -361,7 +367,8 @@ to your Python executable. Make sure your Python version is 3.x and not
 2.x.</p>
 <ul>
 <li>If you have Python 3.x installed, then skip to step 6.</li>
-<li>If you don’t have Python installed, type and run
+<li>If you don’t have Python installed, switch back to the
+<em>Console</em> tab and type/run
 <code>path_to_python &lt;- reticulate::install_python()</code>, which
 will install python on your machine and save the path to the executable
 in the <code>path_to_python</code> variable.</li>
@@ -388,29 +395,24 @@ new RMarkdown document. Fill in the fields and click the button to
 create the notebook.</p></li>
 <li><p>Delete all of the boilerplate from line 11 down.</p></li>
 <li><p>In the initial <code>r</code> setup chunk, add a line to
-<code>reticulate::use_virtualenv(&quot;mat434&quot;)</code></p></li>
-<li><p>In a text cell (over a white background), write a short sentence
-about running code in Python.</p></li>
-<li><p>Open a new code cell/chunk using the <code>+C</code> button at
-the top of the script editor and choose <code>python</code> as the
-language.</p>
-<ul>
-<li>Notice that the code cell looks similar to the R code cell above.
-Code cells always begin with triple back-ticks and then the language
-being used in the cell. What follows are options including a name for
-your code chunk.</li>
-</ul></li>
-<li><p>In that new code cell, type <code>!pip install numpy</code> and
-run it with either <code>ctrl+Enter</code> or <code>cmd+Enter</code>.
-You can also <code>!pip install</code> <code>pandas</code>,
-<code>plotnine</code>, and <code>scikit-learn</code>.</p>
+<code>reticulate::use_virtualenv(&quot;mat434&quot;)</code>, and run it.</p></li>
+<li><p>In that same setup chunk, add a line to install the
+<code>numpy</code> module in your virtual environment. The code for
+doing that is <code>virtualenv_install(&quot;mat434&quot;, &quot;numpy&quot;)</code>. You
+can also install <code>pandas</code>, <code>plotnine</code>, and
+<code>scikit-learn</code>.</p>
 <ul>
 <li>Installation commands shouldn’t be included in a notebook, so let’s
 delete them now that we’re finished installing packages. Note that this
 is how you’ll install Python packages into your virtual environment for
 the future though.</li>
 </ul></li>
-<li><p>In your (now empty) Python code cell, add a line to
+<li><p>In a text cell (over a white background), write a short sentence
+about running code in Python.</p></li>
+<li><p>Open a new code cell/chunk using the <code>+C</code> button at
+the top of the script editor and choose <code>python</code> as the
+language.</p></li>
+<li><p>In your Python code cell, add a line to
 <code>import pandas as pd</code>. Run that line.</p></li>
 <li><p>In that same cell, let’s read some data into this notebook.
 Here’s a <a href="https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/faa_birdstrikes.csv">link
