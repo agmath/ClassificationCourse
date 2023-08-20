@@ -41,9 +41,10 @@ Nearly all of our work for this course will occur within RMarkdown documents. Be
 1. Use `File -> New File -> RMarkdown...` to open a new RMarkdown document. Fill in the fields and click the button to create the notebook.
 2. Delete all of the boilerplate from line 11 down.
 3. In the initial `r` setup chunk, add a line to `reticulate::use_virtualenv("mat434")`, and run it.
-4. In that same setup chunk, add a line to install the `numpy` module in your virtual environment. The code for doing that is `virtualenv_install("mat434", "numpy")`.  You can also install `pandas`, `plotnine`, and `scikit-learn`.
+4. In that same setup chunk, add a line to install the `numpy` module in your virtual environment. The code for doing that is `reticulate::virtualenv_install("mat434", "numpy")`.  You can also install `pandas`, `plotnine`, and `scikit-learn`.
 
     + Installation commands shouldn't be included in a notebook, so let's delete them now that we're finished installing packages. Note that this is how you'll install Python packages into your virtual environment for the future though.
+    + *Note*: You can avoid the need to prefix these commands with `reticulate::` if you load the `{reticulate}` package with `library(reticulate)`.
 
 5. In a text cell (over a white background), write a short sentence about running code in Python.
 6. Open a new code cell/chunk using the `+C` button at the top of the script editor and choose `python` as the language. 

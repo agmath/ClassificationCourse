@@ -398,14 +398,18 @@ create the notebook.</p></li>
 <code>reticulate::use_virtualenv(&quot;mat434&quot;)</code>, and run it.</p></li>
 <li><p>In that same setup chunk, add a line to install the
 <code>numpy</code> module in your virtual environment. The code for
-doing that is <code>virtualenv_install(&quot;mat434&quot;, &quot;numpy&quot;)</code>. You
-can also install <code>pandas</code>, <code>plotnine</code>, and
+doing that is
+<code>reticulate::virtualenv_install(&quot;mat434&quot;, &quot;numpy&quot;)</code>. You can
+also install <code>pandas</code>, <code>plotnine</code>, and
 <code>scikit-learn</code>.</p>
 <ul>
 <li>Installation commands shouldn’t be included in a notebook, so let’s
 delete them now that we’re finished installing packages. Note that this
 is how you’ll install Python packages into your virtual environment for
 the future though.</li>
+<li><em>Note</em>: You can avoid the need to prefix these commands with
+<code>reticulate::</code> if you load the <code>{reticulate}</code>
+package with <code>library(reticulate)</code>.</li>
 </ul></li>
 <li><p>In a text cell (over a white background), write a short sentence
 about running code in Python.</p></li>
