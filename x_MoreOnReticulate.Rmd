@@ -24,7 +24,7 @@ As mentioned, the `{reticulate}` package supports a single document accessing mu
 4. Delete all of the boilerplate from line 12 down.
 5. In the R console (`>` rather than `>>>`), run `install.packages("tidyverse")` to install the `{tidyverse}` ecosystem of packages for R.
 
-  + If your console is running python (`>>>`), then you can revert back to R by typing `exit` in the console and running it.
+    + If your console is running python (`>>>`), then you can revert back to R by typing `exit` in the console and running it.
 6. In that first R code chunk, add a line `library(tidyverse)` to load the `{tidyverse}` and run it. Add and run a line `library(reticulate)` as well, since we'll be using `{reticulate}` functionality here.
 7. Open a new code cell, but this time make it a Python chunk. You can either build the code chunk manually or by using the `+C` icon at the top of the script editor.
 8. Use python code to read in the [FAA airstrikes data](https://github.com/agmath/agmath.github.io/blob/master/data/classification/faa_birdstrikes.csv) as `FAAdata`. Don't forget to `import pandas as pd` first.

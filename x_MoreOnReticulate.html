@@ -442,44 +442,44 @@ developers who prefer different languages or for individuals who like
 one language for some purposes and another language for other
 purposes.</p>
 <ol style="list-style-type: decimal">
-<li>Open up RStudio and open the R project which is managing your GitHub
-repository for this class.</li>
-<li>Use <code>File -&gt; New File -&gt; R Markdown...</code> to open a
-new RMarkdown notebook. Fill in the fields and create the document.</li>
-<li>In the initial R code chunk, add a line to
-<code>reticulate::use_virtualenv(&quot;mat434&quot;)</code> and run it.</li>
-<li>Delete all of the boilerplate from line 12 down.</li>
-<li>In the R console (<code>&gt;</code> rather than
+<li><p>Open up RStudio and open the R project which is managing your
+GitHub repository for this class.</p></li>
+<li><p>Use <code>File -&gt; New File -&gt; R Markdown...</code> to open
+a new RMarkdown notebook. Fill in the fields and create the
+document.</p></li>
+<li><p>In the initial R code chunk, add a line to
+<code>reticulate::use_virtualenv(&quot;mat434&quot;)</code> and run it.</p></li>
+<li><p>Delete all of the boilerplate from line 12 down.</p></li>
+<li><p>In the R console (<code>&gt;</code> rather than
 <code>&gt;&gt;&gt;</code>), run
 <code>install.packages(&quot;tidyverse&quot;)</code> to install the
-<code>{tidyverse}</code> ecosystem of packages for R.</li>
-</ol>
+<code>{tidyverse}</code> ecosystem of packages for R.</p>
 <ul>
 <li>If your console is running python (<code>&gt;&gt;&gt;</code>), then
 you can revert back to R by typing <code>exit</code> in the console and
 running it.</li>
-</ul>
-<ol start="6" style="list-style-type: decimal">
-<li>In that first R code chunk, add a line
+</ul></li>
+<li><p>In that first R code chunk, add a line
 <code>library(tidyverse)</code> to load the <code>{tidyverse}</code> and
 run it. Add and run a line <code>library(reticulate)</code> as well,
-since we’ll be using <code>{reticulate}</code> functionality here.</li>
-<li>Open a new code cell, but this time make it a Python chunk. You can
-either build the code chunk manually or by using the <code>+C</code>
-icon at the top of the script editor.</li>
-<li>Use python code to read in the <a href="https://github.com/agmath/agmath.github.io/blob/master/data/classification/faa_birdstrikes.csv">FAA
+since we’ll be using <code>{reticulate}</code> functionality
+here.</p></li>
+<li><p>Open a new code cell, but this time make it a Python chunk. You
+can either build the code chunk manually or by using the <code>+C</code>
+icon at the top of the script editor.</p></li>
+<li><p>Use python code to read in the <a href="https://github.com/agmath/agmath.github.io/blob/master/data/classification/faa_birdstrikes.csv">FAA
 airstrikes data</a> as <code>FAAdata</code>. Don’t forget to
-<code>import pandas as pd</code> first.</li>
-<li>Print out the <code>.head()</code> of the data frame using python
-syntax.</li>
-<li>Look in the <em>Environment</em> tab in your top-right pane. You
+<code>import pandas as pd</code> first.</p></li>
+<li><p>Print out the <code>.head()</code> of the data frame using python
+syntax.</p></li>
+<li><p>Look in the <em>Environment</em> tab in your top-right pane. You
 should see <code>FAAdata</code> there in addition to a couple of other
 items. Click the dropdown menu next to <code>Python</code> and switch to
 <code>R</code>. Your R environment is empty – only Python knows about
-<code>FAAdata</code>!</li>
-<li>To convince ourselves that this is the case, open a new R code chunk
-and try running <code>FAAdata %&gt;% head()</code>. You’ll receive an
-error saying that <code>FAAdata</code> is not found.</li>
+<code>FAAdata</code>!</p></li>
+<li><p>To convince ourselves that this is the case, open a new R code
+chunk and try running <code>FAAdata %&gt;% head()</code>. You’ll receive
+an error saying that <code>FAAdata</code> is not found.</p></li>
 </ol>
 <p>Having two completely separate environments is not all that useful,
 but <code>{reticulate}</code> provides us powers to pass objects between
