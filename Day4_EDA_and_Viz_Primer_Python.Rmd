@@ -14,7 +14,7 @@ library(tidyverse)
 
 ## Getting Started and Basics
 
-The goal of any exploratory data analysis (EDA) is to learn about and from our data. You did some of that in Days 2 and 3, where you looked at techniques for data wrangling in Python and also inline reporting within R Markdown documents with the help of `{reticulate}`. While summary statistics are great, sometimes visuals are even more effective at helping us (and our readers) understand the data we are working with. This notebook will focus on data visualization using `{plotnine}`, a python module built to mirror the performance of R's `{ggplot2}` package. Both `{plotnine}` and `{ggplot2}` are build using a *layered grammar of graphics* which allows for the convenient construction of plots by adding layers one after the other.
+The goal of any exploratory data analysis (EDA) is to learn about and from our data. You did some of that in Days 2 and 3, where you looked at techniques for data wrangling in Python and also inline reporting within R Markdown documents with the help of `{reticulate}`. While summary statistics are great, sometimes visuals are even more effective at helping us (and our readers) understand the data we are working with. This notebook will focus on data visualization using `{plotnine}`, a python module built to mirror the performance of R's `{ggplot2}` package. Both `{plotnine}` and `{ggplot2}` are built using a *layered grammar of graphics* which allows for the convenient construction of plots by adding new layers on top of all previous layers.
 
 Open RStudio and the notebook you've been working on over the past two class meetings. Make sure you are working inside of the R Project which is managing your GitHub repository associated with MAT434.
 

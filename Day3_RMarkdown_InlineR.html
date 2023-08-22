@@ -11,7 +11,7 @@
 
 <meta name="author" content="Dr. Gilbert" />
 
-<meta name="date" content="2023-08-04" />
+<meta name="date" content="2023-08-21" />
 
 <title>R Markdown and Inline R</title>
 
@@ -299,17 +299,23 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+content: "";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "\e258";
-font-family: 'Glyphicons Halflings';
+content: "";
 border: none;
+}
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "";
+font-family: 'Glyphicons Halflings';
+display: inline-block;
+padding: 10px;
+border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -352,7 +358,7 @@ display: none;
 
 <h1 class="title toc-ignore">R Markdown and Inline R</h1>
 <h4 class="author">Dr. Gilbert</h4>
-<h4 class="date">August 04, 2023</h4>
+<h4 class="date">August 21, 2023</h4>
 
 </div>
 
@@ -380,7 +386,7 @@ document-writing workload.</p>
 <p>In simplest terms, any R Markdown document contains three major
 components.</p>
 <ul>
-<li>A <em>Yet Another Markdown Language</em> (YAML) header</li>
+<li>A <em>Yet Another Markup Language</em> (YAML) header</li>
 <li>Code chunks with grey background</li>
 <li>Text “cells” with white background</li>
 </ul>

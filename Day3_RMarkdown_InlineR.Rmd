@@ -28,7 +28,7 @@ library(kableExtra)
 
 In simplest terms, any R Markdown document contains three major components.
 
--   A *Yet Another Markdown Language* (YAML) header
+-   A *Yet Another Markup Language* (YAML) header
 -   Code chunks with grey background
 -   Text "cells" with white background
 
