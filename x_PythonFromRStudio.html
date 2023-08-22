@@ -352,6 +352,8 @@ copy the HTTPS link to your repository.</p></li>
 <li><p>Open RStudio, click <code>File -&gt; New Project..</code>.</p>
 <ul>
 <li>Choose from Version Control and use Git.</li>
+<li>Paste the link you just copied into the <em>Repository URL</em>
+field.</li>
 <li>Choose a convenient location on your machine for your local
 repository.</li>
 <li>Create the project and let RStudio reload and switch to that project
@@ -381,8 +383,8 @@ from the terminal. This virtual environment will be placed in your home
 directory.</p></li>
 </ol>
 <p>Now you have Python installed, RStudio knows where to find it, and
-you’ve got a virtual environment created inside of a GitHub repository
-to manage your Python packages.</p>
+you’ve got a virtual environment created to manage your Python
+packages.</p>
 </div>
 <div id="python-in-an-rmarkdown-notebook" class="section level2">
 <h2>Python in an RMarkdown Notebook</h2>
@@ -395,13 +397,14 @@ new RMarkdown document. Fill in the fields and click the button to
 create the notebook.</p></li>
 <li><p>Delete all of the boilerplate from line 11 down.</p></li>
 <li><p>In the initial <code>r</code> setup chunk, add a line to
-<code>reticulate::use_virtualenv(&quot;mat434&quot;)</code>, and run it.</p></li>
+<code>reticulate::use_virtualenv(&quot;mat434&quot;)</code>, and run it with
+<code>ctrl+Enter</code> or <code>cmd+Return</code>.</p></li>
 <li><p>In that same setup chunk, add a line to install the
 <code>numpy</code> module in your virtual environment. The code for
 doing that is
 <code>reticulate::virtualenv_install(&quot;mat434&quot;, &quot;numpy&quot;)</code>. You can
 also install <code>pandas</code>, <code>plotnine</code>, and
-<code>scikit-learn</code>.</p>
+<code>scikit-learn</code> now.</p>
 <ul>
 <li>Installation commands shouldn’t be included in a notebook, so let’s
 delete them now that we’re finished installing packages. Note that this

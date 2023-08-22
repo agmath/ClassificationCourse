@@ -22,6 +22,7 @@ Follow the steps below to set up Python for use from within RStudio. The first f
 3. Open RStudio, click `File -> New Project..`.
 
     + Choose from Version Control and use Git.
+    + Paste the link you just copied into the *Repository URL* field.
     + Choose a convenient location on your machine for your local repository.
     + Create the project and let RStudio reload and switch to that project space.
 4. In the console (lower-left), type and run `install.packages("reticulate")` to install the `{reticulate}` package, which allows use of other languages within RStudio.
@@ -32,7 +33,7 @@ Follow the steps below to set up Python for use from within RStudio. The first f
   
 6. Switch back to the *Console* tab and run `reticulate::virtualenv_create("mat434", path_to_python)`. If you already had python installed, provide the explicit path to your Python executable that you saw when you ran `which python` from the terminal. This virtual environment will be placed in your home directory.
 
-Now you have Python installed, RStudio knows where to find it, and you've got a virtual environment created inside of a GitHub repository to manage your Python packages.
+Now you have Python installed, RStudio knows where to find it, and you've got a virtual environment created to manage your Python packages.
 
 ## Python in an RMarkdown Notebook
 
@@ -40,8 +41,8 @@ Nearly all of our work for this course will occur within RMarkdown documents. Be
 
 1. Use `File -> New File -> RMarkdown...` to open a new RMarkdown document. Fill in the fields and click the button to create the notebook.
 2. Delete all of the boilerplate from line 11 down.
-3. In the initial `r` setup chunk, add a line to `reticulate::use_virtualenv("mat434")`, and run it.
-4. In that same setup chunk, add a line to install the `numpy` module in your virtual environment. The code for doing that is `reticulate::virtualenv_install("mat434", "numpy")`.  You can also install `pandas`, `plotnine`, and `scikit-learn`.
+3. In the initial `r` setup chunk, add a line to `reticulate::use_virtualenv("mat434")`, and run it with `ctrl+Enter` or `cmd+Return`.
+4. In that same setup chunk, add a line to install the `numpy` module in your virtual environment. The code for doing that is `reticulate::virtualenv_install("mat434", "numpy")`.  You can also install `pandas`, `plotnine`, and `scikit-learn` now.
 
     + Installation commands shouldn't be included in a notebook, so let's delete them now that we're finished installing packages. Note that this is how you'll install Python packages into your virtual environment for the future though.
     + *Note*: You can avoid the need to prefix these commands with `reticulate::` if you load the `{reticulate}` package with `library(reticulate)`.
