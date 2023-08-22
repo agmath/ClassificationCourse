@@ -534,8 +534,8 @@ is similar.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>(</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>ggplot(data <span class="op">=</span> train) <span class="op">+</span></span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  geom_boxplot(aes(x <span class="op">=</span> <span class="dv">0</span>, y <span class="op">=</span> <span class="st">&quot;pitch_mph&quot;</span>)) <span class="op">+</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  labs(x <span class="op">=</span> <span class="st">&quot;Pitch Speed (mph)&quot;</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>       y <span class="op">=</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  labs(x <span class="op">=</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>       y <span class="op">=</span> <span class="st">&quot;Pitch Speed (mph)&quot;</span>,</span>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>       title <span class="op">=</span> <span class="st">&quot;Distribution of Pitch Speed in Miles per Hour&quot;</span>)</span>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>)</span></code></pre></div>
 <p>Notice that the entire plotting code is wrapped in parentheses
@@ -569,8 +569,8 @@ geometry layer). That is,</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>(</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> train) <span class="sc">+</span></span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="st">&quot;pitch_mph&quot;</span>), <span class="at">fill =</span> <span class="st">&quot;purple&quot;</span>) <span class="sc">+</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Pitch Speed (mph)&quot;</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Pitch Speed (mph)&quot;</span>,</span>
 <span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Distribution of Pitch Speed in Miles per Hour&quot;</span>)</span>
 <span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>)</span></code></pre></div>
 <p>In general, plot aspects determined by variables in the data set must

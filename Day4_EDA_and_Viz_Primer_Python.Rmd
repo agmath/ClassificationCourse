@@ -67,8 +67,8 @@ A basic `ggplot()` might look like the following:
 (
 ggplot(data = train) +
   geom_boxplot(aes(x = 0, y = "pitch_mph")) +
-  labs(x = "Pitch Speed (mph)",
-       y = "",
+  labs(x = "",
+       y = "Pitch Speed (mph)",
        title = "Distribution of Pitch Speed in Miles per Hour")
 )
 ```
@@ -87,8 +87,8 @@ At a minimum, every plot will need `data`. The way to pass data to a plot is usi
 (
   ggplot(data = train) +
   geom_boxplot(aes(x = 0, y = "pitch_mph"), fill = "purple") +
-  labs(x = "Pitch Speed (mph)",
-       y = "",
+  labs(x = "",
+       y = "Pitch Speed (mph)",
        title = "Distribution of Pitch Speed in Miles per Hour")
 )
 ```
