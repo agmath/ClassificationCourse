@@ -47,7 +47,7 @@ train, test = train_test_split(<name_of_your_dataframe>, train_size = 0.75, rand
 train.head()
 ```
 
-The first line imports the `train_test_splot()` function from the `sklearn.model_selection` submodule. The next line splits your data frame into two random subsets (by rows), where the `train`ing set contains 75% of observations and the `test` set contains the remaining 25%. Setting the `random_state` parameter ensures that we'll get the same random `train`ing and `test` sets regardless of when, where, or who runs the code.
+The first line imports the `train_test_split()` function from the `sklearn.model_selection` submodule. The next line splits your data frame into two random subsets (by rows), where the `train`ing set contains 75% of observations and the `test` set contains the remaining 25%. Setting the `random_state` parameter ensures that we'll get the same random `train`ing and `test` sets regardless of when, where, or who runs the code.
 
 In general, we'll do this near the beginning of any analysis. If you completed your tidy analysis work on your full data set, you can add this to the bottom of your notebook and just make note that we'll split into *training* and *test* sets at the beginning of our analyses from here on out.
 
