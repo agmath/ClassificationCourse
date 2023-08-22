@@ -474,8 +474,9 @@ be used for <em>predictions</em>, then we should split our data into
 the <code>{reticulate}</code> package and to use the <code>mat434</code>
 virtual environment you’ve built.</p></li>
 <li><p>If you haven’t installed <code>sklearn</code> into your virtual
-environment, you can do so by opening a Python code cell and running
-<code>!pip install scikit-learn</code>. Remember to delete this line of
+environment, you can do so by running
+<code>reticulate::virtualenv_install(&quot;mat434&quot;, &quot;scikit-learn&quot;)</code> in
+your <code>setup</code> R code chunk. Remember to delete this line of
 code after you’ve run it.</p></li>
 </ol>
 <p>Now we’ll split our data into <code>train</code>ing and

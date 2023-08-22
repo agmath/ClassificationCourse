@@ -33,7 +33,7 @@ At the beginning of any analysis, if one of our goals is a model to be used for 
 
 1. Add code to the `setup` chunk of your notebook to load the `{reticulate}` package and to use the `mat434` virtual environment you've built.
 
-2. If you haven't installed `sklearn` into your virtual environment, you can do so by opening a Python code cell and running `!pip install scikit-learn`. Remember to delete this line of code after you've run it.
+2. If you haven't installed `sklearn` into your virtual environment, you can do so by running `reticulate::virtualenv_install("mat434", "scikit-learn")` in your `setup` R code chunk. Remember to delete this line of code after you've run it.
 
 Now we'll split our data into `train`ing and `test` sets. 
 
