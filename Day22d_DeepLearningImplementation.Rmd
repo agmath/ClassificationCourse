@@ -13,12 +13,12 @@ output:
 
 Since you set up TensorFlow in an earlier notebook, let's load the `{tidyverse}`, `{tensorflow}`, `{keras}`, and `{reticulate}` libraries and get some data. We'll use the Fashion MNIST data set. You can learn more about that data set from [its official repository here](https://github.com/zalandoresearch/fashion-mnist).
 
-```{r}
+```{r message = FALSE, warning = FALSE}
 library(tidyverse)
 library(tensorflow)
 library(keras)
 library(reticulate)
-use_virtualenv("r-reticulate")
+use_virtualenv("mat434")
 
 c(c(x_train, y_train), c(x_test, y_test)) %<-% keras::dataset_fashion_mnist()
 
