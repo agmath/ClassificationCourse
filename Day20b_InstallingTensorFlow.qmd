@@ -16,7 +16,7 @@ library(tensorflow)
 library(keras)
 library(reticulate)
 
-my_path_to_python <- "C:/users/agilb/AppData/Local/Programs/Python/Python310/python.exe"
+my_path_to_python <- "/Users/adamgilbert/.virtualenvs/r-reticulate/bin/python"
 ```
 
 **Purpose:** We are about to discuss *neural networks* and *deep learning*. These are advanced structures which are built on specialized libraries. While `{tidymodels}` supports some of the most basic neural network architecture, we'll be much better off if we work in something which has been built for the purpose of constructing and utilizing deep learning networks. In this notebook, you'll install `{keras}` and `{tensorflow}`. The functionality from `{tensorflow}` was built in `python`, so we'll need python installed as well.
@@ -41,9 +41,9 @@ Follow the instructions to [install Keras and Tensorflow here](https://tensorflo
 
 4. In your *Console*, run `virtualenv_create("r-reticulate", python = path_to_python)`. This will create a python virtual environment and package container in your working directory.
 5. Install the `{keras}` package and then load the `{keras}` library.
-6. Install TensorFlow, SciPy, and several TensorFlow data sets using `install_keras(method = "virtualenv", envname = "r-reticulate", version = "cpu")`.
+6. Install TensorFlow, SciPy, and several TensorFlow data sets using `install_keras(method = "virtualenv", envname = "r-reticulate")`.
 7. Completely shut down and reopen RStudio. You might try clicking on *Session* and Restart R, but this only sometimes worked for me.
-8. Reopen RStudio and your R Markdown notebook.
+8. Reopen RStudio and your Quarto notebook.
 9. In the notebook, load the `{tensorflow}` and `{reticulate}` libraries.
 10. Type and run `use_virtualenv("r-reticulate")`.
 11. Run `tf$constant("Hello TensorFlow!")`

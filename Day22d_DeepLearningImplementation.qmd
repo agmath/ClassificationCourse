@@ -1,10 +1,7 @@
 ---
 title: 'Deep Learning: Implementation'
-output:
-  html_document:
-    theme: cerulean
-    highlight: pygments
-  pdf_document: default
+format: html
+theme: flatly
 ---
 
 **Purpose:** The previous two notebooks have discussed theoretical and foundational aspects of deep learning models. In particular, what types of architectures and activation functions exist (and, to a lesser extent, how do I choose one). In this notebook our goal will be to actually build, assess, and utilize a deep learning network for image classification.
@@ -18,7 +15,7 @@ library(tidyverse)
 library(tensorflow)
 library(keras)
 library(reticulate)
-use_virtualenv("mat434")
+use_virtualenv("r-reticulate")
 
 c(c(x_train, y_train), c(x_test, y_test)) %<-% keras::dataset_fashion_mnist()
 
