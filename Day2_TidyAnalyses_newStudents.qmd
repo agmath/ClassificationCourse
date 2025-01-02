@@ -1,10 +1,8 @@
 ---
 title: 'Enter the Tidyverse: An Introduction to Tidy Data Analysis in R'
 author: "Dr. Gilbert"
-output:
-  html_document:
-    theme: cerulean
-    highlight: pygments
+format: html
+theme: flatly
 ---
 
 ```{r global-options, include=FALSE}
@@ -18,11 +16,11 @@ library(kableExtra)
   + How do I read data into R from both local and remote sources?
   + How do I interact with, and manipulate, data using the tools and principles of the `{tidyverse}`?
   
-**Note:** Below, you'll be asked to build an R Markdown notebook which includes many code cells to accomplish tasks. In addition to the code cells (grey background), be sure to leave yourself short notes in text cells (white background) which describe what you are doing with the code. Having a notebook that consists of 25 code cells with no additional context at the end of this discussion won't be very useful. You'll also be adding to this notebook later, so including some limited discussions now will be helpful!
+**Note:** Below, you'll be asked to build a Quarto notebook which includes many code cells to accomplish tasks. In addition to the code cells (grey background), be sure to leave yourself short notes in text cells (white background) which describe what you are doing with the code. Having a notebook that consists of 25 code cells with no additional context at the end of this discussion won't be very useful. You'll also be adding to this notebook later, so including some limited discussions now will be helpful!
 
 ## Setup
 
-Open RStudio and use `File -> New File -> R Markdown...` to create a new R Markdown file. Fill in the title field with `Tidy Analysis of MLB Batted Balls`, update the author field with your name if it is not already there. You can check the box to use the current date when rendering your document, and leave the default output format as HTML.
+Open RStudio and use `File -> New File -> Quarto Document...` to create a new Quarto Markdown (`*.qmd`) file. Fill in the title field with `Tidy Analysis of MLB Batted Balls`, update the author field with your name if it is not already there. Uncheck the option to *Use visual markdown editor*, leave the remaining default settings, and click *Create*.
 
 You can see several items in this sample markdown file. We'll cover them in detail later, but for now 
 
@@ -30,7 +28,7 @@ You can see several items in this sample markdown file. We'll cover them in deta
 + any text over a grey background is executable code.
 + any text over a white background is free-form text.
 
-You can remove all the *boilerplate* from line 12 down.
+You can remove all the *boilerplate* from line 6 down.
   
 ## Installing and Loading Packages
 
@@ -77,16 +75,16 @@ Now it's time for you to load in some data. We'll work with two data sets in thi
   + Click on `battedballs.csv` in the file listing in the GitHub repository.
   + Look for the button labeled `Raw` appearing above the data, and click it. The button is in the grey banner.
   + Copy the URL that appears in your web browser.
-  + Return to your R Markdown notebook in RStudio, and add a line to read in the file from the URL you've copied. You should use `read_csv()` and don't forget to store the result into a named object: `batted_balls`.
+  + Return to your Quarto notebook in RStudio, and add a line to read in the file from the URL you've copied. You should use `read_csv()` and don't forget to store the result into a named object: `batted_balls`.
   + Run your code using either `ctrl+Enter` or `cmd+Return`, and then check the `Environment` tab of your top-right pane in RStudio to confirm that you have a new Data object called `batted_balls`.
 
 4. Repeat Step 3, but read in `park_dimensions.csv` instead.
 
 ## Viewing Data
 
-Now that we've got data, the first thing we should do is look at it. There are a few really handy R functions for *getting a feel* for the data you have access to. The `View()`, `head()`, `tail()`, and `glimpse()` functions are four that are really commonly used.
+Now that we've got data, the first thing we should do is look at it. There are a few really handy R functions for *getting a feel* for the data you have access to. The `View()`, `head()`, `tail()`, and `glimpse()` functions are four that are really commonly used. The `skim()` function from the `{skimr}` package is also one that you should add to your toolbox.
 
-5. Open a new code cell in your R Markdown notebook by using the `+C` button at the top of the top-left pane in RStudio and choosing R as the language for the code cell. Use the functions mentioned above to explore your `batted_balls` and `park_dimensions` data frames.
+5. Open a new code cell in your Quarto notebook by using the `+C` button at the top of the top-left pane in RStudio and choosing R as the language for the code cell. Use the functions mentioned above to explore your `batted_balls` and `park_dimensions` data frames.
 
 ## Manipulating Data
 

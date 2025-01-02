@@ -1,10 +1,8 @@
 ---
 title: 'Tidy Analyses in R for Returning Students'
 author: "Dr. Gilbert"
-output:
-  html_document:
-    theme: cerulean
-    highlight: pygments
+format: html
+theme: flatly
 ---
 
 ```{r global-options, include=FALSE}
@@ -31,7 +29,7 @@ Choose which data you'd prefer to work with. For convenience, I've extracted sma
   
 ## Setup
 
-Use `File -> New File -> R Markdown...` to create a new R Markdown notebook. Clear out the boilerplate and use the `setup` chunk to load the `{tidyverse}` and `{tidymodels}` libraries. You may also want to load `{kableExtra}` for printing out nicely formatted tables in your knitted notebook.
+Use `File -> New File -> Quarto...` to create a new Quarto Document. Clear out the boilerplate and use the `setup` chunk to load the `{tidyverse}` and `{tidymodels}` libraries. You may also want to load `{kableExtra}` for printing out nicely formatted tables in your knitted notebook.
 
 Loading the data from a web URL is convenient because you don't need to download anything. You'll need the following files depending on which topic you'd like to explore:
 
