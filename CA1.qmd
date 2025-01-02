@@ -1,10 +1,8 @@
 ---
 title: "MAT434: Competition Assignment 1"
 author: "Dr. Gilbert"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output:
-  html_document:
-    theme: cerulean
+format: html 
+theme: flatly
 ---
 
 ```{r global-options, include=FALSE}
@@ -20,25 +18,23 @@ Complete the following:
 
 2. Peruse the competition site, reading the details for this semester's competition. On the *Overview* page for the Competition, click on the black `Join Competition` button.
 
-3. Navigate to the *Data* tab on the competition site. Download the `data.csv` and `comp.csv` files. You can also download the `sample_submission.csv` file if you like, but you don't need to. Put these files into a convenient location on your computer.
+3. Navigate to the *Data* tab on the competition site. Download the `data.csv` and `comp.csv` files. You can also download the `sample_submission.csv` file if you like, but you don't need to. Move these files into the folder corresponding to your R Project / GitHub repository.
 
     + You may be prompted to accept the competition rules before you are allowed to download the data. The rules are to (i) learn new things, (ii) don't cheat, (iii) apply yourself, and (iv) have fun. 
 
 4. Open RStudio and use `File -> Recent Projects` to select and open the R Project which is managing your GitHub repository.
 
-5. Use `File -> New File -> R Markdown...` to create a new R Markdown notebook. Fill in the fields as usual and then click the button to create the notebook.
+5. Use `File -> New File -> Quarto Document...` to create a new Quarto notebook. Fill in the fields as usual and then click the button to create the notebook.
 
 6. In the `setup` chunk, add the code necessary to load the `{tidyverse}` and `{tidymodels}` libraries. You may also want to load `{kableExtra}` and `{patchwork}`. 
 
-7. Also in that code cell, use `read_csv()` with the path to the `data.csv` file on your computer to read that data into a named object. 
-
-    + If you are having trouble identifying the file path, you can click on the `Environment` tab in the top-right pane of RStudio and click the *Data Import* button. From here, you can click on *Browse* and navigate to the location where you saved the file. Don't completely read in the data this way though. Look in the lower right to see the code necessary to read in your data. Part of the second line in that code viewer will be the path to you file. Copy it and paste it into the `read_csv()` function in your notebook. As we've done with URLs, you'll need to surround the file path with quotes.
+7. Also in that code cell, use `read_csv("data.csv")` to read the data into your notebook. Don't forget to save the result of reading the file to a named object in R, otherwise R will immediately forget the data.
     
 8. Remove the boilerplate that appears after your `setup` code chunk.
 
 9. Add a new code cell and use it to print out the `head()` of the data you've just read in.
 
-10. Use the blue ball of yarn button to knit the notebook into an HTML document. 
+10. Use the blue arrow button to render the notebook into an HTML document. 
 
 11. Use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new files to your remote repository at GitHub.
 

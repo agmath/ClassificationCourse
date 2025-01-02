@@ -1,10 +1,8 @@
 ---
 title: "MAT434: Competition Assignment 3"
 author: "Dr. Gilbert"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output:
-  html_document:
-    theme: cerulean
+format: html 
+theme: flatly
 ---
 
 ```{r global-options, include=FALSE}
@@ -16,7 +14,7 @@ Complete the following:
 
 1. Open RStudio and use `File -> Recent Projects` to select and open the R Project which is managing your GitHub repository.
 
-2. Use `File -> Open File...` and navigate to the location of your R Markdown notebook from Competition Assignment 2. Open it.
+2. Use `File -> Open File...` and navigate to the location of your Quarto notebook from Competition Assignment 2. Open it.
 
 3. Run all of the code in your existing notebook. 
 
@@ -24,9 +22,9 @@ Complete the following:
 
     + Much like your EDA, this section of your analytics report should include a mixture of discussion and code. You'll need to use narrative discussion (text) to help walk your reader through your approach to modeling and the decisions you are making. They should understand what you are doing and why you are doing it even if they are not an expert in statistical modeling (like you are becoming!). 
 
-5. Use your model to make predictions for the properties in `comp.csv`. Submit those predictions to our class Kaggle competition for scoring.
+5. Use your model to make predictions for the properties in `comp.csv` (you'll need to read in that data first). Submit those predictions to our class Kaggle competition for scoring.
 
-6. When you are done, use the blue ball of yarn button to knit the notebook into an HTML document. 
+6. When you are done, use the blue arrow button to render the notebook into an HTML document. 
 
 7. Use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new files to your remote repository at GitHub.
 
