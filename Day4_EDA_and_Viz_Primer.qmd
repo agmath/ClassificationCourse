@@ -1,10 +1,7 @@
 ---
 title: 'Data Visualization using `ggplot()`'
-output:
-  html_document:
-    theme: cerulean
-    highlight: pygments
-  pdf_document: default
+format: html 
+theme: flatly
 ---
 
 ```{r global-options, include=FALSE}
@@ -14,7 +11,7 @@ library(tidyverse)
 
 ## Getting Started and Basics
 
-The goal of any exploratory data analysis (EDA) is to learn about and from our data. You did some of that in Days 2 and 3, where you looked at techniques for *tidy* data analyses in R and also inline reporting within R Markdown documents. While summary statistics are great, sometimes visuals are even more effective at helping us (and our readers) understand the data we are working with. This notebook will focus on data visualization using `ggplot()`.
+The goal of any exploratory data analysis (EDA) is to learn about and from our data. You did some of that in Days 2 and 3, where you looked at techniques for *tidy* data analyses in R and also inline reporting within Quarto documents. While summary statistics are great, sometimes visuals are even more effective at helping us (and our readers) understand the data we are working with. This notebook will focus on data visualization using `ggplot()`.
 
 Open RStudio and the notebook you've been working on over the past two class meetings.
 

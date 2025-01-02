@@ -2,9 +2,8 @@
 title: "Modeling Framework and `{tidymodels}` Workflow Review"
 author: 
   - "Dr. Gilbert"
-output: 
-  html_document:
-    theme: cerulean
+format: html
+theme: flatly
 ---
 
 ```{r knitOptionsChunk, include = FALSE}

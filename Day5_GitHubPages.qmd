@@ -1,10 +1,8 @@
 ---
 title: "A Public-Facing Portfolio and GitHub Pages"
 author: "Dr. Gilbert"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output:
-  html_document:
-    theme: cerulean
+format: html
+theme: flatly
 ---
 
 ```{r global-options, include=FALSE}
@@ -64,7 +62,7 @@ It may take another minute or so to push the changes to your public-facing site.
 
 ### Organizing Your Page Using Headers and Free Text
 
-Good news! You construct your *GitHub pages* page using markdown syntax just like we've been using in our R Markdown notebooks. You add headers with hastags (#) -- more hashtags means lower-level headers. You separate paragraphs with an empty line in your markdown file. You can format italic text with single asterisks on either side, and bold text with double-asterisks on either side. You'll pick up more techniques as you need them. Additionally, if you know any HTML, those tags are also usable here in your markdown file as well.
+Good news! You construct your *GitHub pages* page using markdown syntax just like we've been using in our Quarto notebooks. You add headers with hastags (#) -- more hashtags means lower-level headers. You separate paragraphs with an empty line in your markdown file. You can format italic text with single asterisks on either side, and bold text with double-asterisks on either side. You'll pick up more techniques as you need them. Additionally, if you know any HTML, those tags are also usable here in your markdown file as well.
 
 1. Back in your `username.github.io` repository, you'll see two files in your file listing -- `_config.yml` and `README.md`. Click on the `README.md` file to open it.
 2. Use the pencil icon in the top-right corner of the preview block to edit your file.
@@ -85,7 +83,7 @@ Wait a few minutes and then navigate back to your public-facing webpage. Be prou
 
 ### Adding Links and Files
 
-You may remember from our discussions about R Markdown that we can create hyperlinks by surrounding the link text in square brackets and providing the URL to the item on the web we want to navigate to in round parentheses immediately after the closing square bracket. For example, `[navigate to my website](agmath.github.io)` would result in a hyperlink to my webpage where the displayed link text would be *navigate to my website*. You can use this same technique to share files with people who are landing on your webpage.
+You may remember from our discussions about Quarto that we can create hyperlinks by surrounding the link text in square brackets and providing the URL to the item on the web we want to navigate to in round parentheses immediately after the closing square bracket. For example, `[navigate to my website](agmath.github.io)` would result in a hyperlink to my webpage where the displayed link text would be *navigate to my website*. You can use this same technique to share files with people who are landing on your webpage.
 
 #### Sharing Files from Google Drive
 
