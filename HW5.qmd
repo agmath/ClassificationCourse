@@ -1,10 +1,8 @@
 ---
 title: "MAT434: Homework 5"
 author: "Dr. Gilbert"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output:
-  html_document:
-    theme: cerulean
+format: html 
+theme: flatly
 ---
 
 ```{r global-options, include=FALSE}
@@ -18,7 +16,7 @@ Complete the following:
 
 1. Open RStudio and use `File -> Recent Projects...` to select the R Project which is managing your GitHub repository. Confirm that you want to open your project.
 
-2. Use `File -> New File -> R Markdown...` to create a new R Markdown notebook. Fill in the fields in the box that opens, using a meaningful file name...like `Spaceship Titanic Rescue`. Confirm all of your choices a click the button to create the file.
+2. Use `File -> New File -> Quarto Document...` to create a new Quarto notebook. Fill in the fields in the box that opens, using a meaningful file name...like `Spaceship Titanic Rescue`. Confirm all of your choices a click the button to create the file.
 
 3. In the `setup` code chunk near the top of the notebook, add code to load the `{tidyverse}` and `{tidymodels}` packages. You may also want to load `{kableExtra}` to nicely format any tabular output, and `{patchwork}` for easy organization of plots.
 
@@ -32,7 +30,7 @@ Complete the following:
 
 8. Conduct an exploratory data analysis on your *training* data.
 
-9. When you are done, use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new notebook and changes out to your remote repository.
+9. When you are done, render your document and use the `Git` tab in the top right pane of RStudio to *Pull, Commit, Push* your new notebook and changes out to your remote repository.
 
 We'll pick up from here at our next class meeting.
 

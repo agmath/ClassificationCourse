@@ -1,10 +1,8 @@
 ---
 title: "MAT434: Homework 6"
 author: "Dr. Gilbert"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output:
-  html_document:
-    theme: cerulean
+format: html 
+theme: flatly
 ---
 
 ```{r global-options, include=FALSE}
@@ -20,7 +18,7 @@ Complete the following:
 
 2. Use `File -> Recent Files` and choose your *Spaceship Titanic* notebook to open it.
 
-3. Use the blue ball of yarn icon to *knit* your notebook to html.
+3. Use the blue arrow icon to *render* your notebook to html.
 
     + If you have any errors, you'll be forced to fix them before your document can be knitted. Drop by my office if you encounter any challenges and need help.
 

@@ -1,10 +1,8 @@
 ---
 title: "MAT434: Homework 3"
 author: "Dr. Gilbert"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output:
-  html_document:
-    theme: cerulean
+format: html 
+theme: flatly
 ---
 
 ```{r global-options, include=FALSE}
@@ -12,7 +10,7 @@ library(tidyverse)
 library(kableExtra)
 ```
 
-Now that you know a bit more about R Markdown and inline R code, find some opportunities to use inline R to automate bits of your discussion. This way, if the data set is updated you won't need to make manual changes.
+Now that you know a bit more about Quarto and inline R code, find some opportunities to use inline R to automate bits of your discussion. This way, if the data set is updated you won't need to make manual changes.
 
 1. Use inline R in a basic discussion of your data set. Use it to compute and print the number of observations and number of variables into a sentence.
 2. Use inline R to calculate at least three summary statistics in sentences where you are discussing them. 
