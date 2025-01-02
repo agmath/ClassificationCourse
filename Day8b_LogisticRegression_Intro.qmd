@@ -2,10 +2,8 @@
 title: "Introduction to Logistic Regression"
 author: 
   - "Dr. Gilbert"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output: 
-  html_document:
-    theme: cerulean
+format: html
+theme: flatly
 ---
 
 ```{r setup, include = FALSE}
