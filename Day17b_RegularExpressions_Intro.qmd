@@ -1,0 +1,83 @@
+---
+title: "Introduction to Pattern Matching and Regular Expressions"
+format: html
+theme: flatly
+---
+
+```{r global-options, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(tidyverse)
+library(tidymodels)
+library(tidytext)
+library(patchwork)
+library(kableExtra)
+
+biden_tweets <- read_csv("https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/biden_tweets.csv")
+```
+
+**Purpose:** In this notebook we'll continue to expand our ability to extract insights from text data using a pattern-matching tool called *regular expressions* or *regex*.
+
+## The Big Idea
+
+Often times when working with text, we know the structure of the token we are looking for, but we don't know the exact token. For example, we may be digging through listings of items for sale on a social media marketplace and we want to know the cost of each of those items. We know that we are looking for a dollar sign (\$) followed by some digits, but we don't know the exact price. This isn't so much a problem for humans reading through a handful of postings, but if we are trying to get a computer to do this, we need some way to describe to a computer what a typical "price" might look like. This is where *regular expressions* come in.
+
+### Building regex
+
+Before we move forward, unless you work with *regular expressions* quite often, its likely that you're going to find them quite mysterious and that you'll forget the syntax for matching things like digits. Here's a link to a [*regex cheat sheet*](https://cheatography.com/davechild/cheat-sheets/regular-expressions/) from Dave Child and a link to an [*interactive regex applet*](https://regexr.com/) so that you can check that your regular expressions are working as you intend for them to. 
+
+Regular expressions are also something you might ask your favorite AI assistant for help with. For example, I asked `chatGPT`, "Hey chatGPT, can you help me write a regular expression that will match dollar values in a posting? In particular, these dollar values may have commas separating thousands or millions of dollars and could contain decimals for cents. Thank you!" -- ChatGPT returned with the following regular expression `\$\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?`, which works as intended according to the regex applet from the previous paragraph.
+
+### How Do We Implement and Use regex?
+
+Using R we can use regular expressions in multiple ways. We can
+
++ tokenize words (or bigrams) and then filter the results using a regular expression and the `str_detect()` function.
++ tokenize sentences (or paragraphs, or chapters, etc.) and filter results using a regular expression and the `str_detect()` function.
++ use `str_extract()` on raw text to extract subsections matching a pattern.
+
+There's lots we can do, and you'll find more use-cases as you continue to explore working with text.
+
+Let's consider an example. I'll load [this dataset](https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/biden_tweets.csv) containing Joe Biden's tweets from 2007 to 2020 which was [posted to Kaggle](https://www.kaggle.com/datasets/rohanrao/joe-biden-tweets) by user Vopani in 2020. We can see the first few tweets below.
+
+```{r}
+biden_tweets %>%
+  select(-id, -url) %>%
+  head() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+Perhaps we want to extract the first appearing hashtag from each of the tweets posted by `@JoeBiden`. We can see the first tweets containing hashtags, along with their extracted hashtag, below.
+
+```{r}
+biden_tweets %>%
+  mutate(hashtags = str_extract(tweet, "#([A-z]|\\d|-)+")) %>%
+  select(tweet, hashtags) %>%
+  filter(!is.na(hashtags)) %>%
+  head(10) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+Perhaps we wanted all of the hashtags appearing in each tweet. Below is one way to do that -- but I am sure that there is a more efficient way.
+
+```{r}
+biden_tweets %>%
+  mutate(hashtags = str_extract(tweet, "#([A-z]|\\d|-)+")) %>%
+  select(tweet, hashtags) %>%
+  filter(!is.na(hashtags)) %>%
+  mutate(hashtags = str_extract_all(tweet, "#([A-z]|\\d|-)+")) %>%
+  head(10) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+Your ability to extract insights from text programmatically is strongly enhanced by command of regular expressions. This tool allows you to perform targeted inquiries about the presence or absence of particular components of text. Regular expressions can also be a way to extract numerical or categorical features from text descriptions as long as you are reasonably confident that the way those features appear across responses follows a consistent pattern.
+
+In terms of model construction, you may use some of the `{textrecipes}` steps from the previous notebook in conjunction with a custom `step_mutate()` which utilizes regular expressions to engineer new model features.
+
+***
+
+## Summary
+
+We'll do more with regular expressions in our next class meeting. For now, you've seen how to use regular expressions for pattern matching. We can use regular expressions to filter observations or to extract particular components from text.

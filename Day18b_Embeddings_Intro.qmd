@@ -1,0 +1,101 @@
+---
+title: "Introduction to Word Embeddings (tf-idf)"
+format: html
+theme: flatly
+---
+
+```{r global-options, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(tidyverse)
+library(tidymodels)
+library(tidytext)
+library(textrecipes)
+library(patchwork)
+library(kableExtra)
+
+spooky_authors <- read_csv("https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/spooky_authors.csv")
+```
+
+**Purpose:** In this notebook we'll consider a powerful technique falling under the umbrella of *word embeddings*. In particular, we'll look at a measure called *term frequency, inverse document frequency* as a way to measure how important a term is to one category of documents versus other categories.
+
+**Data Used:** We'll use excerpts from *Spooky Authors* (Edgar-Allen Poe, Mary Shelley, and HP Lovecraft), which appeared as part of a [Kaggle Competition](https://www.kaggle.com/competitions/spooky-author-identification/overview) in 2018. For convenience, I've added the training data to my GitHub repository [here](https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/spooky_authors.csv).
+
+## The Big Idea
+
+Are tokens more frequently utilized in one type of document versus another? Here, we'll look at a measure of how frequent a token is to a particular class is and how *unique* it is to that class, relative the other classes. The *term frequency, inverse document frequency* of a token is defined as follows: $\displaystyle{\text{tf\_idf}\left(\text{token}\right) = f_{\text{Token}}\cdot\ln\left(\frac{n_{\text{Documents}}}{n_{\text{Documents Containing Token}}}\right)}$, where $f_{\text{Token}}$ denotes the frequency of the $\tt{Token}$ across the entire corpus.
+
+In the formula for $\text{tf\_idf}\left(\text{Token}\right)$, if $\tt{Token}$ appears across all of the documents, then the ration $\frac{n_{\text{Documents}}}{n_{\text{Documents Containing Token}}}$ will evaluate to $1$ and the logarithm will be $0$. That is, a *token* appearing across all documents cannot be useful in differentiating the document. That logarithm will be largest when the *token* in question appears in just one of the documents and none of the others. This means that *tokens* with the highest *term frequency, inverse document frequency* will be those unique to their document and having a high frequency of usage within that document.
+
+Let's try this out with our spooky author excerpts. You can see the first few rows of the spooky author data below.
+
+```{r echo = FALSE}
+spooky_authors %>%
+  head() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+One thing we could do here is to group by author and then compute *term frequency, inverse document frequency* for all tokens across the three resulting "documents".
+
+```{r}
+spooky_tf_idf <- spooky_authors %>%
+  unnest_tokens(word, text) %>%
+  group_by(author) %>%
+  count(word) %>%
+  bind_tf_idf(word, author, n) %>%
+  arrange(-tf_idf) 
+
+spooky_tf_idf %>%
+  head(10) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+It is likely that many of these top words are characters or locations specific to stories written by the authors. However, if we look further down in the list arranged by tf-idf we can see more commonplace words that are specific to each author's lexicon.
+
+```{r}
+spooky_tf_idf %>%
+  slice(200:210) %>%
+  kable() %>%
+  kable_styling(c("hover", "striped"))
+```
+
+Knowing what tokens distinguish one author from another can help us take an unlabeled passage and assign it to the most likely author.
+
+```{r cache = TRUE}
+spooky_sample <- spooky_authors %>%
+  sample_n(2500)
+rf_spec <- rand_forest() %>%
+  set_engine("ranger") %>%
+  set_mode("classification")
+rf_rec <- recipe(author ~ text, data = spooky_sample) %>%
+  step_tokenize(text) %>%
+  step_stopwords(text) %>%
+  step_tfidf(text)
+rf_wf <- workflow() %>%
+  add_model(rf_spec) %>%
+  add_recipe(rf_rec)
+rf_fit <- rf_wf %>%
+  fit(spooky_sample)
+
+conf_matrix <- rf_fit %>%
+  augment(spooky_authors) %>%
+  mutate(author = as.factor(author)) %>%
+  count(author, .pred_class) %>%
+  pivot_wider(id_cols = author, 
+              names_from = .pred_class, 
+              values_from = n)
+
+conf_matrix
+accuracy <- (conf_matrix[1,2] + conf_matrix[2,3] + conf_matrix[3,4])/nrow(spooky_authors)
+```
+
+Note that the model above takes quite some time to fit and also to predict. This is because each distinct word in the training set (aside from stopwords) has become a feature that the model can use. Additionally, we're fitting a random forest consisting of 500 individual trees. That being said, even though the model was trained on only 2500 records, it is performing reasonably well. It has an accuracy of `r accuracy` and identifies excerpts from Edgar Allen Poe quite well. However, it has a difficult time differentiating the excerpts from the other authors from Edgar Allen Poe.
+
+***
+
+## Summary
+
+Over these past three topics, you've learned quite a bit about extracting insights from text data. We've engaged in basic text analysis through tokenization, looked at using regular expressions for extracting features from text using pattern matching, and now we've seen how to use a simple word embedding -- tf-idf scores -- as a component of a predictive model.
+
+If you want to learn more about the basics of working with text data, check out [*Tidy Text Mining with R](https://www.tidytextmining.com/) by Julia Silge and David Robinson. If you want to learn more about using text data in machine learning algorithms, check out [*Supervised Machine Learning for Text Analysis in R*](https://smltar.com/) by Julia Silge and Emil Hvitfeldt.
