@@ -1,0 +1,420 @@
+---
+title: "MAT 434: Introduction and What to Expect"
+author: Dr. Gilbert
+format: 
+  revealjs:
+    smaller: true
+date: today
+date-format: long
+theme: serif
+incremental: true
+---
+
+```{css}
+code.sourceCode {
+  font-size: 1.3em;
+  /* or try font-size: xx-large; */
+}
+
+a:link{
+  color: purple;
+}
+
+a:visited{
+  color: purple;
+}
+```
+
+```{r global-options, include=FALSE}
+library(tidyverse)
+library(tidymodels)
+
+theme_set(theme_bw(base_size = 20))
+```
+
+## What Are We Here For?
+
+```{r}
+#| echo: false
+#| message: false
+
+set.seed(1052025)
+#red
+n1 <- 37
+x1 <- runif(n1, 40, 60)
+y1 <- rnorm(n1, 50, 10)
+
+#purple
+n2 <- 52
+x2 <- runif(n2, 5, 95)
+y2 <- rnorm(n2, 25, 10)
+
+#orange
+n3 <- 33
+x3 <- runif(n3, 0, 60)
+y3 <- runif(n3, 20 + x3, 100)
+
+#green
+n4 <- 41
+x4 <- runif(n4, 40, 100)
+y4 <- runif(n4, 140 - 1.4*x4, 100)
+
+my_data <- tibble(
+  x1 = c(x1, x2, x3, x4),
+  x2 = c(y1, y2, y3, y4),
+  class = c(rep("red", n1), rep("purple", n2), rep("orange", n3), rep("darkgreen", n4))
+)
+
+my_data %>%
+  ggplot() + 
+  geom_point(aes(x = x1, y = x2, color = class, shape = class),
+             size = 2.5) + 
+  scale_color_manual(values = c("darkgreen", "orange", "purple", "red")) +
+  labs(x = "x1", y = "x2") + 
+  expand_limits(x = 0, y = 0)
+  
+```
+
+## What Are We Here For?
+
+```{r}
+#| echo: false
+#| message: false
+
+my_mesh <- crossing(
+  x1 = seq(0, 100, length.out = 150),
+  x2 = seq(0, 100, length.out = 150)
+)
+
+dt_spec <- decision_tree(tree_depth = 3) %>%
+  set_mode("classification") %>%
+  set_engine("rpart")
+dt_rec <- recipe(class ~ ., data = my_data)
+dt_wf <- workflow() %>%
+  add_model(dt_spec) %>%
+  add_recipe(dt_rec)
+dt_fit <- dt_wf %>%
+  fit(my_data)
+
+knn101_spec <- nearest_neighbor(neighbors = 101) %>%
+  set_mode("classification")
+knn_rec <- recipe(class ~ ., data = my_data)
+knn101_wf <- workflow() %>%
+  add_model(knn101_spec) %>%
+  add_recipe(knn_rec)
+knn101_fit <- knn101_wf %>%
+  fit(my_data)
+
+mesh_pred101 <- knn101_fit %>%
+  augment(my_mesh)
+
+knn15_spec <- nearest_neighbor(neighbors = 15) %>%
+  set_mode("classification")
+knn15_wf <- workflow() %>%
+  add_model(knn15_spec) %>%
+  add_recipe(knn_rec)
+knn15_fit <- knn15_wf %>%
+  fit(my_data)
+
+mesh_pred15 <- knn15_fit %>%
+  augment(my_mesh)
+
+knn1_spec <- nearest_neighbor(neighbors = 1) %>%
+  set_mode("classification")
+knn1_wf <- workflow() %>%
+  add_model(knn1_spec) %>%
+  add_recipe(knn_rec)
+knn1_fit <- knn1_wf %>%
+  fit(my_data)
+
+mesh_pred_dt <- dt_fit %>%
+  augment(my_mesh)
+
+ggplot() + 
+  geom_point(data = mesh_pred_dt,
+             aes(x = x1, y = x2, color = .pred_class),
+             alpha = 0.1,
+             show_legend = FALSE) +
+  geom_point(data = my_data,
+             aes(x = x1, y = x2, color = class, shape = class),
+             size = 2.5) + 
+  scale_color_manual(values = c("darkgreen", "orange", "purple", "red")) +
+  labs(x = "x1", y = "x2") + 
+  expand_limits(x = 0, y = 0)
+```
+
+## What Are We Here For?
+
+```{r}
+mesh_pred1 <- knn1_fit %>%
+  augment(my_mesh)
+
+ggplot() + 
+  geom_point(data = mesh_pred101,
+             aes(x = x1, y = x2, color = .pred_class),
+             alpha = 0.1,
+             show_legend = FALSE) +
+  geom_point(data = my_data,
+             aes(x = x1, y = x2, color = class, shape = class),
+             size = 2.5) + 
+  scale_color_manual(values = c("darkgreen", "orange", "purple", "red")) +
+  labs(x = "x1", y = "x2") + 
+  expand_limits(x = 0, y = 0)
+```
+
+## What Are We Here For?
+
+```{r}
+ggplot() + 
+  geom_point(data = mesh_pred15,
+             aes(x = x1, y = x2, color = .pred_class),
+             alpha = 0.1,
+             show_legend = FALSE) +
+  geom_point(data = my_data,
+             aes(x = x1, y = x2, color = class, shape = class),
+             size = 2.5) + 
+  scale_color_manual(values = c("darkgreen", "orange", "purple", "red")) +
+  labs(x = "x1", y = "x2") + 
+  expand_limits(x = 0, y = 0)
+  
+```
+
+## What Are We Here For?
+
+```{r}
+ggplot() + 
+  geom_point(data = mesh_pred1,
+             aes(x = x1, y = x2, color = .pred_class),
+             alpha = 0.1,
+             show.legend = FALSE) +
+  geom_point(data = my_data,
+             aes(x = x1, y = x2, color = class, shape = class),
+             size = 2.5) + 
+  scale_color_manual(values = c("darkgreen", "orange", "purple", "red")) +
+  labs(x = "x1", y = "x2") + 
+  expand_limits(x = 0, y = 0)
+  
+```
+
+## Software Installation
+
+Where is everyone at?
+  
++ R?
++ RStudio?
++ Git?
+
+. . . 
+
+I'll help you complete the installations throughout today's discussion
+
+## Syllabus
+
+**Major Highlights from the Syllabus**: I'll ask you to read the syllabus, but the most important items are on the following slides.
+
+## Instructor and Office Hours
+
+  + Instructor: Dr. Adam Gilbert
+  
+    + e-mail address: [a.gilbert1@snhu.edu](mailto:a.gilbert1@snhu.edu)
+    + Office: Robert Frost Hall, Room 311
+    + Office Hours: 
+    
+      + Mondays 9:30am - 10:30am
+      + Thursdays 9:00am - 11:00am
+      + Fridays 10:00am - noon
+
+## Required Resources
+
+First and foremost...everything is free!
+
+  + **Main Textbook:** Loosely following [*Introduction to Statisical Learning (with R)* by Hastie et. al.](https://www.statlearning.com/)
+  + **Supplemental Text I:** [*R for Data Science* by Wickham et. al.](https://r4ds.hadley.nz/) for foundational R
+  + **Supplemental Text II:** [*Tidy Modeling with R* by Silge and Khun](https://www.tmwr.org/) for modeling in R with `{tidymodels}`
+  + [R](https://cran.r-project.org/) and [RStudio](https://posit.co/download/rstudio-desktop/)
+  + [GitHub](https://github.com/)
+
+## Grading Scheme
+
+  <center> 
+  Grade Item                     | Value
+  -------------------------------|-----------
+  Participation                  | 10%
+  Homework (~6)                  | 25%
+  Competition Assignments (~6)   | 40%
+  GitHub Pages Portfolio         | 5%
+  Project                        | 20%
+  </center>
+
+## Explanations of Grade Items
+
++ **Participation:** Come to class and contribute actively
++ **Homework:** These assignments are mostly *onramping* assignments to get you up to speed with our software. We'll have about six.
++ **Competition Assignments:** We'll learn classification by doing classification. We have six planned assignments associated with a modeling competition on price ranges for homes.
++ **GitHub Pages Portfolio:** I want to help you all build a professional, outward facing portfolio to share your work with potential employers or graduate schools. You'll be able to share pieces of work from this course as well as others there and easily add a link to the portfolio on your resume. My hope is that you'll use this beyond just our class.
++ **Project:** A final course project spanning our last three weeks together.
+
+## Competition?
+
++ Hosted at Kaggle
++ Closed to only students in our course
++ You'll need a free account -- link in Slack
++ Your grade is **not** tied to your finishing place
++ The competition aspect is *friendly* -- please keep it that way (although good-natured heckling and trash talk is fine as long as all parties approve).
++ Former MAT300 students, what would you share with our new friends about the competition?
+
+## Brightspace
+
++ Weekly Announcement
++ Assignments
++ Gradebook
++ Go to the webpage for everything else
+
+## Course Webpage
+
+I've built a [webpage to organize our course content](https://agmath.github.io/ClassificationCourse.html).
+
++ Syllabus
++ Tentative timeline
+  
+  + Truly tentative -- we can slow down, speed up, swap out topics, etc.
+  + Links to short "explainers" to look over before each class meeting so that we can spend our time in class working with data
+  + Links to assignments -- you can see everything now.
+
+## What's Class Like?
+
++ The beginning of the semester will include about 3 weeks of on-ramping to make sure we're all up to speed with R, Quarto, `{tidymodels}`, and GitHub
++ My hope is that we'll generally spend class time actively working with data rather than listening to lectures
++ Ideally, you'll collaborate with one another
+
+## A Note on My Approach to Class
+
++ I'm open to change in all of my courses.
++ If the structure isn't working for you, let's chat and see what changes we can make to improve your experience.
++ If you don't want to tell me in person, leave an anonymous note under my office door.
+
+. . . 
+
+My goal in this course is for all of you to learn as much about classification and statistical modeling as possible -- we can't achieve that if you don't feel like you are benefiting from our class meetings.
+
+## AI Use
+
++ While we will be interfacing with data by running code, MAT434 is not a programming course
++ Because of this, I'll encourage you to work with your favorite AI as an *assistant*
+
+  + Don't have the AI do the work for you
+  + Do have the AI help you fix broken code
+  + Do have the AI help you "trick out" your plots
+  + Do have the AI help you improve your document formatting
+  
+. . . 
+
+**Summary:** "*Do this for me...*" requests are against the rules, but "*How do I...*", "*Help me fix this...*" or "*Help me make this better...*" are all encouraged. This goes for R code, markdown and formatting in Quarto, and your writing.
+
+## A Road Map to Our Semester
+
++ I've planned for us to discuss a lot of material in MAT434 
++ We do have the ability to slow down, change focus, swap topics in or out, etc.
++ What follows is a very generic road map of what we will discuss. Starting now.
+
+## What Are We Doing?
+
++ Artificial Intelligence (AI)?
++ Data science?
++ Machine learning?
++ Statistical learning?
+
+## Background For Working With Data
+
++ What is data?
++ How to work with data: Don't spend it all in one place!
++ How do we visualize and story-tell with data?
++ What if my data is messy? (Spoiler Alert: It will be!)
+
+## What Foundational Statistics Knowledge Do I Need?
+
+Very little, actually  
+
+  + Some intuition about randomness, noisy data, and uncertainty
+  + Approximate Confidence Intervals: $\left(\text{point estimate}\right) \pm 2\cdot \left(\text{standard error}\right)$
+  + Basic Hypothesis Testing: $p< \alpha$ means data are incompatible with a null (skeptical) hypothesis
+  
+    + For us, this will generally mean that a predictor variable provides explanatory value
+    + ...and this is really only relevant for our first classification model
+
+## Classification
+    
+::::{.columns}
+
+:::{.colummn width="100%"}
+
++ What is classification?
++ How do we assess model performance?
+
+:::
+
+::::
+
+::::{.columns}
+
+:::{.column width="50%"}
+
++ Model classes
+
+  + Logistic regression
+  + Support vector machines
+  + Nearest neighbor classifiers
+  + Decision trees
+  + Bagged trees
+  + Random forests
+  + Gradient boosted trees
+
+:::
+
+:::{.column width="50%"}
+
++ Feature engineering
+
+  + Principal components analysis
+  + Text-based features
+  
++ Deep Learning and Basic Neural Networks
+
+:::
+
+::::
+
+## Homework (Part I)
+
+[**Homework 1:**](https://agmath.github.io/ClassificationCourse/HW1.html ) Finish the software installation (due at the beginning of Wednesday's class) -- come see me if you need help
+
+. . .
+
+Read Chapter 1 (pages 1 - 14) of the [Introduction to Statistical Learning (ISLR)](https://hastie.su.domains/ISLR2/ISLRv2_website.pdf) book, or watch [the corresponding videos from the textbook authors](https://youtube.com/playlist?list=PLOg0ngHtcqbPTlZzRHA2ocQZqB1D_qZ5V&si=-xI-3H1D2pZwYot5) (the first two videos in the playlist).
+  
++ Discusses three arenas where statistical learning is applied 
+
+  + Regression, Classification, and Unsupervised Learning
+  + Our focus is classification, but knowing about all three will help you grasp what we are trying to do in our class
+
+## Homework (Part II)
+
+. . .
+
+**(Recommended)** Work through the `Topic 2` and `Topic 3` *Tutorial* notebooks for an intro to R and how to compute summary statistics. Before Wednesday of Week 2, work through `Topic 4` on data visualization.
+
+. . .
+
+Stop by my office (Robert Frost 311), say hi and let's briefly chat about the following: 
+
++ Why are you taking this course? 
++ What do you hope to get out of it?
++ What contexts do you want us to pull data from in our course? (animal physiology, psychology, medicine, business/economics, sports, etc.)
+
+## Next Time...
+
++ Our first GitHub Repo
++ Creating an R Project
++ Working with data in R
++ Mixing narration and code with Quarto
++ Pushing changes to your repo
