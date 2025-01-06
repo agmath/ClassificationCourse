@@ -1,0 +1,325 @@
+---
+title: "A Crash Course in Everything"
+subtitle: "Git, Quarto, and R"
+author: Dr. Gilbert
+format: 
+  revealjs:
+    smaller: true
+date: today
+date-format: long
+theme: serif
+incremental: true
+---
+
+```{r global-options, include=FALSE}
+library(tidyverse)
+library(tidymodels)
+library(countdown)
+
+theme_set(theme_bw(base_size = 20))
+```
+
+```{css}
+code.sourceCode {
+  font-size: 1.3em;
+  /* or try font-size: xx-large; */
+}
+
+a:link{
+  color: purple;
+}
+
+a:visited{
+  color: purple;
+}
+```
+
+## Objectives
+
+These slides address the following items.
+
+  + How do I create a GitHub repo?
+  + How do I connect my GitHub repo to an R Project on my local machine?
+  + What is a Quarto Document and how do I use it?
+  + How do I install and load packages in R? In particular we'll work with the `{tidyverse}`.
+  + How do I read data into R from both local and remote sources?
+  + How do I interact with, and manipulate, data using the tools and principles of the `{tidyverse}`?
+  
+## Creating a GitHub Repo
+
++ Navigate to [GitHub](https://www.github.com) and log in
++ Click the green button labeled `New` 
++ Name your repo (something descriptive, like *MAT434* or *ClassificationCourse*)
++ Click the checkbox to initialize the repo with a README file
++ Click the green button to Create repository.
+
+## Cloning Your Repo to a Local R Project
+
++ Inside your GitHub repo, locate the green *Code* dropdown
++ Click it and copy the HTTPS address
++ Open RStudio
++ Use `File -> New Project` to begin creating a new R project
++ Select *From Version Control*, then *Git*, and paste in the URL
++ Hit the *Browse* button to change where the project will live
++ Navigate to *Documents*, click to create a new folder: *GitHub*
++ Hit *Open*/*Okay* and then click *Create*
+
+## Create a New Quarto Document
+
++ Use `File -> New File -> QUarto Document` to create a new Quarto notebook
++ Add a title -- something like *Crash Course in Git, Quarto, and R*
++ Add yourself as the author
++ Click *Create*
++ Use `File -> Save As...` to save the file -- give it a name like `CrashCourse.qmd` and leave it in the project directory
++ Click the blue arrow button to *render* the notebook to HTML
+
+## Back to Git...
+
++ Click on the *Git* tab in the top-right pane of RStudio
++ You've got some yellow flagged files listed there -- these are files not currently in your *remote* repo
++ Click the *Pull* button (you're already up to date, but it's a good practice to get in)
++ Click the checkboxes next to all your new files
++ Click the *Commit* button, add a message in the message box, and click *Commit*
++ Hit the push button to send your files out to the remote repo
+
+. . . 
+
+Head back to your web browser and refresh your repo -- your files have arrived!
+
+## The Quarto Notebook Environment
+
++ Quarto documents consist of three main components 
+
+  + a YAML header
+  + code chunks (grey background)
+  + text/markdown cells (white background)
+
++ We'll generally copy/paste the same YAML header (I'll give you a slightly more complex template)
++ Code chunks must have executable R code in them
++ Text/markdown cells can have anything you like
+
+. . . 
+
+Here's [a Quarto cheatsheet](https://rstudio.github.io/cheatsheets/html/quarto.html), but feel free to work with your favorite LLM to get Quarto to do exactly what you want
+
+## Working in R
+
+For the rest of the slide deck, we'll transition to working in R but then come back to Git/GitHub at the end of the class meeting
+
+. . . 
+
+**Students coming from MAT300:** Feel free to grab the data and start investigating
+
++ MLB [batted balls](https://raw.githubusercontent.com/agmath/agmath.github.io/refs/heads/master/data/classification/battedballs.csv) and [park dimensions](https://raw.githubusercontent.com/agmath/agmath.github.io/refs/heads/master/data/classification/park_dimensions.csv), or
++ FAA [wildlife impacts with planes](https://raw.githubusercontent.com/agmath/agmath.github.io/refs/heads/master/data/classification/faa_birdstrikes.csv)
+
+. . . 
+
+**Question for New Students:** Do you want to partner up with an existing student to work and learn from them, or do you want to continue with the slides?
+
+## The R Dialects
+
+There are three main dialects in R
+
++ Base-R
++ `data.table` (speed)
++ Tidy-R / `tidyverse` (readability and consistency)
+
+  + We use this one. When you search for help -- include "*tidyverse*" in your query.
+  
+. . .
+
+> **Note:** *R dialects* just refers to how we choose to write R code and which functions we prioritize -- dialects can be (and often are) mixed.
+
+## Installing and Loading Packages
+
++ `install.packages("PACKAGE_NAME")` to install a package
+
+  + You only do this once
+  + Do it in the *console*
+
++ `library(PACKAGE_NAME)` to load the package
+
+  + Do this near the top of your Quarto Document, in a *setup* chunk
+  
+. . .
+
+$\bigstar$ Install the `{tidyverse}` and load it in your Quarto Notebook
+
+. . . 
+
+$\bigstar$ While you are at it, install the `{skimr}`, `{tidymodels}`, `{patchwork}`, and `{kableExtra}` packages as well -- `{skimr}` and `{kableExtra}` are the only ones you might want to load for now
+
+## Reading in Data
+
+. . .
+
+**ASIDE:** We store objects in R with the arrow operator (`<-`)
+
+. . .
+
+```{r}
+#| echo: true
+#| eval: false
+
+x <- 2
+```
+
+. . .
+
+**Reading Data:** To read data, we use a function of the form `read_*()`.
+
+. . .
+
+```{r}
+#| echo: true
+#| eval: false
+
+data <- read_csv("PATH_TO_CSV_FILE")
+```
+
++ Requires the `{tidyverse}` (or at least `{readr}`) to be loaded
++ Similar functions exist for reading other file formats
++ Some require other packages (`{readxl}` or `{haven}` are common)
+
+. . .
+
+$\bigstar$ Read the MLB [batted balls data](https://raw.githubusercontent.com/agmath/agmath.github.io/refs/heads/master/data/classification/battedballs.csv) and the [park dimensions data](https://raw.githubusercontent.com/agmath/agmath.github.io/refs/heads/master/data/classification/park_dimensions.csv) into your Quarto Notebook
+
+. . .
+
+I'll post the links in Slack
+
+## First Interactions with Data
+
++ `head()` to view first six rows
++ `glimpse()` to view dimensions and data types
++ `skim()` from `{skimr}` for much more detail
+
+. . . 
+
+$\bigstar$ Try these functions on your `battedballs` data
+
+```{r}
+countdown(minutes = 2)
+```
+
+## The Pipe Operator 
+
++ Pipes (`%>%` or `|>`) make code more readable and allow chaining of functions together
++ Object to the left of the pipe becomes first argument to the function after the pipe
++ Read the pipe to mean "*and then*"
+
+. . .
+
+```{r}
+#| echo: true
+#| eval: false
+#| code-line-numbers: "|1|2|"
+
+penguins %>%
+  head()
+```
+
+. . . 
+
+$\bigstar$ Rewrite the functions you used to explore your data with *pipes*
+
+## Manipulating and Transforming Data
+
++ `filter()` to return only desired records
++ `select()` to return only desired columns
++ `summarize()` to compute summaries on a table
++ `group_by()` to create groups in a table
++ `mutate()` to create new columns or change existing ones
+
+. . .
+
+$\bigstar$ How might we use these functions? Write down some questions that could be answered using the functions described above. Start with a couple very simple questions and then work up to questions whose answers might be more complex to find.
+
+## Manipulating and Transforming Data
+
+:::{.nonincremental}
+
++ `filter()` to return only desired records
++ `select()` to return only desired columns
++ `summarize()` to compute summaries on a table
++ `group_by()` to create groups in a table
++ `mutate()` to create new columns or change existing ones
+
+:::
+
+$\bigstar$ How might we use these functions? Write down some questions that could be answered using the functions described above. Start with a couple very simple questions and then work up to questions whose answers might be more complex to find.
+
+$\bigstar$ We'll try answering some of those questions now!
+
+## All Changes are Temporary
+
+```{r}
+#| echo: true
+#| eval: false
+
+penguins %>%
+  filter(species == "Gentoo") %>%
+  group_by(island) %>%
+  summarize(
+    avg_mass = mean(body_mass_g)
+  )
+```
+
++ Start with the `penguins` data frame, *and then*
++ filter to just the Gentoo species, *and then*
++ group by island, *and then*
++ calculate average penguin body mass for each group
+
+**Note:** `penguins` data frame is not permanently altered here
+
+## Until We Make Them Permanent
+
+. . .
+
+```{r}
+#| echo: true
+#| eval: false
+
+penguins <- penguins %>%
+  filter(species == "Gentoo") %>%
+  group_by(island) %>%
+  summarize(
+    avg_mass = mean(body_mass_g)
+  )
+```
+
+. . .
+
+Now the change is permanent because we've stored the result
+
++ Notice the use of the arrow operator (`<-`)
++ Be careful overwriting existing objects -- think about whether you:
+  
+  + might need the old object again
+  + would be better off creating a new object (variable)
+  + even need to store the result at all
+    
+## Let's Practice
+
+Use this time to continue playing with the MLB data sets
+
+1. Use the blue *render* button to convert your markdown document into a beautiful HTML document and enjoy the fruits of your labor!
+
+    + 🤔 Ponder an existence where you never need to open MS Word (or PowerPoint) again! 🤔
+    
+1. Write down and answer additional interesting questions that might use functionality discussed in this slide deck -- start simple and then build up to questions that might be more complex
+1. Document your work by including text descriptions alongside the code chunks
+
+. . .
+
+Don't worry if your document looks quite plain for now, our next class meeting is devoted to using markdown syntax in Quarto effectively
+
+## Next Time...
+
+<center>
+
+<font size="120pt"><br/>Quarto, Inline R, and semi-automated reporting</font>
+
+</center>
