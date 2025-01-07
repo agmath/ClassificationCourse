@@ -331,6 +331,16 @@ My goal in this course is for all of you to learn as much about classification a
 + How do we visualize and story-tell with data?
 + What if my data is messy? (Spoiler Alert: It will be!)
 
+## Ethics, Data Use, and Models
+
++ There's probably room for a full course on this topic
++ Here are a couple of things to keep in mind
+
+  + Models should do no harm, especially with historically marginalized groups or vulnerable populations
+  + Our models are trained on historical data in order to make future predictions or decisions
+  + If our historical data has biases, then we are at risk of training a model to be biased in the same ways
+  + Check out [this blog post by Simon P. Couch on *fair machine learning with `{tidymodels}`](https://www.tidyverse.org/blog/2024/03/tidymodels-fairness/)
+
 ## What Foundational Statistics Knowledge Do I Need?
 
 Very little, actually  
