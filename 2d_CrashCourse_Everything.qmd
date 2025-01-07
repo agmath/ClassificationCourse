@@ -66,7 +66,7 @@ These slides address the following items.
 
 ## Create a New Quarto Document
 
-+ Use `File -> New File -> QUarto Document` to create a new Quarto notebook
++ Use `File -> New File -> Quarto Document` to create a new Quarto notebook
 + Add a title -- something like *Crash Course in Git, Quarto, and R*
 + Add yourself as the author
 + Click *Create*
@@ -94,7 +94,7 @@ Head back to your web browser and refresh your repo -- your files have arrived!
   + code chunks (grey background)
   + text/markdown cells (white background)
 
-+ We'll generally copy/paste the same YAML header (I'll give you a slightly more complex template)
++ We'll generally copy/paste the same YAML header (I'll send you a slightly more complex template in Slack now)
 + Code chunks must have executable R code in them
 + Text/markdown cells can have anything you like
 
@@ -227,8 +227,8 @@ $\bigstar$ Rewrite the functions you used to explore your data with *pipes*
 
 ## Manipulating and Transforming Data
 
-+ `filter()` to return only desired records
-+ `select()` to return only desired columns
++ `filter()` to return only desired records (by a conditional statement)
++ `select()` to return only desired columns (by name, separated by commas)
 + `summarize()` to compute summaries on a table
 + `group_by()` to create groups in a table
 + `mutate()` to create new columns or change existing ones
