@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.43">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dr.&nbsp;Gilbert">
+
+<title>A Public-Facing Portfolio and GitHub Pages</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Day5_GitHubPages_v2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Day5_GitHubPages_v2_files/libs/quarto-html/quarto.js"></script>
+<script src="Day5_GitHubPages_v2_files/libs/quarto-html/popper.min.js"></script>
+<script src="Day5_GitHubPages_v2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Day5_GitHubPages_v2_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Day5_GitHubPages_v2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Day5_GitHubPages_v2_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Day5_GitHubPages_v2_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Day5_GitHubPages_v2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Day5_GitHubPages_v2_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">A Public-Facing Portfolio and GitHub Pages</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dr.&nbsp;Gilbert </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>Purpose:</strong> This notebook will help you create a public facing portfolio (a professional webpage) using GitHub pages. You can use this portfolio to share projects that you are proud of so that future employers or graduate programs can see what you are capable of. In particular, you’ll do the following.</p>
+<ul>
+<li><em>Fork</em> <a href="https://github.com/agmath/PagesBasic">my basic GitHub pages example repo</a> and rename it to a <code>username.github.io</code> repository for yourself</li>
+<li>Enable this repository to use the <em>Pages</em> environment</li>
+<li>Edit the theme to make your site fit your professional style</li>
+<li>Organize a page using headings and free form text</li>
+<li>Post projects you are proud of or are working on by either adding them to your GitHub repository, sharing them via Google Drive links, or allowing documents from other GitHub repositories to be posted by allowing <em>pages</em> to access their files</li>
+</ul>
+<section id="fork-my-pagesbasic-repo" class="level3">
+<h3 class="anchored" data-anchor-id="fork-my-pagesbasic-repo">Fork my <code>PagesBasic</code> Repo</h3>
+<p>You’ll start by <em>forking</em> a basic shell that I’ve created. I hope this will give you a starting point and help you see how to achieve things like including an image, adding hyperlinks, making use of headings, setting themes, and more. Here’s <a href="https://agmath.github.io/PagesBasic/">what the resulting page looks like</a>.</p>
+<ol type="1">
+<li>Log in to GitHub (if you aren’t logged in already)</li>
+<li>Navigate to <a href="https://github.com/agmath/PagesBasic">my <code>PagesBasic</code> repo</a></li>
+<li>Click the <em>Fork</em> button to copy a version of the repository to your own GitHub account</li>
+<li>Head over to your account and open the <code>PagesBasic</code> repo you just forked</li>
+</ol>
+</section>
+<section id="renaming-your-forked-repo-to-a-username.github.io-repository" class="level3">
+<h3 class="anchored" data-anchor-id="renaming-your-forked-repo-to-a-username.github.io-repository">Renaming your Forked Repo to a <code>username.github.io</code> Repository</h3>
+<ol type="1">
+<li><p>Inside your forked copy of the <code>PagesBasic</code> repo, navigate to the <em>Settings</em> menu</p>
+<ul>
+<li>Either you’ll see a settings gear icon in the link navigator at the top of the repo with <em>Code</em>, <em>Issues</em>, etc. or you’ll click the three dots icon to expand that list of links and you’ll see <em>Settings</em> there</li>
+</ul></li>
+<li><p>Inside of <em>Settings</em>, find the field labeled <strong>Repository Name</strong> and rename the repository to <code>username.github.io</code>, where <code>username</code> is replaced by your GitHub username.</p>
+<ul>
+<li><strong>Important:</strong> You <em>must</em> name this repository<code>username.github.io</code>, where <code>username</code> is replaced by your GitHub username. For example, the repository corresponding to my page is <code>agmath.github.io</code>.</li>
+</ul></li>
+<li><p>Use the navigation bar on the left side of the screen and file the link labeled <em>Pages</em></p></li>
+<li><p>Inside of the <em>Pages</em> menu, under the <strong>Build and deployment</strong> heading, choose <code>Deploy from a branch* underneathe the *Source* option. Under *Branch*, choose</code>main<code>and it will default to</code>/(root)` which is perfect</p>
+<ul>
+<li><strong>Note:</strong> This may already be set up for you – in this case, you don’t need to change anything!</li>
+</ul></li>
+<li><p>Navigate back to the <em>Code</em> section of your newly named repo</p></li>
+</ol>
+<p>It may take a minute or two to deploy, but try navigating to <code>username.github.io</code> using your web browser (again, where <code>username</code> is your GitHub username) and view your little corner of the web! Don’t worry, we’ll make it more exciting (and about you) now.</p>
+</section>
+<section id="changing-the-theme-and-default-configuration" class="level3">
+<h3 class="anchored" data-anchor-id="changing-the-theme-and-default-configuration">Changing the Theme and Default Configuration</h3>
+<p>Setting a theme is the quickest way to make your webpage look more professional. You can <a href="https://pages.github.com/themes/">see the available <code>jekyll-themes</code> here</a>. Clicking on a theme will open up a repository, but if you scroll down to the README below the file listing, there is an explanation of the theme components along with a link to <em>preview the theme to see what it looks like</em>. Check out the available themes and identify one you like.</p>
+<p>Once you’ve identified a theme you’d like to use, you are ready to add it to your page.</p>
+<ol type="1">
+<li><p>Return to your <code>username.github.io</code> repository. Make sure you go to the actual repository rather than the public-facing webpage you’ve enabled.</p></li>
+<li><p>Locate the <code>_config.yml</code> file and click on it.</p></li>
+<li><p>Click the pencil button to edit the file. In the first line, change <code>architect</code> to your preferred theme name.</p>
+<ul>
+<li><strong>Important:</strong> Even though the name of the file becomes editable, you <em>must</em> keep this file named <code>_config.yml</code>.</li>
+</ul></li>
+<li><p>Update the <code>title:</code> and <code>description:</code> fields to your liking. These will show in the banner at the top of your GitHub Pages site.</p></li>
+<li><p>Once you’re finished making changes, scroll to the top of the page to find the <em>green</em> <code>Commit changes...</code> button. Click on it, add a short <em>commit</em> message to describe what you’ve done, and then click to confirm.</p></li>
+</ol>
+<p>It may take another minute or so to push the changes to your public-facing site. Navigate back there to confirm that your changes are reflected. You might need to refresh the page to see the changes – on a Mac, you can force refresh a page with <code>cmd+Shift+r</code> and on a PC you can use <code>ctrl+F5</code>.</p>
+</section>
+<section id="organizing-your-page-using-headers-and-free-text" class="level3">
+<h3 class="anchored" data-anchor-id="organizing-your-page-using-headers-and-free-text">Organizing Your Page Using Headers and Free Text</h3>
+<p>Good news! You construct your <em>GitHub pages</em> page using markdown syntax just like we’ve been using in our Quarto notebooks. You add headers with hastags (#) – more hashtags means lower-level headers. You separate paragraphs with an empty line in your markdown file. You can format italic text with single asterisks on either side, and bold text with double-asterisks on either side. You’ll pick up more techniques as you need them (and feel free to collaborate with your favorite AI/LLM for formatting tips/tricks). Additionally, if you know any HTML, most of those tags are usable here in your markdown file as well.</p>
+<ol type="1">
+<li><p>Head back to your <code>username.github.io</code> repository.</p></li>
+<li><p>In the file listings you’ll see a file called <code>index.md</code> – this is the default landing page when people navigate to your <code>username.github.io</code> site. Click on the file name.</p>
+<ul>
+<li><em>Note.</em> You can make your web<em>page</em> into a web<em>site</em> by including additional <code>*.md</code> files and linking back and forth between them. Only an <code>index.md</code> file is expected for MAT434 purposes, but feel free to create something more complex if you like!</li>
+</ul></li>
+<li><p>Use the pencil icon in the top-right corner of the preview block to edit your file.</p>
+<ul>
+<li><strong>Important:</strong> Again, this file should remain named <code>index.md</code> so that it is what people first see when they navigate to your <code>username.github.io</code> site.</li>
+</ul></li>
+<li><p>Replace Peter Griffin’s information and replace it with your own. Use what you know about markdown syntax to add a few sections to your page. Perhaps you’d like to include an <em>About Me</em> section as well as a section about your <em>Goals and Interests</em> and maybe even some sections about relevant research projects or coursework you’ve engaged in.</p></li>
+<li><p>If you didn’t add a <code>title:</code> or <code>description:</code> to your <code>_config.yml</code> file, you can add a page-specific <code>title:</code> and <code>description:</code> on any of your pages by using what you know about YAML headers. For example, at the top of your <code>index.md</code> file, you may include the following:</p></li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>title: Welcome</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>description: This is the homepage of Douglas Yancey Funnie, proud resident of Bluffington!</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>---</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>+ *Note.* Including this at the top of your page (or any page) will override the default settings from `_config.yml`, allowing you to have page-specific titles (recommended), descriptions (recommended), or even themes (questionable...generally not recommended).</code></pre>
+<ol start="6" type="1">
+<li>Once you are done, again navigate to the top of the page and find the <em>green</em> <code>Commit changes...</code> button. Click it, add a commit message, and confirm.</li>
+</ol>
+<p>Wait a few minutes and then navigate back to your public-facing webpage. Be proud of what you’ve created so far!</p>
+</section>
+<section id="adding-links-and-files" class="level3">
+<h3 class="anchored" data-anchor-id="adding-links-and-files">Adding Links and Files</h3>
+<p>You may remember from our discussions about Quarto that we can create hyperlinks by surrounding the link text in square brackets and providing the URL to the item on the web we want to navigate to in round parentheses immediately after the closing square bracket. For example, <code>[navigate to my website](agmath.github.io)</code> would result in a hyperlink to my webpage where the displayed link text would be <em>navigate to my website</em>. You can use this same technique to share files with people who are landing on your webpage.</p>
+<section id="sharing-files-from-google-drive" class="level4">
+<h4 class="anchored" data-anchor-id="sharing-files-from-google-drive">Sharing Files from Google Drive</h4>
+<p>If you have files in Google Drive that you’d like to share, then the process of sharing from Google Drive is simple.</p>
+<ol type="1">
+<li>Navigate to the location of the file in Google Drive.</li>
+<li>Click on the file and select the option to <code>+Share</code>.</li>
+<li>Make sure that the settings on the link are appropriate – for example, under <code>General access</code>, you must choose <em>Anyone with the link</em>, and you almost certainly want to provide them only with <em>Viewer</em> access.</li>
+<li>Copy the link using the <code>Copy link</code> button.</li>
+<li>Paste this link between the parentheses corresponding to the link you are creating in your markdown file.</li>
+<li>Don’t forget to Commit your changes and then check that your link works!</li>
+</ol>
+</section>
+<section id="sharing-files-from-your-username.github.io-repository" class="level4">
+<h4 class="anchored" data-anchor-id="sharing-files-from-your-username.github.io-repository">Sharing Files From Your <code>username.github.io</code> Repository</h4>
+<p>Since your <code>username.github.io</code> repository is indeed a repository, you can add folders and files here. In order to keep a clean-looking repository though, you’ll definitely want to use folder structure for this. I’ve initialized such a setup for you, but you should feel free to add more sub-folders to your <code>SiteFiles</code> directory if you want to organize your files by course, project, etc. You can create directories while you create a new file.</p>
+<ol type="1">
+<li>Navigate to your <code>username.github.io</code> repository and click the <code>Add file</code> button and choose <code>Create a new file</code>.</li>
+<li>If you wanted to create an <code>about.md</code> file inside of a new <code>shared_docs</code> directory, in the filename box, type <code>shared_docs/about.md</code>, which will create a new subdirectory (folder) in your repository called <code>shared_docs</code>, along with a new markdown file called <code>about.md</code> inside of it.</li>
+</ol>
+<p>For <strong>linking to files inside of your <code>username.github.io</code> repository</strong>, you can create hyperlinks to them as usual.</p>
+<ul>
+<li>The URL to use will be <code>https://username.github.io/directory_name/file_name.extension</code>, where <code>username</code> is your GitHub username, <code>directory_name</code> is the name of the subdirectory that the file lives inside of (…or the path to the file if you’ve created nested folders, …or nothing if the file you are linking to lives in the root directory for the repository), <code>file_name</code> is the name of the file you are sharing, and <code>extension</code> is the extension for that file (perhaps <code>.html</code>, <code>.pdf</code>, or <code>.md</code>).</li>
+</ul>
+<p>Note that it is better to share PDF files than files like <code>.docx</code> because <code>pdf</code> opens directly on the web, where MS Word (and similar) files are downloaded and opened.</p>
+</section>
+<section id="sharing-files-from-another-repository" class="level4">
+<h4 class="anchored" data-anchor-id="sharing-files-from-another-repository">Sharing Files from Another Repository</h4>
+<p>You are able to link to files which exist in different GitHub repositories as well. It is really convenient to be able to do this because it prevents the need for duplicating copies of files. It also ensures that when you update a file in its home repository, the changes are immediately reflected in the version being shared on your public-facing webpage. There are lots of efficiencies gained by doing this.</p>
+<ol type="1">
+<li>Navigate to the repository that you want to share a file from.</li>
+<li>Go to the <code>Settings</code> for that repository and navigate to the <code>Pages</code> tab.</li>
+<li>Underneath <em>Build and Deploy</em>, select to <code>Deploy from a branch</code>.</li>
+<li>Underneath <em>Branch</em>, choose <code>master</code> or <code>main</code> and select the <code>/(root)</code> directory and <code>Save</code>.</li>
+</ol>
+<ul>
+<li>Now you can create a hyperlink to any file in this repository.</li>
+</ul>
+<ol start="5" type="1">
+<li>Navigate back to your <code>username.github.io</code> repository and edit your <code>index.md</code> file (or the <code>.md</code> file for the page you want to add the link to).</li>
+<li>You create a hyperlink as usual, but the URL to that file will be of the form <code>https://username.github.io/RepositoryName/PathToFile/file_name.extension</code>, where <code>username</code> is your GitHub username, <code>RepositoryName</code> is the name of your repository where the file you want to share lives, <code>PathToFile</code> is the path to the file through subdirectories in its home repository – if the file is just in the root directory of the repository then <code>PathToFile</code> is not present, and <code>file_name.extension</code> are the name of the file in the repository and its extension, respectively.</li>
+<li>Again, commit your changes and wait a few minutes before navigating to your public-facing web page to check that the link works as you had intended.</li>
+</ol>
+<p>Note, you can link to files owned by other GitHub users as long as they’ve enabled pages on their repositories. Be sure to give them credit for the files and not mask them as your own. In these cases, the only difference is that the URL will contain their GitHub username instead of yours.</p>
+<hr>
+</section>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>You’ve created a GitHub pages webpage for yourself. My hope is that you’ll continue to use this site as a professional portfolio which can be shared with prospective employers or graduate schools. You can even use it as a creative outlet.</p>
+<p>There’s lots more you can do with GitHub pages. You can add pictures, build and use custom CSS files to make your page unique, and more. You’ll learn how to do things as you want to implement them – there are lots of resources on the web. The source for my GitHub page is public and <a href="https://github.com/agmath/agmath.github.io">is available here</a>. There’s nothing super fancy, but you are welcome to steal whatever you like!</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

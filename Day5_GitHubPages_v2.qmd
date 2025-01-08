@@ -1,0 +1,143 @@
+---
+title: "A Public-Facing Portfolio and GitHub Pages"
+author: "Dr. Gilbert"
+format: html
+theme: flatly
+---
+
+```{r global-options, include=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+**Purpose:** This notebook will help you create a public facing portfolio (a professional webpage) using GitHub pages. You can use this portfolio to share projects that you are proud of so that future employers or graduate programs can see what you are capable of. In particular, you'll do the following.
+
++ *Fork* [my basic GitHub pages example repo](https://github.com/agmath/PagesBasic) and rename it to a `username.github.io` repository for yourself
++ Enable this repository to use the *Pages* environment
++ Edit the theme to make your site fit your professional style
++ Organize a page using headings and free form text
++ Post projects you are proud of or are working on by either adding them to your GitHub repository, sharing them via Google Drive links, or allowing documents from other GitHub repositories to be posted by allowing *pages* to access their files
+
+### Fork my `PagesBasic` Repo
+
+You'll start by *forking* a basic shell that I've created. I hope this will give you a starting point and help you see how to achieve things like including an image, adding hyperlinks, making use of headings, setting themes, and more. Here's [what the resulting page looks like](https://agmath.github.io/PagesBasic/).
+
+1. Log in to GitHub (if you aren't logged in already)
+2. Navigate to [my `PagesBasic` repo](https://github.com/agmath/PagesBasic)
+3. Click the *Fork* button to copy a version of the repository to your own GitHub account
+4. Head over to your account and open the `PagesBasic` repo you just forked
+
+### Renaming your Forked Repo to a `username.github.io` Repository
+
+1. Inside your forked copy of the `PagesBasic` repo, navigate to the *Settings* menu
+
+    + Either you'll see a settings gear icon in the link navigator at the top of the repo with *Code*, *Issues*, etc. or you'll click the three dots icon to expand that list of links and you'll see *Settings* there
+3. Inside of *Settings*, find the field labeled **Repository Name** and rename the repository to `username.github.io`, where `username` is replaced by your GitHub username.
+
+    + **Important:** You *must* name this repository`username.github.io`, where `username` is replaced by your GitHub username. For example, the repository corresponding to my page is `agmath.github.io`.
+4. Use the navigation bar on the left side of the screen and file the link labeled *Pages*
+5. Inside of the *Pages* menu, under the **Build and deployment** heading, choose `Deploy from a branch* underneathe the *Source* option. Under *Branch*, choose `main` and it will default to `/(root)` which is perfect
+
+    + **Note:** This may already be set up for you -- in this case, you don't need to change anything!
+
+6. Navigate back to the *Code* section of your newly named repo
+
+It may take a minute or two to deploy, but try navigating to `username.github.io` using your web browser (again, where `username` is your GitHub username) and view your little corner of the web! Don't worry, we'll make it more exciting (and about you) now.
+
+### Changing the Theme and Default Configuration
+
+Setting a theme is the quickest way to make your webpage look more professional. You can [see the available `jekyll-themes` here](https://pages.github.com/themes/). Clicking on a theme will open up a repository, but if you scroll down to the README below the file listing, there is an explanation of the theme components along with a link to *preview the theme to see what it looks like*. Check out the available themes and identify one you like.
+
+Once you've identified a theme you'd like to use, you are ready to add it to your page.
+
+1. Return to your `username.github.io` repository. Make sure you go to the actual repository rather than the public-facing webpage you've enabled.
+2. Locate the `_config.yml` file and click on it.
+3. Click the pencil button to edit the file. In the first line, change `architect` to your preferred theme name.
+
+    + **Important:** Even though the name of the file becomes editable, you *must* keep this file named `_config.yml`.
+
+5. Update the `title:` and `description:` fields to your liking. These will show in the banner at the top of your GitHub Pages site.
+
+6. Once you're finished making changes, scroll to the top of the page to find the *green* `Commit changes...` button. Click on it, add a short *commit* message to describe what you've done, and then click to confirm.
+
+It may take another minute or so to push the changes to your public-facing site. Navigate back there to confirm that your changes are reflected. You might need to refresh the page to see the changes -- on a Mac, you can force refresh a page with `cmd+Shift+r` and on a PC you can use `ctrl+F5`.
+
+### Organizing Your Page Using Headers and Free Text
+
+Good news! You construct your *GitHub pages* page using markdown syntax just like we've been using in our Quarto notebooks. You add headers with hastags (#) -- more hashtags means lower-level headers. You separate paragraphs with an empty line in your markdown file. You can format italic text with single asterisks on either side, and bold text with double-asterisks on either side. You'll pick up more techniques as you need them (and feel free to collaborate with your favorite AI/LLM for formatting tips/tricks). Additionally, if you know any HTML, most of those tags are usable here in your markdown file as well.
+
+1. Head back to your `username.github.io` repository.
+2. In the file listings you'll see a file called `index.md` -- this is the default landing page when people navigate to your `username.github.io` site. Click on the file name.
+
+    + *Note.* You can make your web*page* into a web*site* by including additional `*.md` files and linking back and forth between them. Only an `index.md` file is expected for MAT434 purposes, but feel free to create something more complex if you like!
+2. Use the pencil icon in the top-right corner of the preview block to edit your file.
+
+    + **Important:** Again, this file should remain named `index.md` so that it is what people first see when they navigate to your `username.github.io` site.
+4. Replace Peter Griffin's information and replace it with your own. Use what you know about markdown syntax to add a few sections to your page. Perhaps you'd like to include an *About Me* section as well as a section about your *Goals and Interests* and maybe even some sections about relevant research projects or coursework you've engaged in.
+5. If you didn't add a `title:` or `description:` to your `_config.yml` file, you can add a page-specific `title:` and `description:` on any of your pages by using what you know about YAML headers. For example, at the top of your `index.md` file, you may include the following:
+
+```{verbatim}
+---
+title: Welcome
+description: This is the homepage of Douglas Yancey Funnie, proud resident of Bluffington!
+---
+```
+
+    + *Note.* Including this at the top of your page (or any page) will override the default settings from `_config.yml`, allowing you to have page-specific titles (recommended), descriptions (recommended), or even themes (questionable...generally not recommended).
+
+6. Once you are done, again navigate to the top of the page and find the *green* `Commit changes...` button. Click it, add a commit message, and confirm.
+
+Wait a few minutes and then navigate back to your public-facing webpage. Be proud of what you've created so far!
+
+### Adding Links and Files
+
+You may remember from our discussions about Quarto that we can create hyperlinks by surrounding the link text in square brackets and providing the URL to the item on the web we want to navigate to in round parentheses immediately after the closing square bracket. For example, `[navigate to my website](agmath.github.io)` would result in a hyperlink to my webpage where the displayed link text would be *navigate to my website*. You can use this same technique to share files with people who are landing on your webpage.
+
+#### Sharing Files from Google Drive
+
+If you have files in Google Drive that you'd like to share, then the process of sharing from Google Drive is simple.
+
+1. Navigate to the location of the file in Google Drive.
+2. Click on the file and select the option to `+Share`.
+3. Make sure that the settings on the link are appropriate -- for example, under `General access`, you must choose *Anyone with the link*, and you almost certainly want to provide them only with *Viewer* access.
+4. Copy the link using the `Copy link` button.
+5. Paste this link between the parentheses corresponding to the link you are creating in your markdown file.
+6. Don't forget to Commit your changes and then check that your link works!
+
+#### Sharing Files From Your `username.github.io` Repository
+
+Since your `username.github.io` repository is indeed a repository, you can add folders and files here. In order to keep a clean-looking repository though, you'll definitely want to use folder structure for this. I've initialized such a setup for you, but you should feel free to add more sub-folders to your `SiteFiles` directory if you want to organize your files by course, project, etc. You can create directories while you create a new file.
+
+1. Navigate to your `username.github.io` repository and click the `Add file` button and choose `Create a new file`.
+2. If you wanted to create an `about.md` file inside of a new `shared_docs` directory, in the filename box, type `shared_docs/about.md`, which will create a new subdirectory (folder) in your repository called `shared_docs`, along with a new markdown file called `about.md` inside of it. 
+
+
+For **linking to files inside of your `username.github.io` repository**, you can create hyperlinks to them as usual. 
+
++ The URL to use will be `https://username.github.io/directory_name/file_name.extension`, where `username` is your GitHub username, `directory_name` is the name of the subdirectory that the file lives inside of (...or the path to the file if you've created nested folders, ...or nothing if the file you are linking to lives in the root directory for the repository), `file_name` is the name of the file you are sharing, and `extension` is the extension for that file (perhaps `.html`, `.pdf`, or `.md`).
+
+Note that it is better to share PDF files than files like `.docx` because `pdf` opens directly on the web, where MS Word (and similar) files are downloaded and opened.
+
+#### Sharing Files from Another Repository
+
+You are able to link to files which exist in different GitHub repositories as well. It is really convenient to be able to do this because it prevents the need for duplicating copies of files. It also ensures that when you update a file in its home repository, the changes are immediately reflected in the version being shared on your public-facing webpage. There are lots of efficiencies gained by doing this.
+
+1. Navigate to the repository that you want to share a file from.
+2. Go to the `Settings` for that repository and navigate to the `Pages` tab.
+3. Underneath *Build and Deploy*, select to `Deploy from a branch`.
+4. Underneath *Branch*, choose `master` or `main` and select the `/(root)` directory and `Save`.
+
+  + Now you can create a hyperlink to any file in this repository. 
+5. Navigate back to your `username.github.io` repository and edit your `index.md` file (or the `.md` file for the page you want to add the link to).
+6. You create a hyperlink as usual, but the URL to that file will be of the form `https://username.github.io/RepositoryName/PathToFile/file_name.extension`, where `username` is your GitHub username, `RepositoryName` is the name of your repository where the file you want to share lives, `PathToFile` is the path to the file through subdirectories in its home repository -- if the file is just in the root directory of the repository then `PathToFile` is not present, and `file_name.extension` are the name of the file in the repository and its extension, respectively.
+7. Again, commit your changes and wait a few minutes before navigating to your public-facing web page to check that the link works as you had intended.
+
+Note, you can link to files owned by other GitHub users as long as they've enabled pages on their repositories. Be sure to give them credit for the files and not mask them as your own. In these cases, the only difference is that the URL will contain their GitHub username instead of yours.
+
+***
+
+## Summary
+
+You've created a GitHub pages webpage for yourself. My hope is that you'll continue to use this site as a professional portfolio which can be shared with prospective employers or graduate schools. You can even use it as a creative outlet. 
+
+There's lots more you can do with GitHub pages. You can add pictures, build and use custom CSS files to make your page unique, and more. You'll learn how to do things as you want to implement them -- there are lots of resources on the web. The source for my GitHub page is public and [is available here](https://github.com/agmath/agmath.github.io). There's nothing super fancy, but you are welcome to steal whatever you like!
