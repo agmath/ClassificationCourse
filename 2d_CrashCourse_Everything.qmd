@@ -241,8 +241,8 @@ $\bigstar$ How might we use these functions? Write down some questions that coul
 
 :::{.nonincremental}
 
-+ `filter()` to return only desired records
-+ `select()` to return only desired columns
++ `filter()` to return only desired records (by a conditional statement)
++ `select()` to return only desired columns (by name, separated by commas)
 + `summarize()` to compute summaries on a table
 + `group_by()` to create groups in a table
 + `mutate()` to create new columns or change existing ones
