@@ -290,5 +290,5 @@ data %>% #the data to be plotted
 ## Try It!
 
 + Try storing some of your earlier plots and printing them out in a combined plot by using `{patchwork}`
-+ Keep playing around -- post your best plot to the `#how-do-i` channel on Slack
++ Keep playing around -- post your best/favorite plot (and the code) to the `#how-do-i` channel on Slack
 
