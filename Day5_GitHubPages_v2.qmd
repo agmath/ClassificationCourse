@@ -36,7 +36,7 @@ You'll start by *forking* a basic shell that I've created. I hope this will give
 
     + **Important:** You *must* name this repository`username.github.io`, where `username` is replaced by your GitHub username. For example, the repository corresponding to my page is `agmath.github.io`.
 4. Use the navigation bar on the left side of the screen and file the link labeled *Pages*
-5. Inside of the *Pages* menu, under the **Build and deployment** heading, choose `Deploy from a branch* underneathe the *Source* option. Under *Branch*, choose `main` and it will default to `/(root)` which is perfect
+5. Inside of the *Pages* menu, under the **Build and deployment** heading, choose *Deploy from a branch* underneath the *Source* option. Under *Branch*, choose `main` and it will default to `/(root)` which is perfect
 
     + **Note:** This may already be set up for you -- in this case, you don't need to change anything!
 
