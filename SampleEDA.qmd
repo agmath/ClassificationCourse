@@ -1,0 +1,311 @@
+---
+title: Modeling Listing Prices for AirBnB Europe
+author: 
+  - name: Adam Gilbert
+    email: a.gilbert1@snhu.edu
+    affiliations: 
+      - name: Southern New Hampshire University
+format: 
+  html: default
+  pdf: default
+date: today
+date-format: long
+theme: flatly
+toc: true
+code-fold: true
+---
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+library(kableExtra)
+
+options(kable_styling_bootstrap_options = c("hover", "striped"))
+
+theme_set(theme_bw(base_size = 14))
+
+airbnb <- read_csv("https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/AirBnB.csv")
+
+names(airbnb) <- janitor::make_clean_names(names(airbnb))
+
+
+set.seed(9172024)
+data_splits <- initial_split(airbnb, prop = 0.85)
+
+train <- training(data_splits)
+temp <- testing(data_splits)
+
+set.seed(300)
+test_splits <- initial_split(temp, prop = 0.6)
+validation <- training(test_splits)
+test <- testing(test_splits)
+```
+
+## Statement of Purpose
+
+AirBnB is a company that facilitates the pairing of vacation and long-term renters and property owners across the world. This project seeks to construct a predictive model for the pricing of AirBnB rentals across Europe. This benefits AirBnB as well as its property owners because the model can help with price setting, ensuring that owners are not setting rental prices too low. Additionally, the model could benefit renters as well by helping them to identify properties that are reasonably priced. 
+
+## Executive Summary
+
+
+
+## Introduction
+
+
+
+## Exploratory Data Analysis
+
+In this section, we set out to understand the distribution of the `price` variable as well as to identify available features that may be associated with the listing `price` for an AirBnB Europe property. Throughout this section, we'll be working with a collection of `r train %>% nrow()` training listings (observations). Before we begin our analysis, a snippet showing our first six rows of available training properties appears below.
+
+```{r}
+train %>%
+  head() %>%
+  kable() %>%
+  kable_styling()
+```
+
+### Distribution of Price
+
+We first need to understand the distribution of the listing `price` variable. In the output below, the table on the left shows some summary statistics of the `price` variable and the plots on the right shows its distribution.
+
+::::{.columns}
+
+:::{.column width="50%"}
+
+```{r}
+train %>%
+  summarize(
+    min_price = min(price),
+    median_price = median(price),
+    avg_price = mean(price),
+    max_price = max(price),
+    sd_price = sd(price)
+  ) %>%
+  pivot_longer(everything(), 
+               names_to = "Metric",
+               values_to = "Value") %>%
+  kable() %>%
+  kable_styling()
+```
+
+:::
+
+:::{.column width="5-%"}
+
+```{r}
+#| message: false
+#| warning: false
+
+p1 <- train %>%
+  ggplot() + 
+  geom_histogram(aes(x = price, y = after_stat(density)),
+                 fill = "purple",
+                 color = "black") +
+  geom_density(aes(x = price),
+               fill = "purple",
+               alpha = 0.4) + 
+  labs(
+    x = "Price",
+    y = "Density"
+  )
+
+p2 <- train %>%
+  ggplot() + 
+  geom_histogram(aes(x = price, y = after_stat(density)),
+                 fill = "purple",
+                 color = "black") +
+  geom_density(aes(x = price),
+               fill = "purple",
+               alpha = 0.4) + 
+  scale_x_log10() +
+  labs(
+    x = "Price",
+    y = "Density"
+  )
+
+p1 / p2
+```
+
+:::
+
+::::
+
+We can see from the table and from the plots that the distribution of `price` is quite strongly right-skewed. There is a property here listed at 18,545.45 -- perhaps units here are an issue and listings are priced in local currency. We'll explore whether this is the case and we need a transformation later. For now, the lower-right plot shows that the distribution of `price` is approximately *log-normal* (that is, the distribution of the logarithm of `price` is approximately normal). The vast majority of properties are priced between 100 and 1,000 -- which seems quite reasonable. The average listing (considering both mean and median) looks to be priced within the 200 - 300 range.
+
+Now that we understand a bit about the distribution of the `price` variable, let's try to identify other variables that may be associated with the listing `price` for a property.
+
+### Price and City
+
+It seems reasonable to assume that the average listing price may vary by `city`. In fact, given the distribution of prices, we've mentioned that the currency unit may vary from one city to the next. We'll start by looking at how many properties there are in each city and we'll look at whether there is a potential association between `city` and listing `price`.
+
+::::{.columns}
+
+:::{.column width="50%"}
+
+```{r}
+train %>%
+  count(city) %>%
+  mutate(proportion = n/sum(n)) %>%
+  kable() %>%
+  kable_styling()
+```
+
+:::
+
+:::{.column width="50%"}
+
+```{r}
+train %>%
+  ggplot() + 
+  geom_bar(aes(x = city)) + 
+  coord_flip()
+```
+
+:::
+
+::::
+
+We can see that Rome has the greatest number of property listings, which Amsterdam has the fewest. No city has an extremely small number of listings though. Now let's consider the average listing `price` by city.
+
+```{r}
+p1 <- train %>%
+  mutate(city = fct_reorder(city, price)) %>%
+  ggplot() + 
+  geom_boxplot(aes(x = price, y = city, fill = city),
+               show.legend = FALSE) +
+  labs(x = "Price", y = "")
+
+p2 <- train %>%
+  mutate(city = fct_reorder(city, price)) %>%
+  ggplot() + 
+  geom_boxplot(aes(x = price, y = city, fill = city),
+               show.legend = FALSE) +
+  scale_x_log10() +
+  labs(x = "Price", y = "")
+
+p1 + p2
+```
+
+The plot on the left isn't very legible because of the presence of properties whose prices are extreme outliers. The plot on the right shows the same information, but with `price` on a logarithmic scale. We can see here that Amsterdam is the most expensive location on average, while Athens is the cheapest. From here, we can see that `city` is associated with the `price` variable.
+
+### Guest Satisfaction and Price
+
+Similar to what we did with `city`, it is reasonable to wonder whether `guest_satisfaction` and `price` are associated with one another. We'll begin with an analysis of the distribution of the `guest_satisfaction` variable and then we'll consider whether there is visual evidence to suggest an association between the two variables.
+
+::::{.columns}
+
+:::{.column width="50%"}
+
+```{r}
+train %>%
+  summarize(
+    min_sat = min(guest_satisfaction),
+    median_sat = median(guest_satisfaction),
+    avg_sat = mean(guest_satisfaction),
+    max_sat = max(guest_satisfaction),
+    sd_sat = sd(guest_satisfaction)
+  ) %>%
+  pivot_longer(everything(), 
+               names_to = "Metric",
+               values_to = "Value") %>%
+  kable() %>%
+  kable_styling()
+```
+
+:::
+
+:::{.column width="5-%"}
+
+```{r}
+#| message: false
+#| warning: false
+
+train %>%
+  ggplot() + 
+  geom_histogram(aes(x = guest_satisfaction, y = after_stat(density)),
+                 fill = "purple",
+                 color = "black") +
+  geom_density(aes(x = guest_satisfaction),
+               fill = "purple",
+               alpha = 0.4) + 
+  labs(
+    x = "Guest Satisfaction",
+    y = "Density"
+  )
+```
+
+:::
+
+::::
+
+We can see from the table and the plot above that `guest_satisfaction` is generally quite high. Most of the observed satisfaction scores fall between 75 and 100. Although the variability of this feature is not high, let's construct a scatterplot to determine whether there may be an association between `guest_satisfaction` and `price`.
+
+```{r}
+p1 <- train %>%
+  ggplot() + 
+  geom_point(aes(x = guest_satisfaction,
+                 y = price),
+             alpha = 0.4) + 
+  labs(
+    x = "Guest Satisfaction Score",
+    y = "Listing Price"
+  )
+
+p2 <- train %>%
+  ggplot() + 
+  geom_point(aes(x = guest_satisfaction,
+                 y = price),
+             alpha = 0.4) + 
+  scale_y_log10() + 
+  labs(
+    x = "Guest Satisfaction Score",
+    y = "Listing Price"
+  )
+
+p1 + p2
+```
+
+These plots are somewhat difficult to read. There is no obvious association between the guest satisfaction score and the price variable from either of these. The only difference between the plot on the left and the plot on the right is that the plot on the right shows the listing `price` on a logarithmic scale.
+
+Because of the collections of vertically aligned points at `guest_satisfaction` scores like 20, 40, 60, etc. we might be able to build a collection of side-by-side boxplots here -- we'll see if doing so provides any additional insights below.
+
+```{r}
+#| fig.width: 10
+#| fig.align: center
+
+train %>%
+  ggplot() + 
+  geom_boxplot(aes(y = price,
+                   x = guest_satisfaction, 
+                   group = guest_satisfaction)) + 
+  scale_y_log10() + 
+  labs(
+    x = "Guest Satisfaction",
+    y = "Price"
+  )
+```
+
+Even from this plot, there doesn't see to be an obvious association between `guest_satisfaction` and listing `price`. We won't exclude this predictor from our modeling process altogether, but we don't have great hope that `guest_satisfaction` is a strong predictor of `price`.
+
+## Model Construction
+
+
+
+
+## Model Interpretation and Inference
+
+
+
+
+## Conclusion
+
+
+
+## References
+
+
