@@ -33,7 +33,7 @@ x_b <- rnorm(num_b, 50, 5)
 y_b <- rnorm(num_b, 50, 5)
 
 toy_data <- tibble(
-  x = c(x_a, x_b), y = c(y_a, y_b), 
+  x = c(x_a, x_b), y = c(y_a, y_b),
   class = c(rep("A", num_a), rep("B", num_b))) %>%
   mutate(class = factor(class))
 
@@ -72,6 +72,156 @@ toy_data <- tibble(
 # 
 # toy_data <- tibble(x = c(x_a, x_b), y = c(y_a, y_b), class = c(rep("A", num_a), rep("B", num_b))) %>%
 #   mutate(class = factor(class))
+
+#####################################
+##More Interesting Data Sets Below!##
+#####################################
+
+###
+# #Swiss Roll
+# num_a <- 250
+# num_b <- 175
+# 
+# # Generate t values (controls the roll)
+# t_a <- runif(num_a, 1.5 * pi, 4.5 * pi)  # First class (inner roll)
+# t_b <- runif(num_b, 3.5 * pi, 6.5 * pi)  # Second class (outer roll)
+# 
+# # Radius (with some randomness)
+# r_a <- t_a + rnorm(num_a, mean = 0, sd = 0.3)
+# r_b <- t_b + rnorm(num_b, mean = 0, sd = 0.3)
+# 
+# # Convert to Cartesian coordinates (Swiss Roll)
+# x_a <- r_a * cos(t_a)
+# y_a <- r_a * sin(t_a)
+# 
+# x_b <- r_b * cos(t_b)
+# y_b <- r_b * sin(t_b)
+# 
+# # Combine into a tibble
+# toy_data <- tibble(
+#   x = c(x_a, x_b),
+#   y = c(y_a, y_b),
+#   class = factor(c(rep("A", num_a), rep("B", num_b)))
+# )
+
+###
+# # Five Class Swiss Roll
+# num_points <- 150  # Per class
+# 
+# # Generate t values for five distinct class bands
+# t1 <- runif(num_points, 1.5 * pi, 3 * pi)  
+# t2 <- runif(num_points, 2.5 * pi, 4 * pi)
+# t3 <- runif(num_points, 3.5 * pi, 5 * pi)
+# t4 <- runif(num_points, 4.5 * pi, 6 * pi)
+# t5 <- runif(num_points, 5.5 * pi, 7 * pi)
+# 
+# # Radius with some noise
+# r1 <- t1 + rnorm(num_points, mean = 0, sd = 0.3)
+# r2 <- t2 + rnorm(num_points, mean = 0, sd = 0.3)
+# r3 <- t3 + rnorm(num_points, mean = 0, sd = 0.3)
+# r4 <- t4 + rnorm(num_points, mean = 0, sd = 0.3)
+# r5 <- t5 + rnorm(num_points, mean = 0, sd = 0.3)
+# 
+# # Convert to Cartesian coordinates
+# x1 <- r1 * cos(t1); y1 <- r1 * sin(t1)
+# x2 <- r2 * cos(t2); y2 <- r2 * sin(t2)
+# x3 <- r3 * cos(t3); y3 <- r3 * sin(t3)
+# x4 <- r4 * cos(t4); y4 <- r4 * sin(t4)
+# x5 <- r5 * cos(t5); y5 <- r5 * sin(t5)
+# 
+# # Combine into a tibble
+# toy_data <- tibble(
+#   x = c(x1, x2, x3, x4, x5),
+#   y = c(y1, y2, y3, y4, y5),
+#   class = factor(rep(1:5, each = num_points))
+# )
+
+###
+# # Five Class Concentric Ellipses
+# num_points <- 150  
+# 
+# # Function to generate elliptical clusters
+# generate_ellipse <- function(a, b, theta_shift, num_points, noise = 0.2) {
+#   theta <- runif(num_points, 0, 2 * pi)  # Angle around the ellipse
+#   x <- a * cos(theta + theta_shift) + rnorm(num_points, sd = noise)
+#   y <- b * sin(theta + theta_shift) + rnorm(num_points, sd = noise)
+#   tibble(x = 10*x, y = 10*y)
+# }
+# 
+# # Define parameters for each class (major/minor axes and rotation)
+# ellipse_params <- list(
+#   list(a = 1,  b = 0.5,  theta_shift = 0),
+#   list(a = 2,  b = 1,    theta_shift = pi/8),
+#   list(a = 3,  b = 1.5,  theta_shift = pi/4),
+#   list(a = 4,  b = 2,    theta_shift = pi/6),
+#   list(a = 5,  b = 2.5,  theta_shift = pi/3)
+# )
+# 
+# # Generate data for each class
+# toy_data <- lapply(1:5, function(i) {
+#   df <- generate_ellipse(
+#     a = ellipse_params[[i]]$a,
+#     b = ellipse_params[[i]]$b,
+#     theta_shift = ellipse_params[[i]]$theta_shift,
+#     num_points = num_points
+#   )
+#   df$class <- factor(i)
+#   df
+# }) %>% bind_rows()
+
+###
+# #Another five-class problem
+# library(MASS)  # For multivariate normal sampling
+# 
+# # Number of points per class
+# num_points <- 150  
+# 
+# # Define means for the five overlapping Gaussians
+# means <- matrix(c(
+#   0, 0, 
+#   2, 2, 
+#   -2, 2, 
+#   -2, -2, 
+#   2, -2
+# ), ncol = 2, byrow = TRUE)
+# 
+# # Define a common covariance matrix to ensure overlap
+# cov_matrix <- matrix(c(1.5, 0.8, 0.8, 1.5), ncol = 2)
+# 
+# # Generate Gaussian clusters
+# generate_gaussian <- function(mean, num_points, cov_matrix) {
+#   MASS::mvrnorm(n = num_points, mu = mean, Sigma = cov_matrix) %>%
+#     as_tibble(.name_repair = "minimal")
+# }
+# 
+# # Create dataset
+# toy_data <- lapply(1:5, function(i) {
+#   df <- generate_gaussian(means[i, ], num_points, cov_matrix)
+#   df$class <- factor(i)
+#   df
+# }) %>% bind_rows() %>%
+#   rename(x = ...1, y = ...2)
+
+###
+# #One More fun one!
+# num_points <- 150  
+# 
+# # Function to generate spiral arms
+# generate_spiral <- function(num_points, turns, noise, class_label) {
+#   t <- seq(0, turns * pi, length.out = num_points) + rnorm(num_points, 0, noise)
+#   x <- t * cos(t)
+#   y <- t * sin(t)
+#   tibble(x = x, y = y, class = factor(class_label))
+# }
+# 
+# # Generate five intertwined spirals
+# toy_data <- bind_rows(
+#   generate_spiral(num_points, 3, 0.3, 1),
+#   generate_spiral(num_points, 3, 0.3, 2) %>% mutate(x = -x, y = -y),
+#   generate_spiral(num_points, 3, 0.3, 3) %>% mutate(x = y, y = x),
+#   generate_spiral(num_points, 3, 0.3, 4) %>% mutate(x = -y, y = -x),
+#   generate_spiral(num_points, 3, 0.3, 5) %>% mutate(x = y, y = -x)
+# )
 ```
 
 ```{r}
