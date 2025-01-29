@@ -22,6 +22,7 @@ library(tidymodels)
 As we saw in MAT300, it is sometimes useful to have some "fake" data to play with in order to understand classification models. We'll often call these "fake" datasets *toy data*. I've built several *toy* data sets below. I encourage you to play around by switching data sets and by making changes to the data sets I've provided.
 
 ```{r}
+###
 #Easy two-class
 num_a <- 25
 num_b <- 30
@@ -37,6 +38,7 @@ toy_data <- tibble(
   class = c(rep("A", num_a), rep("B", num_b))) %>%
   mutate(class = factor(class))
 
+###
 #  #Second separable two-class with rare class
 #  num_points <- 1000
 #  x <- runif(num_points, 0, 50)
@@ -45,7 +47,8 @@ toy_data <- tibble(
 #                  "A", "B")
 # toy_data <- tibble(x = x, y = y, class = class) %>%
 #   mutate(class = factor(class))
- 
+
+### 
 # #Non-Separable three-class
 # num_a <- 25
 # num_b <- 40
@@ -61,6 +64,7 @@ toy_data <- tibble(
 # toy_data <- tibble(x = c(x_a, x_b, x_c), y = c(y_a, y_b, y_c), class = c(rep("A", num_a), rep("B", num_b), rep("C", num_c))) %>%
 #   mutate(class = factor(class))
 
+###
 # ##Two class rolled
 # num_a <- 250
 # num_b <- 175
