@@ -1,7 +1,8 @@
 ---
-title: "Regression Versus Classification"
+title: "Assessing Classifiers"
 format: html
 theme: flatly
+toc: true
 ---
 
 ```{r setup, include = FALSE}
@@ -31,7 +32,10 @@ y_a <- rnorm(num_a, 20, 5)
 x_b <- rnorm(num_b, 50, 5)
 y_b <- rnorm(num_b, 50, 5)
 
-toy_data <- tibble(x = c(x_a, x_b), y = c(y_a, y_b), class = c(rep("A", num_a), rep("B", num_b)))
+toy_data <- tibble(
+  x = c(x_a, x_b), y = c(y_a, y_b), 
+  class = c(rep("A", num_a), rep("B", num_b))) %>%
+  mutate(class = factor(class))
 
 #  #Second separable two-class with rare class
 #  num_points <- 1000
@@ -39,7 +43,8 @@ toy_data <- tibble(x = c(x_a, x_b), y = c(y_a, y_b), class = c(rep("A", num_a), 
 #  y <- runif(num_points, 0, 50)
 #  class <- ifelse(sqrt((x - 20)^2 + (y - 40)^2) < 3,
 #                  "A", "B")
-# toy_data <- tibble(x = x, y = y, class = class)
+# toy_data <- tibble(x = x, y = y, class = class) %>%
+#   mutate(class = factor(class))
  
 # #Non-Separable three-class
 # num_a <- 25
@@ -53,7 +58,8 @@ toy_data <- tibble(x = c(x_a, x_b), y = c(y_a, y_b), class = c(rep("A", num_a), 
 # x_c <- rnorm(num_c, 45, 3)
 # y_c <- rnorm(num_c, 25, 3)
 # 
-# toy_data <- tibble(x = c(x_a, x_b, x_c), y = c(y_a, y_b, y_c), class = c(rep("A", num_a), rep("B", num_b), rep("C", num_c)))
+# toy_data <- tibble(x = c(x_a, x_b, x_c), y = c(y_a, y_b, y_c), class = c(rep("A", num_a), rep("B", num_b), rep("C", num_c))) %>%
+#   mutate(class = factor(class))
 
 # ##Two class rolled
 # num_a <- 250
@@ -64,7 +70,8 @@ toy_data <- tibble(x = c(x_a, x_b), y = c(y_a, y_b), class = c(rep("A", num_a), 
 # y_a <- -(x_a - 25)^2 + 475 + rnorm(num_a, mean = 0, sd = 50)
 # y_b <- (x_b - 40)^2 + rnorm(num_b, mean = 0, sd = 50)
 # 
-# toy_data <- tibble(x = c(x_a, x_b), y = c(y_a, y_b), class = c(rep("A", num_a), rep("B", num_b)))
+# toy_data <- tibble(x = c(x_a, x_b), y = c(y_a, y_b), class = c(rep("A", num_a), rep("B", num_b))) %>%
+#   mutate(class = factor(class))
 ```
 
 ```{r}
@@ -192,24 +199,20 @@ Note that different classifiers make different assumptions about the data. Some 
 
 There are several performance measures for classifiers. Perhaps the most obvious measure is *accuracy* -- the proportion of observations correctly classified by our model. We'll encounter others as well -- accuracy is not always (or perhaps even often) the most appropriate performance measure for our classifiers.
 
-Before getting into computing *accuracy* and our other performance metrics, it is worth talking about a *confusion matrix*. Confusion matrices summarize our data and predictions -- the true classes of the observations are along the rows and the predicted classes are along the columns. For example, a confusion matrix for our decision tree classifier from earlier appears below.
+Before getting into computing *accuracy* and our other performance metrics, it is worth talking about a *confusion matrix*. Confusion matrices summarize our data and predictions -- the true classes of the observations are along the columns and the predicted classes are along the rows. For example, a confusion matrix for our decision tree classifier from earlier appears below.
 
 ```{r}
 dt_fit %>%
   augment(toy_data) %>%
-  count(class, .pred_class) %>%
-  pivot_wider(id_cols = class, 
-              names_from = .pred_class, 
-              values_from = n) %>%
-  replace(is.na(.), 0)
+  conf_mat(class, .pred_class)
 ```
 
 ### Reading the Confusion Matrix
 
-The confusion matrix is an array of numbers whose rows correspond to the *true class* that an observation belongs to. The columns of the confusion matrix correspond to the observation's *predicted class* according to the model. This means that
+The confusion matrix is an array of numbers whose columns correspond to the *true class* that an observation belongs to. The rows of the confusion matrix correspond to the observation's *predicted class* according to the model. This means that
 
-+ observations along the main diagonal of the confusion matrix are correctly predicted observations.
-+ observations away from the main diagonal correspond to incorrectly predicted observations -- in particular, the number in row $i$, column $j$ is the number of observations which are *truly* class $i$ but were *predicted* as class $j$.
++ observations along the main diagonal of the confusion matrix are *correctly* predicted observations.
++ observations away from the main diagonal correspond to *incorrectly* predicted observations -- in particular, the number in row $i$, column $j$ is the number of observations which are *truly* class $j$ but were *predicted* as class $i$.
 
 Understanding the confusion matrix can give us great insight as to where our model is becoming "confused" and how we might hope to improve it.
 
@@ -226,8 +229,7 @@ The `{tidymodels}` collection of packages, specifically `{yardstick}`, makes it 
 ```{r}
 dt_fit %>%
   augment(toy_data) %>%
-  mutate(class = as.factor(class)) %>%
-  recall(class, .pred_class, event_level = "second", estimator = "micro")
+  accuracy(class, .pred_class)
 ```
 
 ### Why Not Accuracy?
@@ -239,15 +241,10 @@ Pay special attention to the plot of logistic regression classifier. We'll print
 ```{r}
 log_reg_fit %>%
   augment(toy_data) %>%
-  count(class, .pred_class) %>%
-  pivot_wider(id_cols = class, 
-              names_from = .pred_class, 
-              values_from = n) %>%
-  replace(is.na(.), 0)
+  conf_mat(class, .pred_class)
 
 log_reg_fit %>%
   augment(toy_data) %>%
-  mutate(class = as.factor(class)) %>%
   accuracy(class, .pred_class)
 ```
 
@@ -259,31 +256,29 @@ Especially in situations where we are dealing with rare classes, we need other p
 
 Recall measures our model's ability to detect the presence of a class of interest from the population. That is, given that an observation *belongs to class X*, what is the likelihood that the model *predicted class X*? 
 
-To compute the *recall rate for Class X*, we only look at the row of the confusion matrix corresponding to Class X. The denominator is the total number of observations belonging to that row. The numerator is the diagonal entry in that row (ie. the correctly classified observations).
+To compute the *recall rate for Class X*, we only look at the column of the confusion matrix corresponding to Class X. The denominator is the total number of observations belonging to that column. The numerator is the diagonal entry in that column (ie. the correctly classified observations).
 
 Again, `{tidymodels}`, makes computing our performance metric quite easy.
 
 ```{r}
 log_reg_fit %>%
   augment(toy_data) %>%
-  mutate(class = as.factor(class)) %>%
-  recall(class, .pred_class, event_level = "first")
+  recall(class, .pred_class, event_level = "second")
 ```
 
 Like accuracy, the higher the *recall* rate, the better the model's ability to detect observations of the class of interest.
 
 ### Precision
 
-Precision measures our model's ability to discriminate against a class of interest from the population. That is, given that the model *predicted class X*, what is the likelihood that the observation actually *belongs to class X*? 
+Precision measures the confidence we should have when our model predicts than an observation belongs to a class of interest. That is, given that the model *predicted class X*, what is the likelihood that the observation actually *belongs to class X*? 
 
-To compute the *precision rate for Class X*, we only look at the column of the confusion matrix corresponding to Class X. The denominator is the total number of observations belonging to that column. The numerator is the diagonal entry in that column (ie. the correctly classified observations).
+To compute the *precision rate for Class X*, we only look at the row of the confusion matrix corresponding to Class X. The denominator is the total number of observations belonging to that row. The numerator is the diagonal entry in that row (ie. the correctly classified observations).
 
 Again, `{tidymodels}`, makes computing our performance metric quite easy.
 
 ```{r}
 log_reg_fit %>%
   augment(toy_data) %>%
-  mutate(class = as.factor(class)) %>%
   precision(class, .pred_class, event_level = "second")
 ```
 
@@ -291,22 +286,20 @@ Like accuracy and recall, the higher the *precision* rate, the better the model'
 
 ### ROC-AUC
 
-When dealing with binary classification, the *receiver-operator-curve*'s *area under the curve* is a measure of the increases in true positive and false positive rates when varying a decision threshold. The idea is that we could use a variety of thresholds for assigning an observation to the class of interest. 
+When dealing with binary classification, the *receiver-operator-curve*'s *area under the curve* is a measure of the increases in true positive and false positive rates when varying a decision threshold. The idea is that we could use a variety of thresholds for assigning an observation to the class of interest.
 
 The natural threshold is that if our model predicts a 50% chance or higher, then we should assign that observation to the class of interest and otherwise assign it to the other class. This isn't the only possible choice, however. We could use a threshold of 20%, which would allow us to capture more of the cases actually belonging to the class of interest (*true positives*) but would also result in more mistakes (*false positives*). Similarly, we could use a threshold of 80% which would result in fewer *false positives* but also fewer *true positives*. One of the goals here is to find the optimal threshold.
 
-For ROC-AUC, the close to 1, the better our model is doing at discriminating true positives from false positives. Values closer to 0.5 are like random guessing and indicate poor model performance. Values below 0.5 indicate that something has gone wrong because our model is doing worse than random guessing would do -- in such cases it is likely that we have mixed up our classes somewhere.
+For ROC-AUC, the close to 1, the better our model is doing at discriminating true positives from false positives (we get nearly all of the true positives before obtaining any false positives). Values closer to 0.5 are like random guessing and indicate poor model performance. Values below 0.5 indicate that something has gone wrong because our model is doing worse than random guessing would do -- in such cases it is likely that we have mixed up our classes somewhere.
 
 ```{r}
 log_reg_fit %>%
   augment(toy_data) %>%
-  mutate(class = as.factor(class)) %>%
   roc_curve(class, .pred_A) %>%
   autoplot()
   
 log_reg_fit %>%
   augment(toy_data) %>%
-  mutate(class = as.factor(class)) %>%
   roc_auc(class, .pred_A)
 ```
 
@@ -315,6 +308,20 @@ Note that some `{tidymodels}` objects have an `autoplot()` method which will qui
 ### Other Assessment Metrics for Classifiers
 
 While we'll most often stick with `accuracy`, `precision`, `recall`, and `roc_auc`, it is worth knowing that there are other assessment metrics for classifiers. You can [find several of them here](https://yardstick.tidymodels.org/articles/metric-types.html) on the `{yardstick}` vignette.
+
+#### MultiClass Log-Loss (for your Competition)
+
+Many of our models can be adapted to output probability estimates for each possible class rather than just a single class prediction. Some performance metrics take into account not just whether a model's predictions are correct, but also how confident the model is in those predictions. One such metric, used in our semester-long Kaggle competition, is multiclass log loss. This performance metric is calculated as follows:
+
+$$\text{MultiClass Log Loss} = -\frac{1}{n}\sum_{\stackrel{i = 1}{\text{predictions}}}^{n}{\sum_{\stackrel{j = 1}{\text{classes}}}^{k}{y_{ij}\log\left(\hat{y_{ij}}\right)}}$$
+
+Where $y_{ij} = 1$ if the true class of observation $i$ is class $j$, but $y_{ij} = 0$ otherwise, and $\hat{y_{ij}}$ is the model's prediction that observation $i$ belongs to class $j$. 
+
+For each observation, only the probability assigned to the true class affects the log loss, since the summation ensures that terms corresponding to incorrect classes are multiplied by 0 and do not contribute. If the model is highly confident and correct, the predicted probability $\hat{y_{ij}}$ will be close to 1, making $\log\left(\hat{y_{ij}}\right)$ close to 0 resulting in a small *loss* contribution for that observation. However, if the model is uncertain or incorrect, $\hat{y_{ij}}$ will be smaller, leading to a larger (more negativ) logarithm and higher *loss* contribution for that observation. This makes multiclass log loss particularly useful for evaluating models that output probability distributions, as it rewards well-calibrated confidence in predictions.
+
+We can calculate mutliclass log loss using `{yardstick}` with the `mn_log_loss()` scoring function.
+
+
 
 ***
 

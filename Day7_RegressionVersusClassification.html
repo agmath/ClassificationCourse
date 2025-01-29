@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Regression Versus Classification</title>
+<title>Assessing Classifiers</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -100,15 +100,34 @@ window.Quarto = {
 
 </head>
 
-<body class="fullcontent">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#toy-data-for-classification" id="toc-toy-data-for-classification" class="nav-link active" data-scroll-target="#toy-data-for-classification">Toy Data for Classification</a></li>
+  <li><a href="#assessing-classifier-performance" id="toc-assessing-classifier-performance" class="nav-link" data-scroll-target="#assessing-classifier-performance">Assessing Classifier Performance</a>
+  <ul class="collapse">
+  <li><a href="#reading-the-confusion-matrix" id="toc-reading-the-confusion-matrix" class="nav-link" data-scroll-target="#reading-the-confusion-matrix">Reading the Confusion Matrix</a></li>
+  <li><a href="#computing-accuracy" id="toc-computing-accuracy" class="nav-link" data-scroll-target="#computing-accuracy">Computing Accuracy</a></li>
+  <li><a href="#why-not-accuracy" id="toc-why-not-accuracy" class="nav-link" data-scroll-target="#why-not-accuracy">Why Not Accuracy?</a></li>
+  <li><a href="#recall" id="toc-recall" class="nav-link" data-scroll-target="#recall">Recall</a></li>
+  <li><a href="#precision" id="toc-precision" class="nav-link" data-scroll-target="#precision">Precision</a></li>
+  <li><a href="#roc-auc" id="toc-roc-auc" class="nav-link" data-scroll-target="#roc-auc">ROC-AUC</a></li>
+  <li><a href="#other-assessment-metrics-for-classifiers" id="toc-other-assessment-metrics-for-classifiers" class="nav-link" data-scroll-target="#other-assessment-metrics-for-classifiers">Other Assessment Metrics for Classifiers</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Regression Versus Classification</h1>
+<h1 class="title">Assessing Classifiers</h1>
 </div>
 
 
@@ -146,40 +165,46 @@ window.Quarto = {
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>x_b <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(num_b, <span class="dv">50</span>, <span class="dv">5</span>)</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>y_b <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(num_b, <span class="dv">50</span>, <span class="dv">5</span>)</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>toy_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">c</span>(x_a, x_b), <span class="at">y =</span> <span class="fu">c</span>(y_a, y_b), <span class="at">class =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"A"</span>, num_a), <span class="fu">rep</span>(<span class="st">"B"</span>, num_b)))</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  #Second separable two-class with rare class</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#  num_points &lt;- 1000</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#  x &lt;- runif(num_points, 0, 50)</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#  y &lt;- runif(num_points, 0, 50)</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#  class &lt;- ifelse(sqrt((x - 20)^2 + (y - 40)^2) &lt; 3,</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#                  "A", "B")</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># toy_data &lt;- tibble(x = x, y = y, class = class)</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># #Non-Separable three-class</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># num_a &lt;- 25</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># num_b &lt;- 40</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># num_c &lt;- 30</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># x_a &lt;- rnorm(num_a, 35, 5)</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># y_a &lt;- rnorm(num_a, 25, 3)</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># x_b &lt;- rnorm(num_b, 40, 3)</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># y_b &lt;- rnorm(num_b, 35, 3)</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co"># x_c &lt;- rnorm(num_c, 45, 3)</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># y_c &lt;- rnorm(num_c, 25, 3)</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co"># toy_data &lt;- tibble(x = c(x_a, x_b, x_c), y = c(y_a, y_b, y_c), class = c(rep("A", num_a), rep("B", num_b), rep("C", num_c)))</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co"># ##Two class rolled</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co"># num_a &lt;- 250</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="co"># num_b &lt;- 175</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co"># x_a &lt;- runif(num_a, 0, 40)</span></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co"># x_b &lt;- runif(num_b, 25, 60)</span></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co"># y_a &lt;- -(x_a - 25)^2 + 475 + rnorm(num_a, mean = 0, sd = 50)</span></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co"># y_b &lt;- (x_b - 40)^2 + rnorm(num_b, mean = 0, sd = 50)</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>toy_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(x_a, x_b), <span class="at">y =</span> <span class="fu">c</span>(y_a, y_b), </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">class =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"A"</span>, num_a), <span class="fu">rep</span>(<span class="st">"B"</span>, num_b))) <span class="sc">%&gt;%</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">factor</span>(class))</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#  #Second separable two-class with rare class</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#  num_points &lt;- 1000</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  x &lt;- runif(num_points, 0, 50)</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">#  y &lt;- runif(num_points, 0, 50)</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  class &lt;- ifelse(sqrt((x - 20)^2 + (y - 40)^2) &lt; 3,</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#                  "A", "B")</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># toy_data &lt;- tibble(x = x, y = y, class = class) %&gt;%</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">#   mutate(class = factor(class))</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># #Non-Separable three-class</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># num_a &lt;- 25</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># num_b &lt;- 40</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># num_c &lt;- 30</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co"># x_a &lt;- rnorm(num_a, 35, 5)</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># y_a &lt;- rnorm(num_a, 25, 3)</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># x_b &lt;- rnorm(num_b, 40, 3)</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co"># y_b &lt;- rnorm(num_b, 35, 3)</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># x_c &lt;- rnorm(num_c, 45, 3)</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co"># y_c &lt;- rnorm(num_c, 25, 3)</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="co"># toy_data &lt;- tibble(x = c(x_a, x_b, x_c), y = c(y_a, y_b, y_c), class = c(rep("A", num_a), rep("B", num_b), rep("C", num_c))) %&gt;%</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co">#   mutate(class = factor(class))</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co"># ##Two class rolled</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co"># num_a &lt;- 250</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co"># num_b &lt;- 175</span></span>
 <span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="co"># toy_data &lt;- tibble(x = c(x_a, x_b), y = c(y_a, y_b), class = c(rep("A", num_a), rep("B", num_b)))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="co"># x_a &lt;- runif(num_a, 0, 40)</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="co"># x_b &lt;- runif(num_b, 25, 60)</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="co"># y_a &lt;- -(x_a - 25)^2 + 475 + rnorm(num_a, mean = 0, sd = 50)</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="co"># y_b &lt;- (x_b - 40)^2 + rnorm(num_b, mean = 0, sd = 50)</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="co"># toy_data &lt;- tibble(x = c(x_a, x_b), y = c(y_a, y_b), class = c(rep("A", num_a), rep("B", num_b))) %&gt;%</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="co">#   mutate(class = factor(class))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>toy_data <span class="sc">%&gt;%</span></span>
@@ -331,29 +356,24 @@ window.Quarto = {
 <section id="assessing-classifier-performance" class="level2">
 <h2 class="anchored" data-anchor-id="assessing-classifier-performance">Assessing Classifier Performance</h2>
 <p>There are several performance measures for classifiers. Perhaps the most obvious measure is <em>accuracy</em> – the proportion of observations correctly classified by our model. We’ll encounter others as well – accuracy is not always (or perhaps even often) the most appropriate performance measure for our classifiers.</p>
-<p>Before getting into computing <em>accuracy</em> and our other performance metrics, it is worth talking about a <em>confusion matrix</em>. Confusion matrices summarize our data and predictions – the true classes of the observations are along the rows and the predicted classes are along the columns. For example, a confusion matrix for our decision tree classifier from earlier appears below.</p>
+<p>Before getting into computing <em>accuracy</em> and our other performance metrics, it is worth talking about a <em>confusion matrix</em>. Confusion matrices summarize our data and predictions – the true classes of the observations are along the columns and the predicted classes are along the rows. For example, a confusion matrix for our decision tree classifier from earlier appears below.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dt_fit <span class="sc">%&gt;%</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(toy_data) <span class="sc">%&gt;%</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(class, .pred_class) <span class="sc">%&gt;%</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> class, </span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">names_from =</span> .pred_class, </span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> n) <span class="sc">%&gt;%</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">replace</span>(<span class="fu">is.na</span>(.), <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">conf_mat</span>(class, .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 3
-  class     A     B
-  &lt;chr&gt; &lt;int&gt; &lt;int&gt;
-1 A        25     0
-2 B         0    30</code></pre>
+<pre><code>          Truth
+Prediction  A  B
+         A 25  0
+         B  0 30</code></pre>
 </div>
 </div>
 <section id="reading-the-confusion-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="reading-the-confusion-matrix">Reading the Confusion Matrix</h3>
-<p>The confusion matrix is an array of numbers whose rows correspond to the <em>true class</em> that an observation belongs to. The columns of the confusion matrix correspond to the observation’s <em>predicted class</em> according to the model. This means that</p>
+<p>The confusion matrix is an array of numbers whose columns correspond to the <em>true class</em> that an observation belongs to. The rows of the confusion matrix correspond to the observation’s <em>predicted class</em> according to the model. This means that</p>
 <ul>
-<li>observations along the main diagonal of the confusion matrix are correctly predicted observations.</li>
-<li>observations away from the main diagonal correspond to incorrectly predicted observations – in particular, the number in row <span class="math inline">\(i\)</span>, column <span class="math inline">\(j\)</span> is the number of observations which are <em>truly</em> class <span class="math inline">\(i\)</span> but were <em>predicted</em> as class <span class="math inline">\(j\)</span>.</li>
+<li>observations along the main diagonal of the confusion matrix are <em>correctly</em> predicted observations.</li>
+<li>observations away from the main diagonal correspond to <em>incorrectly</em> predicted observations – in particular, the number in row <span class="math inline">\(i\)</span>, column <span class="math inline">\(j\)</span> is the number of observations which are <em>truly</em> class <span class="math inline">\(j\)</span> but were <em>predicted</em> as class <span class="math inline">\(i\)</span>.</li>
 </ul>
 <p>Understanding the confusion matrix can give us great insight as to where our model is becoming “confused” and how we might hope to improve it.</p>
 </section>
@@ -366,13 +386,12 @@ window.Quarto = {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dt_fit <span class="sc">%&gt;%</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(toy_data) <span class="sc">%&gt;%</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">as.factor</span>(class)) <span class="sc">%&gt;%</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recall</span>(class, .pred_class, <span class="at">event_level =</span> <span class="st">"second"</span>, <span class="at">estimator =</span> <span class="st">"micro"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(class, .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
-  .metric .estimator .estimate
-  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-1 recall  micro              1</code></pre>
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy binary             1</code></pre>
 </div>
 </div>
 </section>
@@ -383,22 +402,16 @@ window.Quarto = {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>log_reg_fit <span class="sc">%&gt;%</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(toy_data) <span class="sc">%&gt;%</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(class, .pred_class) <span class="sc">%&gt;%</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> class, </span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">names_from =</span> .pred_class, </span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> n) <span class="sc">%&gt;%</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">replace</span>(<span class="fu">is.na</span>(.), <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">conf_mat</span>(class, .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 3
-  class     A     B
-  &lt;chr&gt; &lt;int&gt; &lt;int&gt;
-1 A        25     0
-2 B         0    30</code></pre>
+<pre><code>          Truth
+Prediction  A  B
+         A 25  0
+         B  0 30</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>log_reg_fit <span class="sc">%&gt;%</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(toy_data) <span class="sc">%&gt;%</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">as.factor</span>(class)) <span class="sc">%&gt;%</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(class, .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(class, .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
   .metric  .estimator .estimate
@@ -412,13 +425,12 @@ window.Quarto = {
 <section id="recall" class="level3">
 <h3 class="anchored" data-anchor-id="recall">Recall</h3>
 <p>Recall measures our model’s ability to detect the presence of a class of interest from the population. That is, given that an observation <em>belongs to class X</em>, what is the likelihood that the model <em>predicted class X</em>?</p>
-<p>To compute the <em>recall rate for Class X</em>, we only look at the row of the confusion matrix corresponding to Class X. The denominator is the total number of observations belonging to that row. The numerator is the diagonal entry in that row (ie. the correctly classified observations).</p>
+<p>To compute the <em>recall rate for Class X</em>, we only look at the column of the confusion matrix corresponding to Class X. The denominator is the total number of observations belonging to that column. The numerator is the diagonal entry in that column (ie. the correctly classified observations).</p>
 <p>Again, <code>{tidymodels}</code>, makes computing our performance metric quite easy.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>log_reg_fit <span class="sc">%&gt;%</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(toy_data) <span class="sc">%&gt;%</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">as.factor</span>(class)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recall</span>(class, .pred_class, <span class="at">event_level =</span> <span class="st">"first"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recall</span>(class, .pred_class, <span class="at">event_level =</span> <span class="st">"second"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
   .metric .estimator .estimate
@@ -430,14 +442,13 @@ window.Quarto = {
 </section>
 <section id="precision" class="level3">
 <h3 class="anchored" data-anchor-id="precision">Precision</h3>
-<p>Precision measures our model’s ability to discriminate against a class of interest from the population. That is, given that the model <em>predicted class X</em>, what is the likelihood that the observation actually <em>belongs to class X</em>?</p>
-<p>To compute the <em>precision rate for Class X</em>, we only look at the column of the confusion matrix corresponding to Class X. The denominator is the total number of observations belonging to that column. The numerator is the diagonal entry in that column (ie. the correctly classified observations).</p>
+<p>Precision measures the confidence we should have when our model predicts than an observation belongs to a class of interest. That is, given that the model <em>predicted class X</em>, what is the likelihood that the observation actually <em>belongs to class X</em>?</p>
+<p>To compute the <em>precision rate for Class X</em>, we only look at the row of the confusion matrix corresponding to Class X. The denominator is the total number of observations belonging to that row. The numerator is the diagonal entry in that row (ie. the correctly classified observations).</p>
 <p>Again, <code>{tidymodels}</code>, makes computing our performance metric quite easy.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>log_reg_fit <span class="sc">%&gt;%</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(toy_data) <span class="sc">%&gt;%</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">as.factor</span>(class)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">precision</span>(class, .pred_class, <span class="at">event_level =</span> <span class="st">"second"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">precision</span>(class, .pred_class, <span class="at">event_level =</span> <span class="st">"second"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
   .metric   .estimator .estimate
@@ -451,13 +462,12 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="roc-auc">ROC-AUC</h3>
 <p>When dealing with binary classification, the <em>receiver-operator-curve</em>’s <em>area under the curve</em> is a measure of the increases in true positive and false positive rates when varying a decision threshold. The idea is that we could use a variety of thresholds for assigning an observation to the class of interest.</p>
 <p>The natural threshold is that if our model predicts a 50% chance or higher, then we should assign that observation to the class of interest and otherwise assign it to the other class. This isn’t the only possible choice, however. We could use a threshold of 20%, which would allow us to capture more of the cases actually belonging to the class of interest (<em>true positives</em>) but would also result in more mistakes (<em>false positives</em>). Similarly, we could use a threshold of 80% which would result in fewer <em>false positives</em> but also fewer <em>true positives</em>. One of the goals here is to find the optimal threshold.</p>
-<p>For ROC-AUC, the close to 1, the better our model is doing at discriminating true positives from false positives. Values closer to 0.5 are like random guessing and indicate poor model performance. Values below 0.5 indicate that something has gone wrong because our model is doing worse than random guessing would do – in such cases it is likely that we have mixed up our classes somewhere.</p>
+<p>For ROC-AUC, the close to 1, the better our model is doing at discriminating true positives from false positives (we get nearly all of the true positives before obtaining any false positives). Values closer to 0.5 are like random guessing and indicate poor model performance. Values below 0.5 indicate that something has gone wrong because our model is doing worse than random guessing would do – in such cases it is likely that we have mixed up our classes somewhere.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>log_reg_fit <span class="sc">%&gt;%</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(toy_data) <span class="sc">%&gt;%</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">as.factor</span>(class)) <span class="sc">%&gt;%</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_curve</span>(class, .pred_A) <span class="sc">%&gt;%</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_curve</span>(class, .pred_A) <span class="sc">%&gt;%</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -467,8 +477,7 @@ window.Quarto = {
 </div>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>log_reg_fit <span class="sc">%&gt;%</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(toy_data) <span class="sc">%&gt;%</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">as.factor</span>(class)) <span class="sc">%&gt;%</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(class, .pred_A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(class, .pred_A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
   .metric .estimator .estimate
@@ -481,7 +490,15 @@ window.Quarto = {
 <section id="other-assessment-metrics-for-classifiers" class="level3">
 <h3 class="anchored" data-anchor-id="other-assessment-metrics-for-classifiers">Other Assessment Metrics for Classifiers</h3>
 <p>While we’ll most often stick with <code>accuracy</code>, <code>precision</code>, <code>recall</code>, and <code>roc_auc</code>, it is worth knowing that there are other assessment metrics for classifiers. You can <a href="https://yardstick.tidymodels.org/articles/metric-types.html">find several of them here</a> on the <code>{yardstick}</code> vignette.</p>
+<section id="multiclass-log-loss-for-your-competition" class="level4">
+<h4 class="anchored" data-anchor-id="multiclass-log-loss-for-your-competition">MultiClass Log-Loss (for your Competition)</h4>
+<p>Many of our models can be adapted to output probability estimates for each possible class rather than just a single class prediction. Some performance metrics take into account not just whether a model’s predictions are correct, but also how confident the model is in those predictions. One such metric, used in our semester-long Kaggle competition, is multiclass log loss. This performance metric is calculated as follows:</p>
+<p><span class="math display">\[\text{MultiClass Log Loss} = -\frac{1}{n}\sum_{\stackrel{i = 1}{\text{predictions}}}^{n}{\sum_{\stackrel{j = 1}{\text{classes}}}^{k}{y_{ij}\log\left(\hat{y_{ij}}\right)}}\]</span></p>
+<p>Where <span class="math inline">\(y_{ij} = 1\)</span> if the true class of observation <span class="math inline">\(i\)</span> is class <span class="math inline">\(j\)</span>, but <span class="math inline">\(y_{ij} = 0\)</span> otherwise, and <span class="math inline">\(\hat{y_{ij}}\)</span> is the model’s prediction that observation <span class="math inline">\(i\)</span> belongs to class <span class="math inline">\(j\)</span>.</p>
+<p>For each observation, only the probability assigned to the true class affects the log loss, since the summation ensures that terms corresponding to incorrect classes are multiplied by 0 and do not contribute. If the model is highly confident and correct, the predicted probability <span class="math inline">\(\hat{y_{ij}}\)</span> will be close to 1, making <span class="math inline">\(\log\left(\hat{y_{ij}}\right)\)</span> close to 0 resulting in a small <em>loss</em> contribution for that observation. However, if the model is uncertain or incorrect, <span class="math inline">\(\hat{y_{ij}}\)</span> will be smaller, leading to a larger (more negativ) logarithm and higher <em>loss</em> contribution for that observation. This makes multiclass log loss particularly useful for evaluating models that output probability distributions, as it rewards well-calibrated confidence in predictions.</p>
+<p>We can calculate mutliclass log loss using <code>{yardstick}</code> with the <code>mn_log_loss()</code> scoring function.</p>
 <hr>
+</section>
 </section>
 </section>
 <section id="summary" class="level2">
