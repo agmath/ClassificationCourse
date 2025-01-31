@@ -294,6 +294,8 @@ train %>%
   theme(legend.position = "None")
 ```
 
+### Multivariate Analyses
+
 Now that we understand the individual distributions of the variables, its time to look at how these predictors are associated with out response variable (transported). We’ll begin by looking for associations between transported and the categorical variables.
 
 ```{r}
