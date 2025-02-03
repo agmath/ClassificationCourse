@@ -34,6 +34,7 @@ data <- data %>%
     transported = factor(transported)
   )
 
+set.seed(434)
 data_splits <- initial_split(data, prop = 0.8, strata = transported)
 
 train <- training(data_splits)
@@ -396,7 +397,59 @@ You do not necessarily need to choose just one approach or the other. Perhaps th
 
 ### Statistical Learning
 
+Below, you'll see an example and discussion of a logistic regression model being fit and analysed for *statistical learning*. Our goal here is to discover the characteristics of individuals who are at the highest (or elevated) risk of being transported to an alternate dimension during space flight.
+
 #### Logistic Regression
+
+Let's start by building a model specification. We'll use logistic regression (`logistic_reg()`) with the `"glm"` engine and the mode set to `"classification"`.
+
+```{r}
+log_reg_spec <- logistic_reg() %>%
+  set_engine("glm") %>%
+  set_mode("classification")
+```
+
+Now that we have a model *specification*, we'll create our recipe. Note that there are several "predictors" which are *unique identifiers* and therefore should not be utilized by the model. Those predictors are `passenger_id` and `name`. The `cabin` predictor is also a near-unique identifier (it creates very small groups), so we won't use it as a predictor either. We use `step_rm()` to remove those predictors from consideration. Additionally, we'll need to *impute* missing values for both numerical and categorical (nominal) predictors and then get dummy variable encodings for our categorical predictors as well.
+
+```{r}
+log_reg_rec <- recipe(transported ~ ., data = train) %>%
+  step_rm(passenger_id) %>%
+  step_rm(name) %>%
+  step_rm(cabin) %>%
+  step_impute_median(all_numeric_predictors()) %>%
+  step_impute_mode(all_nominal_predictors()) %>%
+  step_dummy(all_nominal_predictors())
+```
+
+With our model specification and recipe defined, we'll package them together into a workflow next.
+
+```{r}
+log_reg_wf <- workflow() %>%
+  add_model(log_reg_spec) %>%
+  add_recipe(log_reg_rec)
+```
+
+Finally, we'll *fit* our model to its training data.
+
+```{r}
+log_reg_fit <- log_reg_wf %>%
+  fit(train)
+```
+
+The warning we receive indicates that some probabilities have been rounded to 0 or 1. In these cases, our model is very certain (but a logistic regressor cannot actually output probabilities of exactly 0 or exactly 1 -- we should be aware of this when reporting results).
+
+Now that we've got the fitted model, we can see the estimated model coefficients and statistical measures associated with them (for example, standard errors and $p$-values). We use `extract_fit_engine()` to extract the fitted model from the fitted workflow and then `tidy()` to convert the results into a data frame.
+
+```{r}
+log_reg_fit %>%
+  extract_fit_engine() %>%
+  tidy() %>%
+  kable()
+```
+
+```{r}
+
+```
 
 ### Machine Learning
 

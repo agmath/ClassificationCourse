@@ -166,7 +166,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 2, 2025</p>
+      <p class="date-modified">February 3, 2025</p>
     </div>
   </div>
     
@@ -196,10 +196,11 @@ window.Quarto = {
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">transported =</span> <span class="fu">factor</span>(transported)</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>data_splits <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(data, <span class="at">prop =</span> <span class="fl">0.8</span>, <span class="at">strata =</span> transported)</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(data_splits)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">testing</span>(data_splits)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">434</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>data_splits <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(data, <span class="at">prop =</span> <span class="fl">0.8</span>, <span class="at">strata =</span> transported)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(data_splits)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">testing</span>(data_splits)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <section id="statement-of-purpose" class="level2">
@@ -611,38 +612,38 @@ Note
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">food_court</td>
-<td style="text-align: right;">469.4348</td>
+<td style="text-align: right;">450.8514</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">1666.4864</td>
-<td style="text-align: right;">82</td>
+<td style="text-align: right;">1565.6508</td>
+<td style="text-align: right;">76.00</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">room_service</td>
-<td style="text-align: right;">231.4002</td>
+<td style="text-align: right;">225.2070</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">692.0672</td>
-<td style="text-align: right;">52</td>
+<td style="text-align: right;">677.7504</td>
+<td style="text-align: right;">46.00</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">shopping_mall</td>
-<td style="text-align: right;">171.9011</td>
+<td style="text-align: right;">174.8237</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">560.4395</td>
-<td style="text-align: right;">25</td>
+<td style="text-align: right;">561.1969</td>
+<td style="text-align: right;">29.00</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">spa</td>
-<td style="text-align: right;">307.1974</td>
+<td style="text-align: right;">306.3503</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">1097.6138</td>
-<td style="text-align: right;">64</td>
+<td style="text-align: right;">1128.7625</td>
+<td style="text-align: right;">58.00</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">vr_deck</td>
-<td style="text-align: right;">301.1654</td>
+<td style="text-align: right;">282.7201</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">1108.4584</td>
-<td style="text-align: right;">47</td>
+<td style="text-align: right;">1040.8655</td>
+<td style="text-align: right;">42.75</td>
 </tr>
 </tbody>
 </table>
@@ -682,38 +683,38 @@ Note
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">food_court</td>
-<td style="text-align: right;">1297.8491</td>
-<td style="text-align: right;">398</td>
-<td style="text-align: right;">2569.9170</td>
-<td style="text-align: right;">1208.0</td>
+<td style="text-align: right;">1260.7175</td>
+<td style="text-align: right;">396</td>
+<td style="text-align: right;">2415.5439</td>
+<td style="text-align: right;">1207.0</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">room_service</td>
-<td style="text-align: right;">661.2545</td>
-<td style="text-align: right;">314</td>
-<td style="text-align: right;">1041.4844</td>
-<td style="text-align: right;">809.0</td>
+<td style="text-align: right;">656.1383</td>
+<td style="text-align: right;">322</td>
+<td style="text-align: right;">1027.5232</td>
+<td style="text-align: right;">810.5</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">shopping_mall</td>
-<td style="text-align: right;">505.2333</td>
-<td style="text-align: right;">194</td>
-<td style="text-align: right;">868.8653</td>
-<td style="text-align: right;">673.0</td>
+<td style="text-align: right;">512.1722</td>
+<td style="text-align: right;">208</td>
+<td style="text-align: right;">866.0699</td>
+<td style="text-align: right;">685.0</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">spa</td>
-<td style="text-align: right;">811.0535</td>
-<td style="text-align: right;">225</td>
-<td style="text-align: right;">1665.1473</td>
-<td style="text-align: right;">739.5</td>
+<td style="text-align: right;">826.0777</td>
+<td style="text-align: right;">227</td>
+<td style="text-align: right;">1734.0680</td>
+<td style="text-align: right;">733.5</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">vr_deck</td>
-<td style="text-align: right;">846.3207</td>
-<td style="text-align: right;">260</td>
-<td style="text-align: right;">1729.7776</td>
-<td style="text-align: right;">773.0</td>
+<td style="text-align: right;">810.1865</td>
+<td style="text-align: right;">256</td>
+<td style="text-align: right;">1636.4628</td>
+<td style="text-align: right;">765.0</td>
 </tr>
 </tbody>
 </table>
@@ -866,8 +867,175 @@ Statistical Learning versus Machine Learning
 </div>
 <section id="statistical-learning" class="level3">
 <h3 class="anchored" data-anchor-id="statistical-learning">Statistical Learning</h3>
+<p>Below, you’ll see an example and discussion of a logistic regression model being fit and analysed for <em>statistical learning</em>. Our goal here is to discover the characteristics of individuals who are at the highest (or elevated) risk of being transported to an alternate dimension during space flight.</p>
 <section id="logistic-regression" class="level4">
 <h4 class="anchored" data-anchor-id="logistic-regression">Logistic Regression</h4>
+<p>Let’s start by building a model specification. We’ll use logistic regression (<code>logistic_reg()</code>) with the <code>"glm"</code> engine and the mode set to <code>"classification"</code>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>log_reg_spec <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Now that we have a model <em>specification</em>, we’ll create our recipe. Note that there are several “predictors” which are <em>unique identifiers</em> and therefore should not be utilized by the model. Those predictors are <code>passenger_id</code> and <code>name</code>. The <code>cabin</code> predictor is also a near-unique identifier (it creates very small groups), so we won’t use it as a predictor either. We use <code>step_rm()</code> to remove those predictors from consideration. Additionally, we’ll need to <em>impute</em> missing values for both numerical and categorical (nominal) predictors and then get dummy variable encodings for our categorical predictors as well.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>log_reg_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(transported <span class="sc">~</span> ., <span class="at">data =</span> train) <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_rm</span>(passenger_id) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_rm</span>(name) <span class="sc">%&gt;%</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_rm</span>(cabin) <span class="sc">%&gt;%</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_mode</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>With our model specification and recipe defined, we’ll package them together into a workflow next.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>log_reg_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(log_reg_spec) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(log_reg_rec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Finally, we’ll <em>fit</em> our model to its training data.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>log_reg_fit <span class="ot">&lt;-</span> log_reg_wf <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+</div>
+<p>The warning we receive indicates that some probabilities have been rounded to 0 or 1. In these cases, our model is very certain (but a logistic regressor cannot actually output probabilities of exactly 0 or exactly 1 – we should be aware of this when reporting results).</p>
+<p>Now that we’ve got the fitted model, we can see the estimated model coefficients and statistical measures associated with them (for example, standard errors and <span class="math inline">\(p\)</span>-values). We use <code>extract_fit_engine()</code> to extract the fitted model from the fitted workflow and then <code>tidy()</code> to convert the results into a data frame.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>log_reg_fit <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 38%">
+<col style="width: 16%">
+<col style="width: 14%">
+<col style="width: 16%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">0.3271152</td>
+<td style="text-align: right;">0.1053673</td>
+<td style="text-align: right;">3.104521</td>
+<td style="text-align: right;">0.0019059</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">-0.0099672</td>
+<td style="text-align: right;">0.0022448</td>
+<td style="text-align: right;">-4.440088</td>
+<td style="text-align: right;">0.0000090</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">room_service</td>
+<td style="text-align: right;">-0.0014512</td>
+<td style="text-align: right;">0.0000994</td>
+<td style="text-align: right;">-14.596960</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">food_court</td>
+<td style="text-align: right;">0.0005494</td>
+<td style="text-align: right;">0.0000467</td>
+<td style="text-align: right;">11.764380</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">shopping_mall</td>
+<td style="text-align: right;">0.0005011</td>
+<td style="text-align: right;">0.0000716</td>
+<td style="text-align: right;">6.997697</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">spa</td>
+<td style="text-align: right;">-0.0020205</td>
+<td style="text-align: right;">0.0001195</td>
+<td style="text-align: right;">-16.902312</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">vr_deck</td>
+<td style="text-align: right;">-0.0019780</td>
+<td style="text-align: right;">0.0001176</td>
+<td style="text-align: right;">-16.823472</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">home_planet_Europa</td>
+<td style="text-align: right;">2.2807194</td>
+<td style="text-align: right;">0.1365046</td>
+<td style="text-align: right;">16.707999</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">home_planet_Mars</td>
+<td style="text-align: right;">0.6960741</td>
+<td style="text-align: right;">0.0843475</td>
+<td style="text-align: right;">8.252454</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cryo_sleep_yes</td>
+<td style="text-align: right;">1.2670862</td>
+<td style="text-align: right;">0.0795141</td>
+<td style="text-align: right;">15.935365</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">destination_PSO.J318.5.22</td>
+<td style="text-align: right;">-0.4262135</td>
+<td style="text-align: right;">0.1251772</td>
+<td style="text-align: right;">-3.404882</td>
+<td style="text-align: right;">0.0006619</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">destination_TRAPPIST.1e</td>
+<td style="text-align: right;">-0.4704278</td>
+<td style="text-align: right;">0.0887084</td>
+<td style="text-align: right;">-5.303081</td>
+<td style="text-align: right;">0.0000001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">vip_yes</td>
+<td style="text-align: right;">-0.5417179</td>
+<td style="text-align: right;">0.2755981</td>
+<td style="text-align: right;">-1.965608</td>
+<td style="text-align: right;">0.0493439</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </section>
 </section>
 <section id="machine-learning" class="level3">
