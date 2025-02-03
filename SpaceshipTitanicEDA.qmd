@@ -23,10 +23,16 @@ library(tidymodels)
 library(patchwork)
 library(kableExtra)
 library(ggridges)
+library(marginaleffects)
 
 data <- read_csv("https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/spaceship_titanic.csv")
 
 names(data) <- janitor::make_clean_names(names(data))
+
+data <- data %>%
+  mutate(
+    transported = factor(transported)
+  )
 
 data_splits <- initial_split(data, prop = 0.8, strata = transported)
 
@@ -371,6 +377,30 @@ In the group of plots appearing above, we see that higher food court and shoppin
 As a result of this exploratory analysis, we’ve identified several important insights as we proceed to the model construction phase of this analysis. Firstly, about half of passengers were transported to an alternate dimension while the other half were transported safely. All of the numerical features are very heavily right-skewed aside from age. The variable most strongly associated with whether or not a passenger was transported may be the choice to Cryo Sleep during the flight. Other variables showed associations as well, but were less pronounced.
 
 ## Model Construction and Assessment
+
+:::{.callout-important}
+## Statistical Learning versus Machine Learning
+
+There are two competing objectives that we can have in model construction. 
+
++ **Statistical Learning:** We build models with the intent of discovering and interpreting associations between our available predictors and the response.
+  
+  + Fits models and then uses $p$-values to identify significant predictors, confidence intervals for coefficients, etc.
+
++ **Machine Learning:** We build models with the intent of making predictions as accurately as possible. 
+
+  + Uses methods like *cross-validation* for hyperparameter tuning and performance estimation
+
+You do not necessarily need to choose just one approach or the other. Perhaps the problems/challenges you’ve set out to solve would benefit from both descriptive and predictive models. In this case, just make clear to the reader when you are switching between objectives.
+:::
+
+### Statistical Learning
+
+#### Logistic Regression
+
+### Machine Learning
+
+#### Logistic Regression
 
 ## Model Interpretation and Inference
 

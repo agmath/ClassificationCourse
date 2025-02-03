@@ -72,6 +72,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="SpaceshipTitanicEDA_files/libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="SpaceshipTitanicEDA_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -91,7 +120,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#univariate-analyses" id="toc-univariate-analyses" class="nav-link" data-scroll-target="#univariate-analyses">Univariate Analyses</a></li>
   <li><a href="#multivariate-analyses" id="toc-multivariate-analyses" class="nav-link" data-scroll-target="#multivariate-analyses">Multivariate Analyses</a></li>
   </ul></li>
-  <li><a href="#model-construction-and-assessment" id="toc-model-construction-and-assessment" class="nav-link" data-scroll-target="#model-construction-and-assessment">Model Construction and Assessment</a></li>
+  <li><a href="#model-construction-and-assessment" id="toc-model-construction-and-assessment" class="nav-link" data-scroll-target="#model-construction-and-assessment">Model Construction and Assessment</a>
+  <ul class="collapse">
+  <li><a href="#statistical-learning" id="toc-statistical-learning" class="nav-link" data-scroll-target="#statistical-learning">Statistical Learning</a></li>
+  <li><a href="#machine-learning" id="toc-machine-learning" class="nav-link" data-scroll-target="#machine-learning">Machine Learning</a></li>
+  </ul></li>
   <li><a href="#model-interpretation-and-inference" id="toc-model-interpretation-and-inference" class="nav-link" data-scroll-target="#model-interpretation-and-inference">Model Interpretation and Inference</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -133,7 +166,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 31, 2025</p>
+      <p class="date-modified">February 2, 2025</p>
     </div>
   </div>
     
@@ -152,15 +185,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggridges)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/spaceship_titanic.csv"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data) <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">make_clean_names</span>(<span class="fu">names</span>(data))</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>data_splits <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(data, <span class="at">prop =</span> <span class="fl">0.8</span>, <span class="at">strata =</span> transported)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(data_splits)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">testing</span>(data_splits)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/spaceship_titanic.csv"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data) <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">make_clean_names</span>(<span class="fu">names</span>(data))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">transported =</span> <span class="fu">factor</span>(transported)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>data_splits <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(data, <span class="at">prop =</span> <span class="fl">0.8</span>, <span class="at">strata =</span> transported)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(data_splits)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">testing</span>(data_splits)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <section id="statement-of-purpose" class="level2">
@@ -572,38 +611,38 @@ Note
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">food_court</td>
-<td style="text-align: right;">465.2150</td>
+<td style="text-align: right;">469.4348</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">1635.8157</td>
-<td style="text-align: right;">82.0</td>
+<td style="text-align: right;">1666.4864</td>
+<td style="text-align: right;">82</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">room_service</td>
-<td style="text-align: right;">230.1464</td>
+<td style="text-align: right;">231.4002</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">684.6232</td>
-<td style="text-align: right;">50.0</td>
+<td style="text-align: right;">692.0672</td>
+<td style="text-align: right;">52</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">shopping_mall</td>
-<td style="text-align: right;">176.1111</td>
+<td style="text-align: right;">171.9011</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">627.6697</td>
-<td style="text-align: right;">25.0</td>
+<td style="text-align: right;">560.4395</td>
+<td style="text-align: right;">25</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">spa</td>
-<td style="text-align: right;">316.2869</td>
+<td style="text-align: right;">307.1974</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">1128.7735</td>
-<td style="text-align: right;">66.5</td>
+<td style="text-align: right;">1097.6138</td>
+<td style="text-align: right;">64</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">vr_deck</td>
-<td style="text-align: right;">302.2144</td>
+<td style="text-align: right;">301.1654</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">1149.3830</td>
-<td style="text-align: right;">46.0</td>
+<td style="text-align: right;">1108.4584</td>
+<td style="text-align: right;">47</td>
 </tr>
 </tbody>
 </table>
@@ -643,38 +682,38 @@ Note
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">food_court</td>
-<td style="text-align: right;">1297.3844</td>
-<td style="text-align: right;">412</td>
-<td style="text-align: right;">2526.7297</td>
-<td style="text-align: right;">1242.00</td>
+<td style="text-align: right;">1297.8491</td>
+<td style="text-align: right;">398</td>
+<td style="text-align: right;">2569.9170</td>
+<td style="text-align: right;">1208.0</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">room_service</td>
-<td style="text-align: right;">661.9264</td>
-<td style="text-align: right;">323</td>
-<td style="text-align: right;">1030.7778</td>
-<td style="text-align: right;">822.00</td>
+<td style="text-align: right;">661.2545</td>
+<td style="text-align: right;">314</td>
+<td style="text-align: right;">1041.4844</td>
+<td style="text-align: right;">809.0</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">shopping_mall</td>
-<td style="text-align: right;">518.7786</td>
-<td style="text-align: right;">196</td>
-<td style="text-align: right;">991.4739</td>
-<td style="text-align: right;">668.25</td>
+<td style="text-align: right;">505.2333</td>
+<td style="text-align: right;">194</td>
+<td style="text-align: right;">868.8653</td>
+<td style="text-align: right;">673.0</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">spa</td>
-<td style="text-align: right;">835.1299</td>
-<td style="text-align: right;">229</td>
-<td style="text-align: right;">1712.1851</td>
-<td style="text-align: right;">745.50</td>
+<td style="text-align: right;">811.0535</td>
+<td style="text-align: right;">225</td>
+<td style="text-align: right;">1665.1473</td>
+<td style="text-align: right;">739.5</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">vr_deck</td>
-<td style="text-align: right;">849.6971</td>
-<td style="text-align: right;">249</td>
-<td style="text-align: right;">1802.7522</td>
-<td style="text-align: right;">776.00</td>
+<td style="text-align: right;">846.3207</td>
+<td style="text-align: right;">260</td>
+<td style="text-align: right;">1729.7776</td>
+<td style="text-align: right;">773.0</td>
 </tr>
 </tbody>
 </table>
@@ -801,6 +840,42 @@ Note
 </section>
 <section id="model-construction-and-assessment" class="level2">
 <h2 class="anchored" data-anchor-id="model-construction-and-assessment">Model Construction and Assessment</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Statistical Learning versus Machine Learning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>There are two competing objectives that we can have in model construction.</p>
+<ul>
+<li><p><strong>Statistical Learning:</strong> We build models with the intent of discovering and interpreting associations between our available predictors and the response.</p>
+<ul>
+<li>Fits models and then uses <span class="math inline">\(p\)</span>-values to identify significant predictors, confidence intervals for coefficients, etc.</li>
+</ul></li>
+<li><p><strong>Machine Learning:</strong> We build models with the intent of making predictions as accurately as possible.</p>
+<ul>
+<li>Uses methods like <em>cross-validation</em> for hyperparameter tuning and performance estimation</li>
+</ul></li>
+</ul>
+<p>You do not necessarily need to choose just one approach or the other. Perhaps the problems/challenges you’ve set out to solve would benefit from both descriptive and predictive models. In this case, just make clear to the reader when you are switching between objectives.</p>
+</div>
+</div>
+<section id="statistical-learning" class="level3">
+<h3 class="anchored" data-anchor-id="statistical-learning">Statistical Learning</h3>
+<section id="logistic-regression" class="level4">
+<h4 class="anchored" data-anchor-id="logistic-regression">Logistic Regression</h4>
+</section>
+</section>
+<section id="machine-learning" class="level3">
+<h3 class="anchored" data-anchor-id="machine-learning">Machine Learning</h3>
+<section id="logistic-regression-1" class="level4">
+<h4 class="anchored" data-anchor-id="logistic-regression-1">Logistic Regression</h4>
+</section>
+</section>
 </section>
 <section id="model-interpretation-and-inference" class="level2">
 <h2 class="anchored" data-anchor-id="model-interpretation-and-inference">Model Interpretation and Inference</h2>
