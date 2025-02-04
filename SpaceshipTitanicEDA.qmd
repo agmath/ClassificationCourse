@@ -79,7 +79,8 @@ train %>%
   geom_bar(aes(x = transported)) + 
   labs(title = "Distribution of Transported Passengers",
        x = "Interdimensional Transport Status",
-       y = "Count")
+       y = "Count") + 
+  theme_bw()
 ```
 
 ```{r}
@@ -102,7 +103,8 @@ p1 <- train %>%
     x = "",
     y = "Count"
   ) + 
-  coord_flip()
+  coord_flip() + 
+  theme_bw()
 
 p2 <- train %>%
   ggplot() + 
@@ -111,7 +113,7 @@ p2 <- train %>%
     title = "CryoSleep Selection",
     y = "Count",
     x = ""
-  )
+  ) + theme_bw()
 
 p3 <- train %>%
   ggplot() + 
@@ -121,7 +123,8 @@ p3 <- train %>%
     x = "",
     y = "Count"
   ) + 
-  coord_flip()
+  coord_flip() + 
+  theme_bw()
 
 p4 <- train %>%
   ggplot() + 
@@ -130,7 +133,8 @@ p4 <- train %>%
     title = "VIP Status",
     x = "",
     y = "Count"
-  )
+  ) + 
+  theme_bw()
 
 (p1 + p2) / (p3 + p4)
 ```
@@ -153,7 +157,8 @@ train %>%
     title = "Passenger Ages",
     x = "Age (Years)",
     y = ""
-  )
+  ) + 
+  theme_bw()
 ```
 
 The plot above shows a [near] 0-inflated distribution. That is, there is an inflated number of observations near 0, given the shape of the rest of the distribution. Ages are right-skewed, with a median passenger age of 27 years old. Next we’ll look at the distribution of room service charges.
@@ -174,7 +179,8 @@ p1 <- train %>%
     title = "Room Service Money Spent",
     x = "Expenditure",
     y = ""
-    )
+    ) + 
+  theme_bw()
 
 p2 <- train %>%
   ggplot() + 
@@ -189,7 +195,8 @@ p2 <- train %>%
     x = "Expenditure",
     y = ""
     ) + 
-  scale_x_log10()
+  scale_x_log10() + 
+  theme_bw()
 
 p1 + p2
 ```
@@ -208,7 +215,8 @@ p_food <- train %>%
   scale_x_log10() +
   labs(title = "Food Court Expenditures",
        x = "Money Spent",
-       y = "")
+       y = "") + 
+  theme_bw()
 
 p_shop <- train %>%
   ggplot() + 
@@ -218,7 +226,8 @@ p_shop <- train %>%
   scale_x_log10() +
   labs(title = "Shopping Mall Expenditures",
        x = "Money Spent",
-       y = "")
+       y = "") + 
+  theme_bw()
 
 p_spa <- train %>%
   ggplot() + 
@@ -228,7 +237,8 @@ p_spa <- train %>%
   scale_x_log10() +
   labs(title = "Spa Expenditures",
        x = "Money Spent",
-       y = "")
+       y = "") + 
+  theme_bw()
 
 p_vr <- train %>%
   ggplot() + 
@@ -238,7 +248,8 @@ p_vr <- train %>%
   scale_x_log10() +
   labs(title = "VR Deck Expenditures",
        x = "Money Spent",
-       y = "")
+       y = "") + 
+  theme_bw()
 
 (p_food + p_shop) / (p_spa + p_vr)
 ```
@@ -298,7 +309,8 @@ train %>%
   labs(title = "Expenditure Distributions",
        x = "Money Spent",
        y = "") + 
-  theme(legend.position = "None")
+  theme(legend.position = "None") + 
+  theme_bw()
 ```
 
 ### Multivariate Analyses
@@ -314,7 +326,8 @@ p_home <- train %>%
            show.legend = FALSE) + 
   labs(title = "Home Planet and Transport",
        x = "Count",
-       y = "")
+       y = "") + 
+  theme_bw()
 
 p_cryo <- train %>%
   ggplot() + 
@@ -323,7 +336,8 @@ p_cryo <- train %>%
            position = "dodge") + 
   labs(title = "Cryo Sleep and Transport",
        x = "",
-       y = "Count")
+       y = "Count") + 
+  theme_bw()
 
 p_destination <- train %>%
   ggplot() + 
@@ -333,7 +347,8 @@ p_destination <- train %>%
            show.legend = FALSE) + 
   labs(title = "Destination and Transport",
        x = "Count",
-       y = "")
+       y = "") + 
+  theme_bw()
 
 p_vip <- train %>%
   ggplot() + 
@@ -343,7 +358,8 @@ p_vip <- train %>%
            show.legend = FALSE) + 
   labs(title = "VIP Status and Transport",
        x = "",
-       y = "Proportion")
+       y = "Proportion") + 
+  theme_bw()
 
 (p_home + p_cryo) / (p_destination + p_vip)
 ```
@@ -370,7 +386,8 @@ train %>%
   facet_wrap(~Venue) + 
   labs(title = "",
        x = "Expenditure",
-       y = "")
+       y = "") + 
+  theme_bw()
 ```
 
 In the group of plots appearing above, we see that higher food court and shopping mall expenditures were associate with those passengers who were transported than those who were not. Those individuals not being transported had higher room service, spa, and VR deck expenditures on average than those who were not transported.
@@ -491,8 +508,8 @@ log_reg_fit %>%
     x = "Odds Ratio",
     y = ""
   ) + 
-  theme_bw() %>%
-  theme(legend.position = "none")
+  theme(legend.position = "none") + 
+  theme_bw()
 ```
 
 For numerical predictors, we can use the `{marginaleffects}` package in order to estimate the marginal effects of the numerical predictors on the probability of interdimensional transport. We need to create a data frame of new values of the variable we are interested in, while holding values of the other variables constant. The `crossing()` function will create a data frame that includes a row for each combination of the given values for our predictors. Be careful here though because `crossing()` can easily generate quite giant data frames.
@@ -547,7 +564,8 @@ mfx %>%
               fill = "grey", alpha = 0.5) +
   labs(x = "VR Deck",
        y = "Marginal Effect",
-       title = "Marginal Effects of Unit Increase in VR Deck Spending")
+       title = "Marginal Effects of Unit Increase in VR Deck Spending") + 
+  theme_bw()
 ```
 
 Spending in excess of $5000$ at the `vr_deck` does not seem to impact the probability of an individual being transported. Let's zoom in a bit one more moderate values of spending at the `vr_deck`.
@@ -563,7 +581,8 @@ mfx %>%
   labs(x = "VR Deck",
        y = "Marginal Effect",
        title = "Marginal Effects of Unit Increase in VR Deck Spending") + 
-  coord_cartesian(xlim = c(0, 5000))
+  coord_cartesian(xlim = c(0, 5000)) + 
+  theme_bw()
 ```
 
 We can see that additional spending at the `vr_deck` is associated with *lower* likelihood of interdimensional transport (the marginal effect is negative). The rate of reduction is greatest at around 600 to 700, but additional spending beyond 3500 seems to not be associated with any greater [meaningful] reduction in risk.
