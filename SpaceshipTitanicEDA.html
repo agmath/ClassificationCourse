@@ -166,7 +166,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 3, 2025</p>
+      <p class="date-modified">February 4, 2025</p>
     </div>
   </div>
     
@@ -1327,12 +1327,12 @@ Note
 </div>
 </div>
 <p>We can model more complex behaviors by including higher-order terms in our models. For example, we might include terms that raise a numerical predictor to a power (allowing for curvature in the association between log-odds of probability of interdimensional transport and the corresponding predictor). Alternatively (or additionally), we might consider interactions between two variables, allowing for the fact that the rate at which one predictor influences the probability of interdimensional transport to depend on the value of another predictor.</p>
-<p>Below, we build a model that allows for the effect of <code>vr_spending</code> on the probability of interdimensional transport to depend on a passenger’s <code>home_planet</code>. We allow for the interaction via the <code>step_interact()</code> feature engineering step.</p>
+<p>Below, we build a model that allows for the effect of <code>food_court</code> spending on the probability of interdimensional transport to depend on a passenger’s <code>home_planet</code>. Passengers boarding the <em>Spaceship Titanic</em> earlier are more likely to have spent more money at the <code>food_court</code> just by virtue of being aboard the ship longer. This adjustment compensates for that. We allow for the interaction via the <code>step_interact()</code> feature engineering step.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>complex_log_reg_rec <span class="ot">&lt;-</span> log_reg_rec <span class="sc">%&gt;%</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_interact</span>(<span class="sc">~</span> vr_deck<span class="sc">:</span><span class="fu">starts_with</span>(<span class="st">"home_planet"</span>))</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_interact</span>(<span class="sc">~</span> food_court<span class="sc">:</span><span class="fu">starts_with</span>(<span class="st">"home_planet"</span>))</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>complex_log_reg_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(log_reg_spec) <span class="sc">%&gt;%</span></span>
@@ -1354,10 +1354,10 @@ Note
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 40%">
-<col style="width: 15%">
+<col style="width: 43%">
+<col style="width: 14%">
 <col style="width: 13%">
-<col style="width: 16%">
+<col style="width: 14%">
 <col style="width: 13%">
 </colgroup>
 <thead>
@@ -1372,114 +1372,114 @@ Note
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">(Intercept)</td>
-<td style="text-align: right;">0.3147649</td>
-<td style="text-align: right;">0.1060062</td>
-<td style="text-align: right;">2.9693068</td>
-<td style="text-align: right;">0.0029847</td>
+<td style="text-align: right;">0.2431923</td>
+<td style="text-align: right;">0.1072898</td>
+<td style="text-align: right;">2.266685</td>
+<td style="text-align: right;">0.0234095</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">age</td>
-<td style="text-align: right;">-0.0100644</td>
-<td style="text-align: right;">0.0022522</td>
-<td style="text-align: right;">-4.4685923</td>
-<td style="text-align: right;">0.0000079</td>
+<td style="text-align: right;">-0.0113159</td>
+<td style="text-align: right;">0.0022766</td>
+<td style="text-align: right;">-4.970465</td>
+<td style="text-align: right;">0.0000007</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">room_service</td>
-<td style="text-align: right;">-0.0014438</td>
-<td style="text-align: right;">0.0000995</td>
-<td style="text-align: right;">-14.5167316</td>
+<td style="text-align: right;">-0.0013943</td>
+<td style="text-align: right;">0.0000988</td>
+<td style="text-align: right;">-14.112985</td>
 <td style="text-align: right;">0.0000000</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">food_court</td>
-<td style="text-align: right;">0.0005559</td>
-<td style="text-align: right;">0.0000486</td>
-<td style="text-align: right;">11.4416124</td>
+<td style="text-align: right;">0.0009680</td>
+<td style="text-align: right;">0.0001093</td>
+<td style="text-align: right;">8.858394</td>
 <td style="text-align: right;">0.0000000</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">shopping_mall</td>
-<td style="text-align: right;">0.0005131</td>
-<td style="text-align: right;">0.0000724</td>
-<td style="text-align: right;">7.0828274</td>
+<td style="text-align: right;">0.0005373</td>
+<td style="text-align: right;">0.0000728</td>
+<td style="text-align: right;">7.379565</td>
 <td style="text-align: right;">0.0000000</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">spa</td>
-<td style="text-align: right;">-0.0020216</td>
-<td style="text-align: right;">0.0001200</td>
-<td style="text-align: right;">-16.8498583</td>
+<td style="text-align: right;">-0.0019177</td>
+<td style="text-align: right;">0.0001184</td>
+<td style="text-align: right;">-16.194393</td>
 <td style="text-align: right;">0.0000000</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">vr_deck</td>
-<td style="text-align: right;">-0.0018171</td>
-<td style="text-align: right;">0.0001934</td>
-<td style="text-align: right;">-9.3961750</td>
+<td style="text-align: right;">-0.0018840</td>
+<td style="text-align: right;">0.0001173</td>
+<td style="text-align: right;">-16.065490</td>
 <td style="text-align: right;">0.0000000</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">home_planet_Europa</td>
-<td style="text-align: right;">2.2958850</td>
-<td style="text-align: right;">0.1429495</td>
-<td style="text-align: right;">16.0608088</td>
+<td style="text-align: right;">2.4136348</td>
+<td style="text-align: right;">0.1422356</td>
+<td style="text-align: right;">16.969277</td>
 <td style="text-align: right;">0.0000000</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">home_planet_Mars</td>
-<td style="text-align: right;">0.7296581</td>
-<td style="text-align: right;">0.0863814</td>
-<td style="text-align: right;">8.4469310</td>
+<td style="text-align: right;">0.7706083</td>
+<td style="text-align: right;">0.0866705</td>
+<td style="text-align: right;">8.891236</td>
 <td style="text-align: right;">0.0000000</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">cryo_sleep_yes</td>
-<td style="text-align: right;">1.2766305</td>
-<td style="text-align: right;">0.0806672</td>
-<td style="text-align: right;">15.8259004</td>
+<td style="text-align: right;">1.3639473</td>
+<td style="text-align: right;">0.0830029</td>
+<td style="text-align: right;">16.432524</td>
 <td style="text-align: right;">0.0000000</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">destination_PSO.J318.5.22</td>
-<td style="text-align: right;">-0.4285366</td>
-<td style="text-align: right;">0.1251028</td>
-<td style="text-align: right;">-3.4254771</td>
-<td style="text-align: right;">0.0006137</td>
+<td style="text-align: right;">-0.4176761</td>
+<td style="text-align: right;">0.1253933</td>
+<td style="text-align: right;">-3.330928</td>
+<td style="text-align: right;">0.0008656</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">destination_TRAPPIST.1e</td>
-<td style="text-align: right;">-0.4747381</td>
-<td style="text-align: right;">0.0888520</td>
-<td style="text-align: right;">-5.3430234</td>
+<td style="text-align: right;">-0.4784834</td>
+<td style="text-align: right;">0.0888317</td>
+<td style="text-align: right;">-5.386406</td>
 <td style="text-align: right;">0.0000001</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">vip_yes</td>
-<td style="text-align: right;">-0.5367090</td>
-<td style="text-align: right;">0.2771248</td>
-<td style="text-align: right;">-1.9367054</td>
-<td style="text-align: right;">0.0527814</td>
+<td style="text-align: right;">-0.4854775</td>
+<td style="text-align: right;">0.2725165</td>
+<td style="text-align: right;">-1.781461</td>
+<td style="text-align: right;">0.0748372</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">vr_deck_x_home_planet_Europa</td>
-<td style="text-align: right;">-0.0001839</td>
-<td style="text-align: right;">0.0002401</td>
-<td style="text-align: right;">-0.7656466</td>
-<td style="text-align: right;">0.4438866</td>
+<td style="text-align: left;">food_court_x_home_planet_Europa</td>
+<td style="text-align: right;">-0.0005000</td>
+<td style="text-align: right;">0.0001197</td>
+<td style="text-align: right;">-4.177595</td>
+<td style="text-align: right;">0.0000295</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">vr_deck_x_home_planet_Mars</td>
-<td style="text-align: right;">-0.0013284</td>
-<td style="text-align: right;">0.0007371</td>
-<td style="text-align: right;">-1.8021626</td>
-<td style="text-align: right;">0.0715198</td>
+<td style="text-align: left;">food_court_x_home_planet_Mars</td>
+<td style="text-align: right;">-0.0007129</td>
+<td style="text-align: right;">0.0002231</td>
+<td style="text-align: right;">-3.195209</td>
+<td style="text-align: right;">0.0013973</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<p>Notice that there are new model terms – <code>vr_deck_x_home_planet_Europa</code> and <code>vr_deck_x_home_planet_Mars</code>. These are the terms that allow for the effect of <code>vr_deck</code> spending on probability of interdimensional transport to depend on <code>home_planet</code>. Those terms aren’t statistically significant, but below is how you could visualize the marginal effects of <code>vr_deck</code> spending, accounting for differences across <code>home_planet</code>.</p>
+<p>Notice that there are new model terms – <code>food_court_x_home_planet_Europa</code> and <code>food_court_x_home_planet_Mars</code>. These are the terms that allow for the effect of <code>food_court</code> spending on probability of interdimensional transport to depend on <code>home_planet</code>. Both of these new terms are statistically significant, indicating that the association between <code>food_court</code> spending on the probability of interdimensional transport is dependent (should be adjusted for) <code>home_planet</code>. Below is how we can visualize the marginal effects of <code>food_court</code> spending, accounting for differences across <code>home_planet</code>.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1492,12 +1492,12 @@ Note
 <span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">mean</span>(train<span class="sc">$</span>age, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
 <span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">vip =</span> <span class="st">"no"</span>,</span>
 <span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">room_service =</span> <span class="fu">mean</span>(train<span class="sc">$</span>room_service, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">food_court =</span> <span class="fu">mean</span>(train<span class="sc">$</span>food_court, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">shopping_mall =</span> <span class="fu">mean</span>(train<span class="sc">$</span>shopping_mall, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">spa =</span> <span class="fu">mean</span>(train<span class="sc">$</span>spa, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">vr_deck =</span> <span class="fu">seq</span>(<span class="fu">min</span>(train<span class="sc">$</span>vr_deck, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>            <span class="fu">max</span>(train<span class="sc">$</span>vr_deck, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">by =</span> <span class="dv">1</span>),</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">food_court =</span> <span class="fu">seq</span>(<span class="fu">min</span>(train<span class="sc">$</span>food_court, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>            <span class="fu">max</span>(train<span class="sc">$</span>food_court, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">by =</span> <span class="dv">1</span>),</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">shopping_mall =</span> <span class="fu">mean</span>(train<span class="sc">$</span>shopping_mall, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">spa =</span> <span class="fu">mean</span>(train<span class="sc">$</span>spa, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">vr_deck =</span> <span class="fu">mean</span>(train<span class="sc">$</span>vr_deck, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
 <span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="cn">NA</span></span>
 <span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a></span>
@@ -1507,7 +1507,7 @@ Note
 <span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>mfx <span class="ot">&lt;-</span> <span class="fu">slopes</span>(complex_log_reg_fit <span class="sc">%&gt;%</span> <span class="fu">extract_fit_parsnip</span>(),</span>
 <span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>              <span class="at">newdata =</span> new_data_baked,</span>
-<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>              <span class="at">variables =</span> <span class="st">"vr_deck"</span>,</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>              <span class="at">variables =</span> <span class="st">"food_court"</span>,</span>
 <span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>              <span class="at">type =</span> <span class="st">"prob"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>()</span>
 <span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a></span>
@@ -1518,14 +1518,14 @@ Note
 <span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a>    home_planet_Mars <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"Mars"</span>,</span>
 <span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Earth"</span></span>
 <span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span></span>
-<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(vr_deck, home_planet, estimate, conf.low, conf.high) <span class="sc">%&gt;%</span></span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(food_court, home_planet, estimate, conf.low, conf.high) <span class="sc">%&gt;%</span></span>
 <span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> vr_deck, <span class="at">y =</span> estimate, <span class="at">color =</span> home_planet), <span class="at">lty =</span> <span class="st">"dashed"</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> vr_deck, <span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high, <span class="at">group =</span> home_planet),</span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> food_court, <span class="at">y =</span> estimate, <span class="at">color =</span> home_planet), <span class="at">lty =</span> <span class="st">"dashed"</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> food_court, <span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high, <span class="at">group =</span> home_planet),</span>
 <span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">"grey"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"VR Deck Spending"</span>,</span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Food Court Spending"</span>,</span>
 <span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Marginal Effect"</span>,</span>
-<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Marginal Effects of Unit Increase in VR Deck Spending"</span>) <span class="sc">+</span> </span>
+<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Marginal Effects of Unit Increase in Food Court Spending"</span>) <span class="sc">+</span> </span>
 <span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5000</span>)) <span class="sc">+</span> </span>
 <span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>home_planet) <span class="sc">+</span> </span>
 <span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
@@ -1539,6 +1539,7 @@ Note
 </div>
 </div>
 </div>
+<p>We can see that the marginal effects of <code>food_court</code> spending are consistently positive (increased <code>food_court</code> spending is associated with a higher likelihood of interdimensional transport). Any spending at all increases risk for all travellers, but those from <code>Europa</code> seem to have the greatest increased risk for initial spending and then the risk increases at slower rates for higher amounts of spending (although the risk still does increase). The increased risk to Martians associated with <code>food_court</code> spending seems to be almost constant, but the additional risk accumulated by these passengers is almost always higher than for Earthlings and Europeans. The increase in risk to Earthlings seems greatest at a <code>food_court</code> spending level of around 2000.</p>
 </section>
 </section>
 </section>
