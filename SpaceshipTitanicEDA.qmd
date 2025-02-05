@@ -668,10 +668,17 @@ mfx %>%
 
 We can see that the marginal effects of `food_court` spending are consistently positive (increased `food_court` spending is associated with a higher likelihood of interdimensional transport). Any spending at all increases risk for all travellers, but those from `Europa` seem to have the greatest increased risk for initial spending and then the risk increases at slower rates for higher amounts of spending (although the risk still does increase). The increased risk to Martians associated with `food_court` spending seems to be almost constant, but the additional risk accumulated by these passengers is almost always higher than for Earthlings and Europeans. The increase in risk to Earthlings seems greatest at a `food_court` spending level of around 2000.
 
-
 ### Machine Learning
 
+In the subsection that follows, we'll use cross-validation to assess our logistic regression model's performance relative to the performance metric we've rationalized as the one we should be caring most about. After running cross validation to estimate performance, we'll tune the model hyperparameters to see if we can achieve greater performance.
+
+```{r}
+train_folds <- vfold_cv(train, v = 10, strata = transported)
+```
+
 #### Logistic Regression
+
+
 
 ## Model Interpretation and Inference
 
