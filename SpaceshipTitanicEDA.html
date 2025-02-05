@@ -166,7 +166,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 4, 2025</p>
+      <p class="date-modified">February 5, 2025</p>
     </div>
   </div>
     
@@ -534,7 +534,7 @@ Note
 </div>
 </div>
 </div>
-<p>Both of the plots above show the distribution of room service expenditures. From the plot on the left, we can see that the distribution is very strongly right-skewed. The majority of passengers spent very little on room service, but there were some passengers who ran up extremely large tabs! The plot on the right shows the same variable but on a logarithmic scale. This particular transformation ignores passengers who did not spend any money on room service. From this plot, we actually see that the median room service expenditure among passengers who utilized room service is quite high – it is about NA. We’ll continue our exploration of the available numerical features below, by working with the expenditures at the food court, shopping mall, spa, and VR deck. All of these are right skewed so we’ll just show the distributions on a logarithmic scale.</p>
+<p>Both of the plots above show the distribution of room service expenditures. From the plot on the left, we can see that the distribution is very strongly right-skewed. The majority of passengers spent very little on room service, but there were some passengers who ran up extremely large tabs! The plot on the right shows the same variable but on a logarithmic scale. This particular transformation ignores passengers who did not spend any money on room service. From this plot, we actually see that the median room service expenditure among passengers who utilized room service is quite high – it is about 0. We’ll continue our exploration of the available numerical features below, by working with the expenditures at the food court, shopping mall, spa, and VR deck. All of these are right skewed so we’ll just show the distributions on a logarithmic scale.</p>
 <div class="cell" data-messae="false">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1053,7 +1053,7 @@ Statistical Learning versus Machine Learning
 </table>
 </div>
 </div>
-<p>Notice that the following are associated with a <em>higher</em> likelihood of interdimensional transport:</p>
+<p>Notice that all of the predictors are statistically significant (at the 5% significance threshold). The following are associated with a <em>higher</em> likelihood of interdimensional transport:</p>
 <ul>
 <li>being <em>younger</em> (lower <code>age</code> due to negative coefficient)</li>
 <li>lower spending on <code>room_service</code>, the <code>spa</code>, and the <code>vr_deck</code></li>
@@ -1062,7 +1062,20 @@ Statistical Learning versus Machine Learning
 <li>taking advantage of <code>cryo_sleep</code></li>
 <li>traveling to <code>55 Cancri e</code> (as opposed to <code>PSO J318.5-22</code> or <code>TRAPPIST-1e</code></li>
 </ul>
-<p>For categorical variables, we can make more meaningful interpretations by calculating and considering <em>odds-ratios</em>. An odds ratio is calculated by raising <span class="math inline">\(e\)</span> to the power of the corresponding model coefficient, and it measures how many times more likely an observation belonging to that category is to be transported to an alternate dimension than an observation belonging to the “base-level” for that categorical variable.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+On Feature (Predictor) Selection
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For this particular model, we’d want to think a bit harder about a few items. First, do we really expect that <code>destination</code> planet should affect the likelihood of a passenger being transported to another dimension? Everyone is on the same ship and they haven’t arrived to their destination yet… By including the <code>destination</code> variable, we could be masking the effect of a truly influential predictor (that is, there could be a <em>confounding</em> effect here). We should have similar concerns about <code>home_planet</code> – do we expect that <em>species</em> might have an impact on the likelihood that a passenger is lost? Perhaps, but we should come up with a rationalization for, or against, the use of this predictor. As one additional comment, the space travel agency/company could be interested only in factors that they can control via ticketing. In this case, they may want to focus on the <code>cryo_sleep</code> service, <code>cabin</code> sleeping/housing arrangements, <code>vip</code> packages and accompanying services, and spending at the various ship amenities (<code>room_service</code>, <code>food_court</code>, etc.).</p>
+</div>
+</div>
+<p>For categorical variables, we can make more meaningful interpretations by calculating and considering <em>odds-ratios</em> (we are able to use these <em>odds-ratios</em> in interpretations with numerical variables, but that interpretation is a bit more tricky). An odds ratio is calculated by raising <span class="math inline">\(e\)</span> to the power of the corresponding model coefficient, and it measures how many times more likely an observation belonging to that category is to be transported to an alternate dimension than an observation belonging to the “base-level” for that categorical variable.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1204,7 +1217,7 @@ Statistical Learning versus Machine Learning
 </div>
 </div>
 <p>Note that, controlling for all other variables, an individual from <code>Europa</code> is nearly 10 times more likely than an individual from <code>Earth</code> to be transported to an alternate dimensions. Similarly, an individual from <code>Mars</code> is over twice as likely to be transported to an alternate dimension than a traveler from <code>Earth</code>. Again, controlling for all other variables, an individual engaging in <code>cryo_sleep</code> is over 3.5 times more likely to be transported to an alternate dimension during space travel (we should probably shut that system down!). Controlling for the other variables, individuals who are <code>vip</code>s or whose destinations are <code>PSO J318.5-22</code> or <code>Trappist-1e</code> carry slightly more than half the risk of those non-<code>vip</code> individuals or individuals travelling to <code>55 Cancri e</code>.</p>
-<p>We can plot confidence intervals for the odds ratios to provide a more intutive (perhaps) view.</p>
+<p>We can plot confidence intervals for the odds ratios to provide a more intuitive (perhaps) view.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1564,6 +1577,13 @@ Note
 </section>
 <section id="machine-learning" class="level3">
 <h3 class="anchored" data-anchor-id="machine-learning">Machine Learning</h3>
+<p>In the subsection that follows, we’ll use cross-validation to assess our logistic regression model’s performance relative to the performance metric we’ve rationalized as the one we should be caring most about. After running cross validation to estimate performance, we’ll tune the model hyperparameters to see if we can achieve greater performance.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>train_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(train, <span class="at">v =</span> <span class="dv">10</span>, <span class="at">strata =</span> transported)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 <section id="logistic-regression-1" class="level4">
 <h4 class="anchored" data-anchor-id="logistic-regression-1">Logistic Regression</h4>
 </section>

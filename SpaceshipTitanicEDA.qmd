@@ -201,7 +201,7 @@ p2 <- train %>%
 p1 + p2
 ```
 
-Both of the plots above show the distribution of room service expenditures. From the plot on the left, we can see that the distribution is very strongly right-skewed. The majority of passengers spent very little on room service, but there were some passengers who ran up extremely large tabs! The plot on the right shows the same variable but on a logarithmic scale. This particular transformation ignores passengers who did not spend any money on room service. From this plot, we actually see that the median room service expenditure among passengers who utilized room service is quite high – it is about `r median(train$room_service)`. We’ll continue our exploration of the available numerical features below, by working with the expenditures at the food court, shopping mall, spa, and VR deck. All of these are right skewed so we’ll just show the distributions on a logarithmic scale.
+Both of the plots above show the distribution of room service expenditures. From the plot on the left, we can see that the distribution is very strongly right-skewed. The majority of passengers spent very little on room service, but there were some passengers who ran up extremely large tabs! The plot on the right shows the same variable but on a logarithmic scale. This particular transformation ignores passengers who did not spend any money on room service. From this plot, we actually see that the median room service expenditure among passengers who utilized room service is quite high – it is about `r median(train$room_service, na.rm = TRUE)`. We’ll continue our exploration of the available numerical features below, by working with the expenditures at the food court, shopping mall, spa, and VR deck. All of these are right skewed so we’ll just show the distributions on a logarithmic scale.
 
 ```{r}
 #| warning: false
@@ -464,7 +464,7 @@ log_reg_fit %>%
   kable()
 ```
 
-Notice that the following are associated with a *higher* likelihood of interdimensional transport:
+Notice that all of the predictors are statistically significant (at the 5% significance threshold). The following are associated with a *higher* likelihood of interdimensional transport:
 
 + being *younger* (lower `age` due to negative coefficient)
 + lower spending on `room_service`, the `spa`, and the `vr_deck`
@@ -473,7 +473,12 @@ Notice that the following are associated with a *higher* likelihood of interdime
 + taking advantage of `cryo_sleep`
 + traveling to `55 Cancri e` (as opposed to `PSO J318.5-22` or `TRAPPIST-1e`
 
-For categorical variables, we can make more meaningful interpretations by calculating and considering *odds-ratios*. An odds ratio is calculated by raising $e$ to the power of the corresponding model coefficient, and it measures how many times more likely an observation belonging to that category is to be transported to an alternate dimension than an observation belonging to the "base-level" for that categorical variable.
+:::{.callout-tip}
+## On Feature (Predictor) Selection
+For this particular model, we'd want to think a bit harder about a few items. First, do we really expect that `destination` planet should affect the likelihood of a passenger being transported to another dimension? Everyone is on the same ship and they haven't arrived to their destination yet... By including the `destination` variable, we could be masking the effect of a truly influential predictor (that is, there could be a *confounding* effect here). We should have similar concerns about `home_planet` -- do we expect that *species* might have an impact on the likelihood that a passenger is lost? Perhaps, but we should come up with a rationalization for, or against, the use of this predictor. As one additional comment, the space travel agency/company could be interested only in factors that they can control via ticketing. In this case, they may want to focus on the `cryo_sleep` service, `cabin` sleeping/housing arrangements, `vip` packages and accompanying services, and spending at the various ship amenities (`room_service`, `food_court`, etc.).
+:::
+
+For categorical variables, we can make more meaningful interpretations by calculating and considering *odds-ratios* (we are able to use these *odds-ratios* in interpretations with numerical variables, but that interpretation is a bit more tricky). An odds ratio is calculated by raising $e$ to the power of the corresponding model coefficient, and it measures how many times more likely an observation belonging to that category is to be transported to an alternate dimension than an observation belonging to the "base-level" for that categorical variable.
 
 ```{r}
 log_reg_fit %>%
@@ -487,7 +492,7 @@ log_reg_fit %>%
 
 Note that, controlling for all other variables, an individual from `Europa` is nearly 10 times more likely than an individual from `Earth` to be transported to an alternate dimensions. Similarly, an individual from `Mars` is over twice as likely to be transported to an alternate dimension than a traveler from `Earth`. Again, controlling for all other variables, an individual engaging in `cryo_sleep` is over 3.5 times more likely to be transported to an alternate dimension during space travel (we should probably shut that system down!). Controlling for the other variables, individuals who are `vip`s or whose destinations are `PSO J318.5-22` or `Trappist-1e` carry slightly more than half the risk of those non-`vip` individuals or individuals travelling to `55 Cancri e`.
 
-We can plot confidence intervals for the odds ratios to provide a more intutive (perhaps) view.
+We can plot confidence intervals for the odds ratios to provide a more intuitive (perhaps) view.
 
 ```{r}
 log_reg_fit %>%
