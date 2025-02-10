@@ -737,6 +737,7 @@ Notice that the average recall over the ten cross-validation folds was around 77
 The result of running `fit_resamples()` is a collection of performance metrics. We do not have a *fitted model* that can be used to make predictions until we `fit()` our model to its training data.
 :::
 
+
 ## Model Interpretation and Inference
 
 ## Conclusion
