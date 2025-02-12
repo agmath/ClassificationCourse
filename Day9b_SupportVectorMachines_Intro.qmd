@@ -296,7 +296,7 @@ The large orange data point in the middle and rightmost plots above was added to
 A support vector classifier is a model class (that is, a model `spec`*ification*). We define our intention to build a support vector classifier using
 
 ```{r echo = TRUE, eval = FALSE}
-log_reg_spec <- svm_linear() %>%
+svm_linear_spec <- svm_linear() %>%
   set_engine("LiblineaR") %>%
   set_mode("classification")
 ```
