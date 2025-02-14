@@ -314,7 +314,7 @@ Depending on the type of support vector machine (linear, polynomial, or radial b
 + `scale_factor` is a positive number denoting the scaling factor for the polynomial (for *polynomial* support vector machines).
 + `rbf_sigma` is a positive number for a radial basis function (for *radial basis function* support vector machines).
 
-You can see the full `{parsnip}` documentation for `svm_linear()` [here](https://parsnip.tidymodels.org/reference/svm_linear.html), for `svm_poly()` [here](https://parsnip.tidymodels.org/reference/svm_linear.html), and for `svm_rbf()` [here](https://parsnip.tidymodels.org/reference/svm_rbf.html).
+You can see the full `{parsnip}` documentation for `svm_linear()` [here](https://parsnip.tidymodels.org/reference/svm_linear.html), for `svm_poly()` [here](https://parsnip.tidymodels.org/reference/svm_poly.html), and for `svm_rbf()` [here](https://parsnip.tidymodels.org/reference/svm_rbf.html).
 
 ***
 
