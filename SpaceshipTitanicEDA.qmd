@@ -737,6 +737,97 @@ Notice that the average recall over the ten cross-validation folds was around 77
 The result of running `fit_resamples()` is a collection of performance metrics. We do not have a *fitted model* that can be used to make predictions until we `fit()` our model to its training data.
 :::
 
+#### Hyperparameter Tuning
+
+```{r}
+log_reg_spec <- logistic_reg(penalty = tune(), mixture = tune()) %>%
+  set_engine("glmnet") %>%
+  set_mode("classification")
+
+log_reg_tune_rec <- recipe(transported ~ ., data = train) %>%
+  step_rm(passenger_id) %>%
+  step_rm(name) %>%
+  step_rm(cabin) %>%
+  step_impute_median(all_numeric_predictors()) %>%
+  step_impute_mode(all_nominal_predictors()) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+
+log_reg_tune_wf <- workflow() %>%
+  add_model(log_reg_spec) %>%
+  add_recipe(log_reg_tune_rec)
+```
+
+Tuning our `penalty` and `mixture` hyperparameters
+
+```{r}
+# param_grid <- crossing(
+#   penalty = c(0.1, 1, 10, 100),
+#   mixture = seq(0, 1, by = 0.1)
+# )
+
+log_reg_tune_results <- log_reg_tune_wf %>%
+  tune_grid(
+    resamples = train_folds,
+    grid = 12, #space-filling points in the hyperparameter space
+    metrics = metric_set(accuracy, precision, recall)
+  )
+
+log_reg_tune_results %>%
+  show_best(n = 10, metric = "recall") %>%
+  kable()
+
+log_reg_seq_tune_results <- log_reg_tune_wf %>%
+  tune_bayes(
+    resamples = train_folds,
+    iter = 20,
+    metrics = metric_set(recall),
+    initial = log_reg_tune_results
+  )
+
+log_reg_seq_tune_results %>%
+  show_best(n = 10, metric = "recall") %>%
+  kable()
+```
+
+Tuning repeated, but with parallel processing.
+
+```{r}
+n_cores <- parallel::detectCores()
+cluster <- parallel::makeCluster(n_cores - 1, type = "PSOCK")
+doParallel::registerDoParallel(cluster)
+
+tictoc::tic()
+
+log_reg_tune_results <- log_reg_tune_wf %>%
+  tune_grid(
+    resamples = train_folds,
+    grid = 12, #space filling-points in the hyperparameter space
+    metrics = metric_set(accuracy, precision, recall),
+    control = control_grid(parallel_over = "everything")
+  )
+
+log_reg_tune_results %>%
+  show_best(n = 10, metric = "recall") %>%
+  kable()
+
+log_reg_seq_tune_results <- log_reg_tune_wf %>%
+  tune_bayes(
+    resamples = train_folds,
+    iter = 20,
+    metrics = metric_set(recall),
+    initial = log_reg_tune_results,
+    control = control_bayes(parallel_over = "everything")
+  )
+
+tictoc::toc()
+
+parallel::stopCluster(cluster)
+
+log_reg_seq_tune_results %>%
+  show_best( n = 10, metric ='recall') %>% 
+  kable()
+```
 
 ## Model Interpretation and Inference
 

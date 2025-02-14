@@ -166,7 +166,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 9, 2025</p>
+      <p class="date-modified">February 14, 2025</p>
     </div>
   </div>
     
@@ -1653,7 +1653,7 @@ Prediction   no  yes
 <pre><code>There were issues with some computations   A: x1</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>There were issues with some computations   A: x6</code></pre>
+<pre><code>There were issues with some computations   A: x5</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>There were issues with some computations   A: x10</code></pre>
@@ -1720,6 +1720,658 @@ Results of Cross-Validation
 </div>
 <div class="callout-body-container callout-body">
 <p>The result of running <code>fit_resamples()</code> is a collection of performance metrics. We do not have a <em>fitted model</em> that can be used to make predictions until we <code>fit()</code> our model to its training data.</p>
+</div>
+</div>
+</section>
+<section id="hyperparameter-tuning" class="level4">
+<h4 class="anchored" data-anchor-id="hyperparameter-tuning">Hyperparameter Tuning</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>log_reg_spec <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>(<span class="at">penalty =</span> <span class="fu">tune</span>(), <span class="at">mixture =</span> <span class="fu">tune</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>log_reg_tune_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(transported <span class="sc">~</span> ., <span class="at">data =</span> train) <span class="sc">%&gt;%</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_rm</span>(passenger_id) <span class="sc">%&gt;%</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_rm</span>(name) <span class="sc">%&gt;%</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_rm</span>(cabin) <span class="sc">%&gt;%</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_mode</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>log_reg_tune_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(log_reg_spec) <span class="sc">%&gt;%</span></span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(log_reg_tune_rec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Tuning our <code>penalty</code> and <code>mixture</code> hyperparameters</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># param_grid &lt;- crossing(</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   penalty = c(0.1, 1, 10, 100),</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   mixture = seq(0, 1, by = 0.1)</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>log_reg_tune_results <span class="ot">&lt;-</span> log_reg_tune_wf <span class="sc">%&gt;%</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tune_grid</span>(</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> train_folds,</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="dv">12</span>, <span class="co">#space-filling points in the hyperparameter space</span></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics =</span> <span class="fu">metric_set</span>(accuracy, precision, recall)</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>log_reg_tune_results <span class="sc">%&gt;%</span></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_best</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">metric =</span> <span class="st">"recall"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 11%">
+<col style="width: 3%">
+<col style="width: 11%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">penalty</th>
+<th style="text-align: right;">mixture</th>
+<th style="text-align: left;">.metric</th>
+<th style="text-align: left;">.estimator</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">std_err</th>
+<th style="text-align: left;">.config</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.1816971</td>
+<td style="text-align: right;">0.8986034</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8707900</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0058185</td>
+<td style="text-align: left;">Preprocessor1_Model11</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0489394</td>
+<td style="text-align: right;">0.1280908</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8380581</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0055239</td>
+<td style="text-align: left;">Preprocessor1_Model01</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0039463</td>
+<td style="text-align: right;">0.5645996</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7937329</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0070593</td>
+<td style="text-align: left;">Preprocessor1_Model07</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0005937</td>
+<td style="text-align: right;">0.9465470</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7737488</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0080569</td>
+<td style="text-align: left;">Preprocessor1_Model12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.3842478</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7720106</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0079129</td>
+<td style="text-align: left;">Preprocessor1_Model05</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0000009</td>
+<td style="text-align: right;">0.6071378</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7720106</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0079129</td>
+<td style="text-align: left;">Preprocessor1_Model08</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0001610</td>
+<td style="text-align: right;">0.7588979</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7720106</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0078893</td>
+<td style="text-align: left;">Preprocessor1_Model09</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0000016</td>
+<td style="text-align: right;">0.7979207</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7720106</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0078893</td>
+<td style="text-align: left;">Preprocessor1_Model10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.1340370</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7717207</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0077916</td>
+<td style="text-align: left;">Preprocessor1_Model02</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0000119</td>
+<td style="text-align: right;">0.2150816</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7717207</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0077916</td>
+<td style="text-align: left;">Preprocessor1_Model03</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>log_reg_seq_tune_results <span class="ot">&lt;-</span> log_reg_tune_wf <span class="sc">%&gt;%</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tune_bayes</span>(</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> train_folds,</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter =</span> <span class="dv">20</span>,</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics =</span> <span class="fu">metric_set</span>(recall),</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">initial =</span> log_reg_tune_results</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>! No improvement for 10 iterations; returning current results.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>log_reg_seq_tune_results <span class="sc">%&gt;%</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_best</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">metric =</span> <span class="st">"recall"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 3%">
+<col style="width: 11%">
+<col style="width: 24%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">penalty</th>
+<th style="text-align: right;">mixture</th>
+<th style="text-align: left;">.metric</th>
+<th style="text-align: left;">.estimator</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">std_err</th>
+<th style="text-align: left;">.config</th>
+<th style="text-align: right;">.iter</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.1816971</td>
+<td style="text-align: right;">0.8986034</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8707900</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0058185</td>
+<td style="text-align: left;">Preprocessor1_Model11</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0544788</td>
+<td style="text-align: right;">0.9985524</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8707900</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0058185</td>
+<td style="text-align: left;">Iter2</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.1333065</td>
+<td style="text-align: right;">0.9962447</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8707900</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0058185</td>
+<td style="text-align: left;">Iter7</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.1038225</td>
+<td style="text-align: right;">0.0554859</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8432713</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0052329</td>
+<td style="text-align: left;">Iter3</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0489394</td>
+<td style="text-align: right;">0.1280908</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8380581</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0055239</td>
+<td style="text-align: left;">Preprocessor1_Model01</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0157126</td>
+<td style="text-align: right;">0.9981059</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8374776</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0053746</td>
+<td style="text-align: left;">Iter4</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0039463</td>
+<td style="text-align: right;">0.5645996</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7937329</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0070593</td>
+<td style="text-align: left;">Preprocessor1_Model07</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0015626</td>
+<td style="text-align: right;">0.0616520</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7847541</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0068856</td>
+<td style="text-align: left;">Iter9</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0574039</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7740387</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0078278</td>
+<td style="text-align: left;">Iter8</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0005937</td>
+<td style="text-align: right;">0.9465470</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7737488</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0080569</td>
+<td style="text-align: left;">Preprocessor1_Model12</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Tuning repeated, but with parallel processing.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>n_cores <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>()</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>cluster <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">makeCluster</span>(n_cores <span class="sc">-</span> <span class="dv">1</span>, <span class="at">type =</span> <span class="st">"PSOCK"</span>)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>(cluster)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">tic</span>()</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>log_reg_tune_results <span class="ot">&lt;-</span> log_reg_tune_wf <span class="sc">%&gt;%</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tune_grid</span>(</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> train_folds,</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="dv">12</span>, <span class="co">#space filling-points in the hyperparameter space</span></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics =</span> <span class="fu">metric_set</span>(accuracy, precision, recall),</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">control_grid</span>(<span class="at">parallel_over =</span> <span class="st">"everything"</span>)</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>log_reg_tune_results <span class="sc">%&gt;%</span></span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_best</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">metric =</span> <span class="st">"recall"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 11%">
+<col style="width: 3%">
+<col style="width: 11%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">penalty</th>
+<th style="text-align: right;">mixture</th>
+<th style="text-align: left;">.metric</th>
+<th style="text-align: left;">.estimator</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">std_err</th>
+<th style="text-align: left;">.config</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.4319537</td>
+<td style="text-align: right;">0.1560262</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8707900</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0058185</td>
+<td style="text-align: left;">Preprocessor1_Model02</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0533134</td>
+<td style="text-align: right;">0.5592307</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8490651</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0049579</td>
+<td style="text-align: left;">Preprocessor1_Model07</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0053081</td>
+<td style="text-align: right;">0.0950698</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7974977</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0075903</td>
+<td style="text-align: left;">Preprocessor1_Model01</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0011489</td>
+<td style="text-align: right;">0.6263582</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7806995</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0072522</td>
+<td style="text-align: left;">Preprocessor1_Model08</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0003720</td>
+<td style="text-align: right;">0.4433324</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7734590</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0079566</td>
+<td style="text-align: left;">Preprocessor1_Model05</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0000070</td>
+<td style="text-align: right;">0.2804770</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7720106</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0079129</td>
+<td style="text-align: left;">Preprocessor1_Model03</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.7072361</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7720106</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0078893</td>
+<td style="text-align: left;">Preprocessor1_Model09</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0000002</td>
+<td style="text-align: right;">0.7706609</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7720106</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0078893</td>
+<td style="text-align: left;">Preprocessor1_Model10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0000003</td>
+<td style="text-align: right;">0.8750124</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7720106</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0078893</td>
+<td style="text-align: left;">Preprocessor1_Model11</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.3166453</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7717207</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0077916</td>
+<td style="text-align: left;">Preprocessor1_Model04</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>log_reg_seq_tune_results <span class="ot">&lt;-</span> log_reg_tune_wf <span class="sc">%&gt;%</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tune_bayes</span>(</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> train_folds,</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter =</span> <span class="dv">20</span>,</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics =</span> <span class="fu">metric_set</span>(recall),</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">initial =</span> log_reg_tune_results,</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">control_bayes</span>(<span class="at">parallel_over =</span> <span class="st">"everything"</span>)</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>! No improvement for 10 iterations; returning current results.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>23.396 sec elapsed</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>parallel<span class="sc">::</span><span class="fu">stopCluster</span>(cluster)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>log_reg_seq_tune_results <span class="sc">%&gt;%</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_best</span>( <span class="at">n =</span> <span class="dv">10</span>, <span class="at">metric =</span><span class="st">'recall'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 3%">
+<col style="width: 11%">
+<col style="width: 24%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">penalty</th>
+<th style="text-align: right;">mixture</th>
+<th style="text-align: left;">.metric</th>
+<th style="text-align: left;">.estimator</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">std_err</th>
+<th style="text-align: left;">.config</th>
+<th style="text-align: right;">.iter</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.4319537</td>
+<td style="text-align: right;">0.1560262</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8707900</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0058185</td>
+<td style="text-align: left;">Preprocessor1_Model02</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.3466754</td>
+<td style="text-align: right;">0.2714578</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8707900</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0058185</td>
+<td style="text-align: left;">Iter6</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.1361435</td>
+<td style="text-align: right;">0.3557399</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8652869</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0052464</td>
+<td style="text-align: left;">Iter2</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0533134</td>
+<td style="text-align: right;">0.5592307</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8490651</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0049579</td>
+<td style="text-align: left;">Preprocessor1_Model07</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0893889</td>
+<td style="text-align: right;">0.2678498</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8490651</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0054254</td>
+<td style="text-align: left;">Iter7</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.1441139</td>
+<td style="text-align: right;">0.0519491</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8452987</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0053703</td>
+<td style="text-align: left;">Iter5</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0352937</td>
+<td style="text-align: right;">0.4548949</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8447206</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0055539</td>
+<td style="text-align: left;">Iter8</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0213661</td>
+<td style="text-align: right;">0.3757257</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8316813</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0063371</td>
+<td style="text-align: left;">Iter9</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0127413</td>
+<td style="text-align: right;">0.5190814</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8235712</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0060497</td>
+<td style="text-align: left;">Iter10</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0053081</td>
+<td style="text-align: right;">0.0950698</td>
+<td style="text-align: left;">recall</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7974977</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0075903</td>
+<td style="text-align: left;">Preprocessor1_Model01</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </section>
