@@ -131,8 +131,8 @@ window.Quarto = {
 <p><strong>Data Used:</strong> We’ll use excerpts from <em>Spooky Authors</em> (Edgar-Allen Poe, Mary Shelley, and HP Lovecraft), which appeared as part of a <a href="https://www.kaggle.com/competitions/spooky-author-identification/overview">Kaggle Competition</a> in 2018. For convenience, I’ve added the training data to my GitHub repository <a href="https://raw.githubusercontent.com/agmath/agmath.github.io/master/data/classification/spooky_authors.csv">here</a>.</p>
 <section id="the-big-idea" class="level2">
 <h2 class="anchored" data-anchor-id="the-big-idea">The Big Idea</h2>
-<p>Are tokens more frequently utilized in one type of document versus another? Here, we’ll look at a measure of how frequent a token is to a particular class is and how <em>unique</em> it is to that class, relative the other classes. The <em>term frequency, inverse document frequency</em> of a token is defined as follows: <span class="math inline">\(\displaystyle{\text{tf\_idf}\left(\text{token}\right) = f_{\text{Token}}\cdot\ln\left(\frac{n_{\text{Documents}}}{n_{\text{Documents Containing Token}}}\right)}\)</span>, where <span class="math inline">\(f_{\text{Token}}\)</span> denotes the frequency of the <span class="math inline">\(\tt{Token}\)</span> across the entire corpus.</p>
-<p>In the formula for <span class="math inline">\(\text{tf\_idf}\left(\text{Token}\right)\)</span>, if <span class="math inline">\(\tt{Token}\)</span> appears across all of the documents, then the ration <span class="math inline">\(\frac{n_{\text{Documents}}}{n_{\text{Documents Containing Token}}}\)</span> will evaluate to <span class="math inline">\(1\)</span> and the logarithm will be <span class="math inline">\(0\)</span>. That is, a <em>token</em> appearing across all documents cannot be useful in differentiating the document. That logarithm will be largest when the <em>token</em> in question appears in just one of the documents and none of the others. This means that <em>tokens</em> with the highest <em>term frequency, inverse document frequency</em> will be those unique to their document and having a high frequency of usage within that document.</p>
+<p>Are tokens more frequently utilized in one type of document versus another? Here, we’ll look at a measure of how frequent a token is to a particular class is and how <em>unique</em> it is to that class, relative the other classes. The <em>term frequency, inverse document frequency</em> of a token is defined as follows: <span class="math inline">\(\displaystyle{\text{tf\_idf}\left(\text{token}\right) = f_{\text{Token}}\cdot\ln\left(\frac{n_{\text{Documents}}}{n_{\text{Documents Containing Token}}}\right)}\)</span>, where <span class="math inline">\(f_{\text{Token}}\)</span> denotes the relative frequency of the <span class="math inline">\(\tt{Token}\)</span> within the document.</p>
+<p>In the formula for <span class="math inline">\(\text{tf\_idf}\left(\text{Token}\right)\)</span>, if <span class="math inline">\(\tt{Token}\)</span> appears across all of the documents, then the ratio <span class="math inline">\(\frac{n_{\text{Documents}}}{n_{\text{Documents Containing Token}}}\)</span> will evaluate to <span class="math inline">\(1\)</span> and the logarithm will be <span class="math inline">\(0\)</span>. That is, a <em>token</em> appearing across all documents cannot be useful in differentiating the document type. That logarithm will be largest when the <em>token</em> in question appears in just one of the documents and none of the others. This means that <em>tokens</em> with the highest <em>term frequency, inverse document frequency</em> will be those unique to their document and having a high frequency of usage within that document.</p>
 <p>Let’s try this out with our spooky author excerpts. You can see the first few rows of the spooky author data below.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -615,13 +615,19 @@ window.Quarto = {
 <pre><code># A tibble: 3 × 4
   author   EAP   HPL   MWS
   &lt;fct&gt;  &lt;int&gt; &lt;int&gt; &lt;int&gt;
-1 EAP     6830   507   563
-2 HPL     2280  2929   426
-3 MWS     2294   428  3322</code></pre>
+1 EAP     6810   646   444
+2 HPL     2132  3158   345
+3 MWS     2336   560  3148</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> (conf_matrix[<span class="dv">1</span>,<span class="dv">2</span>] <span class="sc">+</span> conf_matrix[<span class="dv">2</span>,<span class="dv">3</span>] <span class="sc">+</span> conf_matrix[<span class="dv">3</span>,<span class="dv">4</span>])<span class="sc">/</span><span class="fu">nrow</span>(spooky_authors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> (conf_matrix[<span class="dv">1</span>,<span class="dv">2</span>] <span class="sc">+</span> conf_matrix[<span class="dv">2</span>,<span class="dv">3</span>] <span class="sc">+</span> conf_matrix[<span class="dv">3</span>,<span class="dv">4</span>])<span class="sc">/</span><span class="fu">nrow</span>(spooky_authors)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>accuracy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        EAP
+1 0.6699014</code></pre>
 </div>
-<p>Note that the model above takes quite some time to fit and also to predict. This is because each distinct word in the training set (aside from stopwords) has become a feature that the model can use. Additionally, we’re fitting a random forest consisting of 500 individual trees. That being said, even though the model was trained on only 2500 records, it is performing reasonably well. It has an accuracy of 0.6681138 and identifies excerpts from Edgar Allen Poe quite well. However, it has a difficult time differentiating the excerpts from the other authors from Edgar Allen Poe.</p>
+</div>
+<p>Note that the model above takes quite some time to fit and also to predict. This is because each distinct word in the training set (aside from stopwords) has become a feature that the model can use. Additionally, we’re fitting a random forest consisting of 500 individual trees. That being said, even though the model was trained on only 2500 records, it is performing reasonably well. It has an accuracy of 0.6699014 and identifies excerpts from Edgar Allen Poe quite well. However, it has a difficult time differentiating the excerpts from the other authors from Edgar Allen Poe.</p>
 <hr>
 </section>
 <section id="summary" class="level2">
